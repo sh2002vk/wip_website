@@ -7,6 +7,9 @@ export default function Home() {
   return (
     <main className="flex items-center justify-center h-screen">
       <div className="w-full max-w-xs">
+        <div className="flex justify-center mb-6">
+          <Image src="/wip.png" alt="Logo" width={150} height={150} />
+        </div>
         <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
@@ -32,12 +35,12 @@ export default function Home() {
           </div>
           <div className="flex items-center justify-between">
           <Link
-            href="/dashboard"
+            href="/home"
             className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
           >
             <span>Log in</span> 
           </Link>
-            <Link href="/dashboard" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+            <Link href="/home" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
               Forgot Password?
             </Link>
           </div>
