@@ -33,8 +33,8 @@ export default function SideBar() {
         </nav>
 
         {/* Sign Out Button */}
-        <div className="mt-auto mb-10">
-          <Link href="/" className="flex items-center justify-center h-12 w-full md:w-60 rounded-lg bg-blue-500 text-white transition-colors hover:bg-blue-400">
+        <div id='logoutbutton' className="flex justify-center mt-auto mb-10">
+          <Link href="/" className="flex items-center justify-center h-12 w-4/5 rounded-lg bg-blue-500 text-white transition-colors hover:bg-blue-400">
               <span className="text-sm font-medium">Log out</span> 
           </Link>
         </div>
