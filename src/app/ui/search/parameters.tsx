@@ -4,13 +4,26 @@ import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { useFilters } from 'logic/FiltersContext';
 
-export default function Parameters() {
+type ParametersProps = {
+  onSearch: (filters: { availability: number; preference: string; degreeLevel: string; date: Dayjs | null; keyword: string }) => void;
+};
+
+export default function Parameters({ onSearch }: ParametersProps) {
   const [availability, setAvailability] = React.useState(0);
   const [preference, setPreference] = React.useState("UNAVAILABLE");
   const [degreeLevel, setDegreeLevel] = React.useState("UNAVAILABLE");
   const [date, setDate] = React.useState<Dayjs | null>(dayjs());
   const [keyword, setKeyword] = React.useState('');
+
+  const handleShowResults = () => {
+    // Construct an object with the current filter states
+    const currentFilters = { availability, preference, degreeLevel, date, keyword };
+    // console.log("Current Filters: ", currentFilters);
+    // Pass the current filter states to the parent component via the onSearch function
+    onSearch(currentFilters);
+  };
 
   const handleKeywordChange = (event) => {
     // Update the searchTerm state variable with the new input value
@@ -28,13 +41,9 @@ export default function Parameters() {
     setKeyword('');
   };
 
-  const handleShowResults = () => {
-    console.log("Showing results based on the filters...");
-  };
-
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div className="flex flex-col h-screen w-full mx-auto bg-gray-200 py-4 space-y-4">
+      <div className="flex flex-col h-screen w-full mx-auto bg-white py-4 space-y-4 border-r border-black">
         <div className='container mx-auto'>
 
           {/* Search Bar */}
@@ -56,26 +65,26 @@ export default function Parameters() {
 
           {/* Work Styles selection */}
           <div id="work-style-preference" className="flex justify-center space-x-0 py-1">
-            <button onClick={() => setPreference("REMOTE")} className="bg-white hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs">
+            <button onClick={() => setPreference("REMOTE")} className={`bg-gray-200 hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs ${preference === "REMOTE" ? "bg-orange-200 text-black" : ""}`}>
               REMOTE
             </button>
-            <button onClick={() => setPreference("HYBRID")} className="bg-white hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs">
+            <button onClick={() => setPreference("HYBRID")} className={`bg-gray-200 hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs ${preference === "HYBRID" ? "bg-orange-200 text-black" : ""}`}>
               HYBRID
             </button>
-            <button onClick={() => setPreference("INPERSON")} className="bg-white hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs">
+            <button onClick={() => setPreference("INPERSON")} className={`bg-gray-200 hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs ${preference === "INPERSON" ? "bg-orange-200 text-black" : ""}`}>
               IN PERSON
             </button>
           </div>
 
           {/* Term Length */}
           <div id="time-in-months" className="flex justify-center space-x-0">
-            <button onClick={() => setAvailability(4)} className="bg-white hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2 border border-black-500 hover:border-transparent rounded text-xs">
+            <button onClick={() => setAvailability(4)} className={`bg-gray-200 hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2 border border-black-500 hover:border-transparent rounded text-xs ${availability === 4 ? "bg-orange-200 text-black" : ""}`}>
               4 months
             </button>
-            <button onClick={() => setAvailability(8)} className="bg-white hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2 border border-black-500 hover:border-transparent rounded text-xs">
+            <button onClick={() => setAvailability(8)} className={`bg-gray-200 hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2 border border-black-500 hover:border-transparent rounded text-xs ${availability === 8 ? "bg-orange-200 text-black" : ""}`}>
               8 months
             </button>
-            <button onClick={() => setAvailability(12)} className="bg-white hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2 border border-black-500 hover:border-transparent rounded text-xs">
+            <button onClick={() => setAvailability(12)} className={`bg-gray-200 hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2 border border-black-500 hover:border-transparent rounded text-xs ${availability === 12 ? "bg-orange-200 text-black" : ""}`}>
               12 months
             </button>
           </div>
@@ -96,14 +105,14 @@ export default function Parameters() {
           </div>
 
           {/* Degree level selection */}
-          <div id="work-style-preference" className="flex justify-center space-x-0 py-1">
-            <button onClick={() => setDegreeLevel("UGRADSENIOR")} className="bg-white hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs">
+          <div id="degree-level-preference" className="flex justify-center space-x-0 py-1">
+            <button onClick={() => setDegreeLevel("UGRADSENIOR")} className={`bg-gray-200 hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs ${degreeLevel === "UGRADSENIOR" ? "bg-orange-200 text-black" : ""}`}>
               3/4 YEAR
             </button>
-            <button onClick={() => setDegreeLevel("MASTERS")} className="bg-white hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs">
+            <button onClick={() => setDegreeLevel("MASTERS")} className={`bg-gray-200 hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs ${degreeLevel === "MASTERS" ? "bg-orange-200 text-black" : ""}`}>
               MASTERS
             </button>
-            <button onClick={() => setDegreeLevel("PHD")} className="bg-white hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs">
+            <button onClick={() => setDegreeLevel("PHD")} className={`bg-gray-200 hover:bg-black-500 text-black-700 font-semibold hover:text-white py-1 px-2.5 border border-black-500 hover:border-transparent rounded text-xs ${degreeLevel === "PHD" ? "bg-orange-200 text-black" : ""}`}>
               PHD
             </button>
           </div>

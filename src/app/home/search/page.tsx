@@ -7,7 +7,7 @@ import SearchLayout from './layout'
 export default function SearchPage() {
   return (
     <SearchLayout title="SEARCH">
-      <p>SEARCH INFO</p>
+        <p>SEARCH INFO</p>
     </SearchLayout>
   );
 }

@@ -5,7 +5,7 @@ import { faHouse, faSearch, faCog } from '@fortawesome/free-solid-svg-icons';
 
 export default function SideBar() {
   return (
-    <div className="flex flex-col h-screen w-20 md:w-60 bg-gray-200">
+    <div className="flex flex-col h-screen w-20 md:w-60 bg-white-200 border-r border-black">
       {/* Logo or Home Link */}
       <div className="flex items-center justify-center h-20 w-20 md:h-40 md:w-60">
         <Link href="/home" className="flex items-center justify-center h-full w-full">
