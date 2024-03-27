@@ -1,3 +1,15 @@
+# WorkInProgress Engineering Principles
+
+At WIP, we're building the future of internship recruiting. Our software is our core product. In order to have a cohesive product that is easy to debug, we aim to follow these principles:
+
+1. Take `100% responsibility and ownership` over the code you write
+2. Break up your code to be easily understandable
+3. Label parts of your code and what they do through comments
+4. Before you `push`, make sure to `pull` all of the latest changes and ensure that your component works with the old code
+5. If you know of any problems that aren't urgent but need to be fixed, put them into `GitHub issues`
+6. Use ChatGPT to speed up your development, but know all parts of the code you write 
+
+
 # Get your environment setup
 
 1. ```npm install```
