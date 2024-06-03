@@ -1,15 +1,18 @@
-import Link from 'next/link';
-// import Image from 'next/image'; // if you are using images for logos or icons
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faHouse, faSearch, faCog } from '@fortawesome/free-solid-svg-icons';
 'use client'
+import Link from 'next/link';
 import React, { useState } from 'react';
 import ToggleSwitch from './toggleSwitch';
+import "./style.css"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //used for the close button on each job posting
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import JobCard from './jobCard';
 
-export default function Bookmarks() {
 
-  const drafts = [
+export default function Bookmarks({ onSelectJob }) {
+
+  const initialDrafts = [
     {
+      company: "WorkInProgress",
       title: "Software Engineer",
       type: "Full-time",
       jobDetail: "Currently seeking an experienced software Developer for development of our next generation security solution impacting multiple products...",
@@ -18,6 +21,43 @@ export default function Bookmarks() {
       draft: true,
     },
     {
+      company: "WorkInProgress",
+      title: "To Delete",
+      type: "Full-time",
+      jobDetail: "",
+      jobBenefits: "",
+      jobDescription: "",
+      draft: true,
+    },
+    {
+      company: "WorkInProgress",
+      title: "Test Index 1",
+      type: "Full-time",
+      jobDetail: "",
+      jobBenefits: "",
+      jobDescription: "",
+      draft: true,
+    },
+    {
+      company: "WorkInProgress",
+      title: "Test Index 2",
+      type: "Full-time",
+      jobDetail: "",
+      jobBenefits: "",
+      jobDescription: "",
+      draft: true,
+    },
+    {
+      company: "WorkInProgress",
+      title: "Test Index 3",
+      type: "Full-time",
+      jobDetail: "",
+      jobBenefits: "",
+      jobDescription: "",
+      draft: true,
+    },
+    {
+      company: "WorkInProgress",
       title: "Software Engineer",
       type: "Full-time",
       jobDetail: "",
@@ -26,6 +66,7 @@ export default function Bookmarks() {
       draft: true,
     },
     {
+      company: "WorkInProgress",
       title: "Software Engineer",
       type: "Full-time",
       jobDetail: "",
@@ -34,6 +75,7 @@ export default function Bookmarks() {
       draft: true,
     },
     {
+      company: "WorkInProgress",
       title: "Software Engineer",
       type: "Full-time",
       jobDetail: "",
@@ -42,6 +84,7 @@ export default function Bookmarks() {
       draft: true,
     },
     {
+      company: "WorkInProgress",
       title: "Software Engineer",
       type: "Full-time",
       jobDetail: "",
@@ -50,8 +93,10 @@ export default function Bookmarks() {
       draft: true,
     },
   ]
-  const completed = [
+
+  const initialCompleted = [
     {
+      company: "WorkInProgress",
       title: "Software Engineer",
       type: "Full-time",
       jobDetail: "Currently seeking an experienced software Developer for development of our next generation security solution impacting multiple products...",
@@ -61,47 +106,69 @@ export default function Bookmarks() {
     },
   ]
 
-
   const [activeToggle, setActiveToggle] = useState('Drafts'); // Default to 'Drafts'
+  const [drafts, setDrafts] = useState(initialDrafts);
+  const [completed, setCompleted] = useState(initialCompleted);
+
+  const handleRemove = (index) => {
+    if (activeToggle === 'Drafts') {
+      const newDrafts = drafts.filter((_, i) => i !== index);
+      setDrafts(newDrafts);
+    } else {
+      const newCompleted = completed.filter((_, i) => i !== index);
+      setCompleted(newCompleted);
+    }
+  };
+
+  const handleSelect = (job) => {
+    onSelectJob(job);
+  };
 
   return (
-      <div className="flex flex-col h-screen w-full mx-auto bg-white py-4 space-y-4 border-r border-black">
-        <div className='container mx-auto pr-4'>
-          {/*Contains a toggle switch, a list of job postings, and a new post button*/}
+    <div className="flex flex-col h-screen w-full mx-auto bg-white py-4 space-y-4 border-r border-black">
+      <div className='container mx-auto pr-4'>
+        {/* Contains a toggle switch, a list of job postings, and a new post button */}
 
-          <div className="bg-gray-100 rounded-lg my-7">
-            <ToggleSwitch 
-              leftToggle="Drafts" 
-              rightToggle="Completed" 
-              activeToggle={activeToggle} 
-              setActiveToggle={setActiveToggle} 
-            />          
-          </div>
-          
-          <div className="flex flex-col space-y-2 my-2">
-            {/* Conditionally render drafts or completed based on activeToggle */}
-            {activeToggle === 'Drafts' && drafts.map((item, index) => (
-              <div key={index} className="bg-red-100 p-4 rounded-lg shadow-md">
-                <p className="text-xs font-semibold text-red-600">{item.title}</p>
-                <p className="text-sm">{item.type}</p>
-              </div>
-            ))}
+        <div className="bg-gray-100 rounded-lg my-7">
+          <ToggleSwitch 
+            leftToggle="Drafts" 
+            rightToggle="Completed" 
+            activeToggle={activeToggle} 
+            setActiveToggle={setActiveToggle} 
+          />          
+        </div>
+        
+        <div className="flex flex-col space-y-2 my-2 h-[75vh] overflow-y-auto no-scrollbar">
+          {/* Conditionally render drafts or completed based on activeToggle */}
+          {activeToggle === 'Drafts' && drafts.map((item, index) => (
+            <JobCard
+              key={index}
+              company={item.company}
+              title={item.title}
+              type={item.type}
+              onRemove={() => handleRemove(index)}
+              onClick={() => handleSelect(item)}
+            />
+          ))}
 
-            {activeToggle === 'Completed' && completed.map((item, index) => (
-              <div key={index} className="bg-green-100 p-4 rounded-lg shadow-md">
-                <p className="text-xs font-semibold text-green-600">{item.title}</p>
-                <p className="text-sm">{item.type}</p>
-              </div>
-            ))}
-          </div>
-          
-          <div className="mt-4">
-            {/* New post button */}
-            <button className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded">
-              + New Job Posting
-            </button>
-          </div>
+          {activeToggle === 'Completed' && completed.map((item, index) => (
+            <JobCard
+              key={index}
+              company={item.company}
+              title={item.title}
+              type={item.type}
+              onRemove={() => handleRemove(index)}
+              onClick={() => handleSelect(item)}
+            />
+          ))}
+        </div>
+        
+        <div className="mt-4 flex justify-center">
+          <button className="bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded">
+            + New Job Posting
+          </button>
         </div>
       </div>
+    </div>
   );
 }
