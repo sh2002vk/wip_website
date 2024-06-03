@@ -1,9 +1,9 @@
-'use client'
+'use client';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import ToggleSwitch from './toggleSwitch';
 import "./style.css"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //used for the close button on each job posting
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import JobCard from './jobCard';
 
@@ -15,15 +15,17 @@ export default function Bookmarks({ onSelectJob }) {
       company: "WorkInProgress",
       title: "Software Engineer",
       type: "Full-time",
-      jobDetail: "Currently seeking an experienced software Developer for development of our next generation security solution impacting multiple products...",
-      jobBenefits: "Has listed the base salary ranges it in good faith expects to pay applicants for this role in the locations listed, as of the time of this posting.",
-      jobDescription: "You will do full stack development working on both game client and backend services.",
+      location: "Vancouver, BC",
+      jobDetail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      jobQualification: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      jobDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       draft: true,
     },
     {
       company: "WorkInProgress",
       title: "To Delete",
       type: "Full-time",
+      location: "",
       jobDetail: "",
       jobBenefits: "",
       jobDescription: "",
@@ -33,6 +35,7 @@ export default function Bookmarks({ onSelectJob }) {
       company: "WorkInProgress",
       title: "Test Index 1",
       type: "Full-time",
+      location: "",
       jobDetail: "",
       jobBenefits: "",
       jobDescription: "",
@@ -42,6 +45,7 @@ export default function Bookmarks({ onSelectJob }) {
       company: "WorkInProgress",
       title: "Test Index 2",
       type: "Full-time",
+      location: "",
       jobDetail: "",
       jobBenefits: "",
       jobDescription: "",
@@ -51,6 +55,7 @@ export default function Bookmarks({ onSelectJob }) {
       company: "WorkInProgress",
       title: "Test Index 3",
       type: "Full-time",
+      location: "",
       jobDetail: "",
       jobBenefits: "",
       jobDescription: "",
