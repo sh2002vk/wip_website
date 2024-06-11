@@ -1,4 +1,5 @@
 // CollapsibleCard.tsx
+//Used to display the texts in the job detail, description and qualification
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';

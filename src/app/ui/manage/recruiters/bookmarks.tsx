@@ -1,11 +1,11 @@
 'use client';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import ToggleSwitch from './toggleSwitch';
+import ToggleSwitch from './cards/toggleSwitch';
 import "./style.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import JobCard from './jobCard';
+import JobCard from './cards/jobCard';
 
 
 export default function Bookmarks({ onSelectJob }) {

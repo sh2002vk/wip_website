@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import Bookmarks from '@/app/ui/manage/bookmarks';
-import JobDetails from '@/app/ui/manage/jobDetails';
+import Bookmarks from '@/app/ui/manage/recruiters/bookmarks';
+import JobDetails from '@/app/ui/manage/recruiters/jobDetails';
 import SideBar from "@/app/ui/home/sidebar"; 
 
 type LayoutProps = {
@@ -16,15 +16,19 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
     setSelectedJob(job);
   };
 
+  const handleCloseJobDetails = () => {
+    setSelectedJob(null);
+  };
+
   return (
     <div className="flex h-screen">
       <div className="w-full md:w-64 flex-none h-screen overflow-auto">
-        {/* List to display drafts or completed job postings */}
         <Bookmarks onSelectJob={handleSelectJob} />
       </div>
-      <div className="flex-1 p-4 overflow-x-auto  overflow-y-auto no-scrollbar">
-        {/* Section used to modify or view the draft and completed job posting contents */}
-        {selectedJob && <JobDetails job={selectedJob} />}
+      <div className="flex-1 p-4 overflow-x-auto overflow-y-auto no-scrollbar">
+        {selectedJob && (
+          <JobDetails job={selectedJob} onClose={handleCloseJobDetails} />
+        )}
       </div>
     </div>
   );

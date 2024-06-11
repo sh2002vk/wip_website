@@ -43,11 +43,11 @@ export default function Parameters({ onSearch }: ParametersProps) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div className="flex flex-col h-screen w-full mx-auto bg-white py-4 space-y-4 border-r border-black">
-        <div className='container mx-auto'>
+    <div className="flex flex-col h-screen w-full mx-auto bg-white py-4 space-y-4 border-r border-black">
+        <div className='container mx-auto pr-4'>
 
           {/* Search Bar */}
-          <form className="flex justify-center mx-auto py-4 w-53">   
+          <form className="flex justify-center">   
               <div className="relative">
                   <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                       <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">

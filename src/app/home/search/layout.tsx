@@ -108,12 +108,12 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
   };
 
   return (
-    <div className="flex-container flex flex-wrap">
-      <div className="w-full h-screen flex-none md:w-64">
+    <div className="flex h-screen">
+      <div className="w-full md:w-64 flex-none h-screen overflow-auto">
         {/* Pass the handleSearch as a prop */}
         <Parameters onSearch={handleSearch} />
       </div>
-      <div className="w-full md:w-3/4 p-4 flex flex-no-wrap overflow-x-auto grid grid-rows-2 grid-flow-col" style={{ height: 'calc(100% - 1rem)' }}>
+      <div className="w-full md:w-3/4 p-4 flex flex-no-wrap overflow-y-auto grid grid-rows-2 grid-flow-col no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
         {showStudents && students.map((student, index) => (
           <StudentCard key={index} {...student} />
         ))}

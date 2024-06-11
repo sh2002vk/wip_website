@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //used for the close button on each job posting
 import { faPencilAlt, faTimes, faSearch, faCheck } from '@fortawesome/free-solid-svg-icons';
-import CollapsibleCard from './collapsableCard';
-import JobOptionToggle from './jobOptionToggle';
+import CollapsibleCard from './cards/collapsableCard';
+import JobOptionToggle from './cards/jobOptionToggle';
 import "./style.css"
 
 
@@ -19,9 +19,11 @@ interface JobDetailsProps {
     jobBenefits: string;
     type: string;
   };
+
+  onClose: () => void;
 }
 
-const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
+const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose }) => {
 
     const [isJobDetailsOpen, setIsJobDetailsOpen] = useState(false);
     const [isJobDescriptionOpen, setIsJobDescriptionOpen] = useState(false);
@@ -37,7 +39,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job }) => {
             <div className="border-b border-gray-300 mb-4">
                 <div className="flex justify-end">
                     {/*TODO: On click handler*/}
-                    <button /*onClick={}*/ className="bg-transparent font-bold text-black hover:text-gray-600">
+                    <button onClick={onClose} className="bg-transparent font-bold text-black hover:text-gray-600">
                         <FontAwesomeIcon icon={faTimes} size="2x"/>
                     </button>
                 </div>       
