@@ -19,7 +19,7 @@ const MoreLayout = ({ children, title }: LayoutProps) => {
       case 'Settings':
         return <p> Settings will go here</p>;
       default:
-        return <p></p>;
+        return <p>hey</p>;
     }
   };
 
