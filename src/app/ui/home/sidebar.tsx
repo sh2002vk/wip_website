@@ -18,7 +18,7 @@ export default function SideBar() {
         <nav className="flex flex-col mt-10 space-y-2">
           {/* Adjust the padding-left to increase space between icon and text */}
           {/* Adjust the width or padding-right to shift overall content to the right */}
-          <Link href="/home" className="group flex items-center pl-10 pr-4 h-12 w-full md:w-60 hover:bg-gray-300">
+          <Link href="/home/dashboard" className="group flex items-center pl-10 pr-4 h-12 w-full md:w-60 hover:bg-gray-300">
               <Image src="/Dashboard.png" alt="Logo" width={50} height={50} className="mr-3" />{/* Add margin-right to create space between icon and text */}
               <span className="text-sm font-medium text-gray-700">Dashboard</span>
           </Link>
