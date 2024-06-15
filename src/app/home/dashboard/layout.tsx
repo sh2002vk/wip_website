@@ -19,22 +19,22 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
 
       <div className="relative top-2 w-full h-full">
         {/* Tile 1 */}
-        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md" style={{ width: '45%', height: '40%' }}>
+        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md" style={{ width: '46%', height: '40%' }}>
           <p>NEW APPLICATIONS BOARD</p>
         </div>
 
         {/* Tile 2 */}
-        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md" style={{ width: '45%', height: '55%', left: '50%' }}>
+        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md" style={{ width: '49%', height: '55%', left: '50%' }}>
           <p>YOUR ACTIVE POSTINGS</p>
         </div>
 
         {/* Tile 3 */}
-        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md" style={{ width: '45%', height: '50%', top: '45%'}}>
+        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md" style={{ width: '46%', height: '50%', top: '45%'}}>
           <p>DRAFT POSTINGS</p>
         </div>
 
         {/* Tile 4 */}
-        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md" style={{ width: '45%', height: '35%', top: '60%', left: '50%' }}>
+        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md" style={{ width: '49%', height: '35%', top: '60%', left: '50%' }}>
           <p>CLOSED POSTINGS</p>
         </div>
       </div>
