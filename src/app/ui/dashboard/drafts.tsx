@@ -15,7 +15,7 @@ const Drafts = () => {
     <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
       <div className="p-4 sticky top-0 bg-[#F5f5f5] z-10">
         <h1 className="text-xl font-semibold">
-          Draft Postings <span className="bg-gray-200 text-sm font-medium py-1 px-2 rounded-full ml-2">5</span>
+          Draft Postings <span className="bg-gray-200 text-sm font-medium py-1 px-2 rounded-full ml-2">{data.length}</span>
         </h1>
         <div className="mt-2 text-right text-sm text-gray-500">Progress</div>
       </div>

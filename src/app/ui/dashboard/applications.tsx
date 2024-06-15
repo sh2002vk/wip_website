@@ -31,7 +31,7 @@ const applications = () => {
   return (
     <div className="h-full overflow-y-auto">
       <div className="p-4 sticky top-0 bg-[#F5f5f5] z-10">
-        <h1 className="text-xl font-semibold ">New Applications <span className="bg-gray-200 text-sm font-medium py-1 px-2 rounded-full ml-2">8</span></h1>
+        <h1 className="text-xl font-semibold ">New Applications <span className="bg-gray-200 text-sm font-medium py-1 px-2 rounded-full ml-2">{data.length}</span></h1>
       </div>
       <div className="p-4 pt-0">
         {data.map((item, index) => (
