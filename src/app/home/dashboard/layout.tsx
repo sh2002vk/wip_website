@@ -2,6 +2,7 @@
 import React from 'react';
 import Applications from '@/app/ui/dashboard/applications';
 import Drafts from '@/app/ui/dashboard/drafts';
+import ClosedPostings from "@/app/ui/dashboard/closedpostings";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -27,7 +28,7 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
         </div>
 
         {/* Tile 2 */}
-        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md overflow-hidden" style={{ width: '49%', height: '55%', left: '50%' }}>
+        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md overflow-hidden" style={{ width: '49%', height: '53%', left: '50%' }}>
           <p>Your active postings</p>
         </div>
 
@@ -37,8 +38,8 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
         </div>
 
         {/* Tile 4 */}
-        <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md overflow-hidden" style={{ width: '49%', height: '35%', top: '60%', left: '50%' }}>
-          <p>CLOSED POSTINGS</p>
+        <div className="absolute bg-[#FFFFFF] p-2 rounded-lg overflow-hidden" style={{ width: '49%', height: '40%', top: '57%', left: '50%' }}>
+          <ClosedPostings />
         </div>
       </div>
     </div>
