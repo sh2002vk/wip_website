@@ -4,8 +4,8 @@ import Image from 'next/image';
 
 export default function StudentCard({name, age, institution, degree, availability, experience = [], skills = [] }) {
     return (
-        <div className="min-w-[260px] min-h-[440px] max-w-xl w-full h-1/2 md:w-1/2 lg:w-1/3 xl:w-1/4 rounded-2xl overflow-auto shadow-md bg-gray-100 p-6 m-4 flex flex-col items-center justify-center">
-
+        <div className="min-w-[20rem] max-w-[20rem] min-h-[30rem] max-h-[30rem] rounded-2xl overflow-auto shadow-md bg-gray-100 p-6 m-4 flex flex-col items-center justify-center">
+            
             {/* Items that should be middle-aligned */}
             <div className='flex flex-col items-center text-center'>
                 <div className="py-8 flex h-16 w-16 rounded-full bg-gray-300 overflow-hidden items-center justify-center">
@@ -21,12 +21,12 @@ export default function StudentCard({name, age, institution, degree, availabilit
             </div>
 
             {/* Items that should be left aligned */}
-            <div className='justify-left text-left'>
-                <div className="py-2 flex-grow">
+            <div className='justify-left text-left w-full'>
+                <div className="py-2">
                     <h3 className="text-base font-semibold">Availability</h3>
                     <p className="text-sm text-gray-600">{availability}</p>
                 </div>
-                <div className="py-2 flex-grow">
+                <div className="py-2">
                     <h3 className="text-base font-semibold">Previous Experience</h3>
                     <ul className="text-sm text-gray-600">
                         {experience.map((job, index) => (
@@ -34,7 +34,7 @@ export default function StudentCard({name, age, institution, degree, availabilit
                         ))}
                     </ul>
                 </div>
-                <div className="py-2 flex-grow">
+                <div className="py-2">
                     <h3 className="text-base font-semibold">Skill sets</h3>
                     <p className="text-sm text-gray-600">{skills.join(', ')}</p>
                 </div>

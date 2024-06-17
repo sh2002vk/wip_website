@@ -113,7 +113,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
         {/* Pass the handleSearch as a prop */}
         <Parameters onSearch={handleSearch} />
       </div>
-      <div className="w-full md:w-3/4 p-4 flex flex-no-wrap overflow-y-auto grid grid-rows-2 grid-flow-col no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
+      <div className="w-full md:w-3/4 p-4 grid grid-cols-3 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
         {showStudents && students.map((student, index) => (
           <StudentCard key={index} {...student} />
         ))}
