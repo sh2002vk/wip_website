@@ -168,12 +168,12 @@ export default function Parameters({ onSearch }: ParametersProps) {
           <div className="flex justify-center space-x-2 mt-auto py-8">
             <button
               onClick={handleClearFilters}
-              className="flex-1 bg-orange-500 text-white text-s font-medium py-1 px-1 border border-orange-700 rounded hover:bg-orange-400">
+              className="flex-1 bg-[#ff6f00] text-white text-s font-medium py-1 px-1 rounded">
               Clear Filters
             </button>
             <button
               onClick={handleShowResults}
-              className="flex-1 bg-orange-500 text-white text-s font-medium py-1 px-1 border border-orange-700 rounded hover:bg-orange-400">
+              className="flex-1 bg-[#ff6f00] text-white text-s font-medium py-1 px-1 rounded">
               Search
             </button>
           </div>
