@@ -30,7 +30,7 @@ export default function SideBar() {
               <Image src="/Manage.png" alt="Logo" width={50} height={50} className="mr-3" />
               <span className="text-sm font-medium text-gray-700">Manage</span>
           </Link>
-          <Link href="/home/manage" className="group flex items-center pl-10 pr-4 h-12 w-full md:w-60 hover:bg-gray-300">
+          <Link href="/home/message" className="group flex items-center pl-10 pr-4 h-12 w-full md:w-60 hover:bg-gray-300">
               <Image src="/Message.png" alt="Logo" width={50} height={50} className="mr-3" />
               <span className="text-sm font-medium text-gray-700">Message</span>
           </Link>
