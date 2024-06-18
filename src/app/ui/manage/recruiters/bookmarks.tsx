@@ -130,7 +130,7 @@ export default function Bookmarks({ onSelectJob }) {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full mx-auto bg-white py-4 space-y-4 border-r border-black">
+    <div className="flex flex-col h-screen w-full mx-auto bg-white pl-4 py-4 space-y-4 border-r border-black">
       <div className='container mx-auto pr-4'>
         {/* Contains a toggle switch, a list of job postings, and a new post button */}
 
