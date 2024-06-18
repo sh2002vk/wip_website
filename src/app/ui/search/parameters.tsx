@@ -67,8 +67,8 @@ export default function Parameters({ onSearch }: ParametersProps) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <div className="flex flex-col h-screen w-full mx-auto bg-white py-4 space-y-4 border-r border-black">
-        <div className='container mx-auto pr-4'>
+    <div className="flex flex-col h-screen w-full mx-auto bg-white pl-4 py-4 space-y-4 border-r border-black">
+        <div className='container mx-auto pr-4 h-full flex flex-col'>
 
           <div className="bg-gray-100 rounded-lg my-7">
             <ToggleSwitch 
@@ -165,7 +165,7 @@ export default function Parameters({ onSearch }: ParametersProps) {
           </div>
 
           {/* Results & Clear Filter */}
-          <div className="flex justify-center space-x-2 mt-auto py-4">
+          <div className="flex justify-center space-x-2 mt-auto py-8">
             <button
               onClick={handleClearFilters}
               className="flex-1 bg-orange-500 text-white text-s font-medium py-1 px-1 border border-orange-700 rounded hover:bg-orange-400">
