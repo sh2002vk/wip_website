@@ -16,7 +16,7 @@ const Options = ({ setView }) => {
           </button>
         </nav>
         <div id='logoutbutton' className="flex justify-center mt-auto mb-10">
-          <Link href="/" className="flex items-center justify-center h-12 w-40 rounded-lg bg-orange-500 text-white transition-colors hover:bg-blue-400">
+          <Link href="/" className="flex items-center justify-center h-12 w-40 rounded-lg bg-[#ff6f00] text-white transition-colors hover:bg-blue-400">
             <span className="text-sm font-medium">Log out</span>
           </Link>
         </div>

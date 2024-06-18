@@ -64,7 +64,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose }) => {
             </div>
 
             <div className="">
-                <h2 className="text-xl text-orange-500 font-bold mb-2">Optional Components</h2>
+                <h2 className="text-xl text-[#ff6f00] font-bold mb-2">Optional Components</h2>
                 <div className="flex justify-between w-full">
                     <h2 className="text-lg font-bold">Cover Letter</h2>
                     <JobOptionToggle />

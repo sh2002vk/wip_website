@@ -143,9 +143,9 @@ export default function Profile() {
         </div>
         <div className="flex justify-center mt-auto mb-8">
           {isEditing ? (
-            <button onClick={handleSave} className="bg-orange-500 text-white px-3 py-3 rounded-lg w-40 transition-colors hover:bg-blue-400">Save</button>
+            <button onClick={handleSave} className="bg-[#ff6f00] text-white px-3 py-3 rounded-lg w-40 transition-colors hover:bg-blue-400">Save</button>
           ) : (
-            <button onClick={() => setIsEditing(true)} className="bg-orange-500 text-white px-3 py-3 rounded-lg w-40 transition-colors hover:bg-blue-400">Edit Profile</button>
+            <button onClick={() => setIsEditing(true)} className="bg-[#ff6f00] text-white px-3 py-3 rounded-lg w-40 transition-colors hover:bg-blue-400">Edit Profile</button>
           )}
         </div>
       </div>

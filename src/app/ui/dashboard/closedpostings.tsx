@@ -11,7 +11,7 @@ const ClosedPostings = () => {
                 <h1 className="text-2xl font-light">Closed Postings:</h1>
             </div>
             <div className="p-4 sticky">
-                <p className="text-7xl font-light text-orange-500">{data.closedPostings}</p>
+                <p className="text-7xl font-light text-[#ff6f00]">{data.closedPostings}</p>
             </div>
             <div className="p-4 sticky w-1/2">
                 <p className="text-lg font-light ">{'This beats '}
