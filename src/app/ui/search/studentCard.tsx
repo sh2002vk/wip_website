@@ -2,9 +2,9 @@
 import React from 'react';
 import Image from 'next/image';
 
-export default function StudentCard({name, age, institution, degree, availability, experience = [], skills = [] }) {
+export default function StudentCard({name, age, institution, degree, availability, experience = [], skills = [], lookingfor = [] }) {
     return (
-        <div className="min-w-[20rem] max-w-[20rem] min-h-[30rem] max-h-[30rem] rounded-2xl overflow-auto shadow-md bg-gray-100 p-6 m-4 flex flex-col items-center justify-center">
+        <div className="min-w-[18rem] max-w-[20rem] min-h-[32rem] max-h-[30rem] rounded-2xl overflow-auto shadow-lg bg-gray-100 p-5 m-4 flex flex-col items-center justify-center">
             
             {/* Items that should be middle-aligned */}
             <div className='flex flex-col items-center text-center'>
@@ -21,12 +21,16 @@ export default function StudentCard({name, age, institution, degree, availabilit
             </div>
 
             {/* Items that should be left aligned */}
-            <div className='justify-left text-left w-full'>
-                <div className="py-2">
+            <div className='text-left w-full'>
+                <div className="py-1">
+                    <h3 className="text-base font-semibold">Looking for</h3>
+                    <p className="text-sm text-gray-600">{lookingfor.join(' · ')}</p>
+                </div>
+                <div className="py-1">
                     <h3 className="text-base font-semibold">Availability</h3>
                     <p className="text-sm text-gray-600">{availability}</p>
                 </div>
-                <div className="py-2">
+                <div className="py-1">
                     <h3 className="text-base font-semibold">Previous Experience</h3>
                     <ul className="text-sm text-gray-600">
                         {experience.map((job, index) => (
@@ -34,7 +38,7 @@ export default function StudentCard({name, age, institution, degree, availabilit
                         ))}
                     </ul>
                 </div>
-                <div className="py-2">
+                <div className="py-1">
                     <h3 className="text-base font-semibold">Skill sets</h3>
                     <p className="text-sm text-gray-600">{skills.join(', ')}</p>
                 </div>
