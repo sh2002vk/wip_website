@@ -94,18 +94,18 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
   };
 
   const handleJobUpdate = (updatedJob) => {
-    console.log("Updated Job:", updatedJob);
+    // console.log("Updated Job:", updatedJob);
     setJobs((currentJobs) => {
       const updatedJobs = currentJobs.map((job) => 
         job.id === updatedJob.id ? updatedJob : job
       );
-      console.log("Updated Jobs List:", updatedJobs);
+      // console.log("Updated Jobs List:", updatedJobs);
       return updatedJobs;
     });
   };
 
   useEffect(() => {
-    console.log("Jobs State:", jobs);
+    // console.log("Jobs State:", jobs);
   }, [jobs]);
 
   return (
