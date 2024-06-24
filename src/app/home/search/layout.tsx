@@ -1,10 +1,10 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
 import Parameters from '@/app/ui/search/parameters';
-import SideBar from "@/app/ui/home/sidebar"; 
-import StudentCard from "@/app/ui/search/studentCard"
-import StudentProfileView from "@/app/ui/search/studentProfileView"
-import "../no-scrollbar.css"
+import StudentCard from '@/app/ui/search/studentCard';
+import StudentProfileView from '@/app/ui/search/studentProfileView';
+import Bookmarks from '@/app/ui/search/bookmarks';
+import "../no-scrollbar.css";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -135,10 +135,11 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     // Add more student objects here
   ];
 
-  const [showStudents, setShowStudents] = React.useState(false);
-  const [showStudentDetail, setShowStudentDetail] = React.useState(false);
-
-  const [selectedStudent, setSelectedStudent] = React.useState(null);
+  const [showStudents, setShowStudents] = useState(false);
+  const [showStudentDetail, setShowStudentDetail] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [bookmarkedStudents, setBookmarkedStudents] = useState([]);
+  const [isBookmarksExpanded, setIsBookmarksExpanded] = useState(false);
 
   const handleSearch = (filters: { availability: number; preference: string; degreeLevel: string; date: Dayjs | null; keyword: string }) => {
     // Now you have the filter states here and can log or use them as needed
@@ -149,10 +150,19 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
   };
 
   const handleCardClick = (student) => {
-    console.log("Clicked on a student");
-    console.log(student);
     setShowStudentDetail(true);
     setSelectedStudent(student);
+    setIsBookmarksExpanded(false); // Hide bookmarks tab when viewing a student profile
+  };
+
+  const handleBookmarkClick = (student) => {
+    setBookmarkedStudents(prev => {
+      if (prev.some(s => s.name === student.name)) {
+        return prev.filter(s => s.name !== student.name);
+      } else {
+        return [...prev, student];
+      }
+    });
   };
 
   const handleCloseDetail = () => {
@@ -161,23 +171,53 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     setShowStudents(true);
   };
 
+  const isBookmarked = (student) => bookmarkedStudents.some(s => s.name === student.name);
+
+  const toggleBookmarksTab = () => {
+    setIsBookmarksExpanded(!isBookmarksExpanded);
+  };
+
+  const closeBookmarksTab = () => {
+    setIsBookmarksExpanded(false);
+  };
+
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen relative">
       <div className="w-full md:w-64 flex-none h-screen overflow-auto">
-        {/* Pass the handleSearch as a prop */}
         <Parameters onSearch={handleSearch} />
       </div>
-      <div className="w-full flex flex-wrap gap-2 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
+      <div className="flex-grow flex flex-wrap gap-2 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
         {showStudents && !showStudentDetail && students.map((student, index) => (
-          <StudentCard key={index} {...student} onClick={() => handleCardClick(student)} />
+          <StudentCard 
+            key={index} 
+            {...student} 
+            onClick={() => handleCardClick(student)} 
+            onBookmark={() => handleBookmarkClick(student)} 
+            isBookmarked={isBookmarked(student)} 
+          />
         ))}
         {showStudentDetail && selectedStudent && (
-          <StudentProfileView student={selectedStudent} onClose={handleCloseDetail}/>
+          <StudentProfileView 
+            student={selectedStudent} 
+            onClose={handleCloseDetail} 
+            onBookmark={() => handleBookmarkClick(selectedStudent)}
+            isBookmarked={isBookmarked(selectedStudent)}
+          />
         )}
       </div>
+      {!showStudentDetail && (
+        <div className="absolute top-0 right-0 h-screen">
+          <Bookmarks 
+            students={bookmarkedStudents} 
+            onStudentClick={handleCardClick} 
+            isExpanded={isBookmarksExpanded}
+            toggleExpand={toggleBookmarksTab}
+            closeExpand={closeBookmarksTab}
+          />
+        </div>
+      )}
     </div>
   );
-  
 };
 
 export default SearchLayout;
