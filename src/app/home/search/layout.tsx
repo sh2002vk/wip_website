@@ -3,6 +3,7 @@ import React from 'react';
 import Parameters from '@/app/ui/search/parameters';
 import SideBar from "@/app/ui/home/sidebar"; 
 import StudentCard from "@/app/ui/search/studentCard"
+import StudentProfileView from "@/app/ui/search/studentProfileView"
 import "../no-scrollbar.css"
 
 type LayoutProps = {
@@ -24,7 +25,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       ],
       availability: "Summer 2024",
       experience: [
-        { title: 'Software Developer', company: 'Google' },
+        { title: 'Software Developer', company: 'Google', startTime: 'Jan 2023', endTime: 'Jun 2024' },
         { title: 'Technical Assistant', company: 'Meta' },
       ],
       skills: ['Python', 'Java', 'C++']
@@ -135,12 +136,29 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
   ];
 
   const [showStudents, setShowStudents] = React.useState(false);
+  const [showStudentDetail, setShowStudentDetail] = React.useState(false);
+
+  const [selectedStudent, setSelectedStudent] = React.useState(null);
 
   const handleSearch = (filters: { availability: number; preference: string; degreeLevel: string; date: Dayjs | null; keyword: string }) => {
     // Now you have the filter states here and can log or use them as needed
     console.log("Filters to send to API: ", filters);
     setShowStudents(true);
+    setShowStudentDetail(false);
     // Here, you could also make an API call using the filters
+  };
+
+  const handleCardClick = (student) => {
+    console.log("Clicked on a student");
+    console.log(student);
+    setShowStudentDetail(true);
+    setSelectedStudent(student);
+  };
+
+  const handleCloseDetail = () => {
+    setShowStudentDetail(false);
+    setSelectedStudent(null);
+    setShowStudents(true);
   };
 
   return (
@@ -149,10 +167,13 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
         {/* Pass the handleSearch as a prop */}
         <Parameters onSearch={handleSearch} />
       </div>
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
-        {showStudents && students.map((student, index) => (
-          <StudentCard key={index} {...student} />
+      <div className="w-full flex flex-wrap gap-2 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
+        {showStudents && !showStudentDetail && students.map((student, index) => (
+          <StudentCard key={index} {...student} onClick={() => handleCardClick(student)} />
         ))}
+        {showStudentDetail && selectedStudent && (
+          <StudentProfileView student={selectedStudent} onClose={handleCloseDetail}/>
+        )}
       </div>
     </div>
   );

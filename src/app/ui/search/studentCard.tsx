@@ -2,9 +2,9 @@
 import React from 'react';
 import Image from 'next/image';
 
-export default function StudentCard({name, age, institution, degree, availability, experience = [], skills = [], lookingfor = [] }) {
+export default function StudentCard({name, age, institution, degree, availability, experience = [], skills = [], lookingfor = [], onClick}) {
     return (
-        <div className="min-w-[18rem] max-w-[20rem] min-h-[32rem] max-h-[30rem] rounded-2xl overflow-auto shadow-lg bg-gray-100 p-5 m-4 flex flex-col items-center justify-center">
+        <div onClick={onClick} className="min-w-[18rem] max-w-[22rem] min-h-[32rem] max-h-[30rem] rounded-2xl overflow-auto shadow-lg bg-gray-100 p-5 m-4 flex flex-col items-center justify-center">
             
             {/* Items that should be middle-aligned */}
             <div className='flex flex-col items-center text-center'>
