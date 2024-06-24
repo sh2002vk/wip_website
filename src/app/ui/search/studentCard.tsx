@@ -4,7 +4,11 @@ import Image from 'next/image';
 
 export default function StudentCard({name, age, institution, degree, availability, experience = [], skills = [], lookingfor = [] }) {
     return (
-        <div className="min-w-[18rem] max-w-[20rem] min-h-[32rem] max-h-[30rem] rounded-2xl overflow-auto shadow-lg bg-gray-100 p-5 m-4 flex flex-col items-center justify-center">
+        <div className="relative min-w-[18rem] max-w-[20rem] min-h-[32rem] max-h-[30rem] rounded-2xl overflow-auto shadow-lg bg-gray-100 p-5 m-4 flex flex-col items-center justify-center">
+            {/* Bookmark Image at the top right corner */}
+            <div className="absolute top-2 right-2">
+                <Image src="/Bookmarks.png" alt="Bookmarks" width={24} height={24} />
+            </div>
             
             {/* Items that should be middle-aligned */}
             <div className='flex flex-col items-center text-center'>

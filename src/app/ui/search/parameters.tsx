@@ -185,7 +185,7 @@ export default function Parameters({ onSearch }: ParametersProps) {
                 value={location}
                 onChange={handleLocationChange}
                 id="location-search"
-                className="block w-full p-1 pl-10 text-sm text-gray-900 border border-gray-200 rounded focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full p-1 pl-10 text-sm text-gray-900 border border-gray-200 rounded focus:ring-blue-500 focus:border-blue-500 overflow-y-auto"
                 placeholder="Location"
               />
             </div>

@@ -4,6 +4,7 @@ import Parameters from '@/app/ui/search/parameters';
 import SideBar from "@/app/ui/home/sidebar"; 
 import StudentCard from "@/app/ui/search/studentCard"
 import "../no-scrollbar.css"
+import Bookmarks from '@/app/ui/search/bookmarks';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -134,7 +135,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     // Add more student objects here
   ];
 
-  const [showStudents, setShowStudents] = React.useState(false);
+  const [showStudents, setShowStudents] = React.useState(true);
 
   const handleSearch = (filters: { availability: number; preference: string; degreeLevel: string; date: Dayjs | null; keyword: string }) => {
     // Now you have the filter states here and can log or use them as needed
@@ -149,10 +150,13 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
         {/* Pass the handleSearch as a prop */}
         <Parameters onSearch={handleSearch} />
       </div>
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
-        {showStudents && students.map((student, index) => (
+      <div className="flex-grow grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
+        {students.map((student, index) => (
           <StudentCard key={index} {...student} />
         ))}
+      </div>
+      <div className="w-full md:w-12 flex-none h-screen overflow-auto">
+        <Bookmarks />
       </div>
     </div>
   );
