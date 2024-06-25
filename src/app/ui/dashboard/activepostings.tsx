@@ -76,7 +76,7 @@ const data = [
                 imageUrl: 'https://static.wixstatic.com/media/26033f_3f35e4c31fae46a3bc0cf00873fd747c~mv2.jpg/v1/fill/w_624,h_528,al_c,q_80,enc_auto/26033f_3f35e4c31fae46a3bc0cf00873fd747c~mv2.jpg'
             },
             {
-                name: 'bonky2',
+                name: 'bonky21',
                 imageUrl: 'https://static.wixstatic.com/media/26033f_3f35e4c31fae46a3bc0cf00873fd747c~mv2.jpg/v1/fill/w_624,h_528,al_c,q_80,enc_auto/26033f_3f35e4c31fae46a3bc0cf00873fd747c~mv2.jpg'
             }
         ]
