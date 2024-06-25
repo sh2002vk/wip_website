@@ -85,38 +85,38 @@ const data = [
 const ActivePostings = () => {
     return (
         <div className="h-full overflow-y-auto">
-            <div className="p-1 sticky top-0 bg-[#F5f5f5] z-10">
+            <div className="p-1 sticky top-0 bg-[#F5f5f5] z-30">
                 <h1 className="text-xl font-semibold">
                     Your Active Postings
                     <span className="bg-gray-200 text-sm font-medium py-1 px-2 rounded-full ml-2">
-            {data.length}
-          </span>
+                        {data.length}
+                    </span>
                 </h1>
                 <div className="grid grid-cols-5 gap-4 border-b pb-2 mt-4">
                     <div className="text-left text-sm" style={{ width: '120px' }}></div>
                     <div className="text-center text-sm" style={{ width: '100px' }}>
                         Days
                         <span className="ml-1 text-xs text-gray-300 transform relative" style={{ top: '0.1em' }}>
-              ▼
-            </span>
+                            ▼
+                        </span>
                     </div>
                     <div className="text-left text-sm" style={{ width: '150px' }}>
                         Applicants
                         <span className="ml-1 text-xs text-gray-300 transform relative" style={{ top: '0.1em' }}>
-              ▼
-            </span>
+                            ▼
+                        </span>
                     </div>
                     <div className="ml-8 text-center text-sm" style={{ width: '90px' }}>
                         Progress
                         <span className="ml-1 text-xs text-gray-300 transform relative" style={{ top: '0.1em' }}>
-              ▼
-            </span>
+                            ▼
+                        </span>
                     </div>
                     <div className="ml-4 text-center text-sm" style={{ width: '80px' }}>
                         Saves
                         <span className="ml-1 text-xs text-gray-300 transform relative" style={{ top: '0.1em' }}>
-              ▼
-            </span>
+                            ▼
+                        </span>
                     </div>
                 </div>
             </div>
