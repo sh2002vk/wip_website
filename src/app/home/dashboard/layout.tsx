@@ -3,6 +3,7 @@ import React from 'react';
 import Applications from '@/app/ui/dashboard/applications';
 import Drafts from '@/app/ui/dashboard/drafts';
 import ClosedPostings from "@/app/ui/dashboard/closedpostings";
+import ActivePostings from "@/app/ui/dashboard/activepostings";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -29,7 +30,7 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
 
         {/* Tile 2 */}
         <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md overflow-hidden" style={{ width: '49%', height: '53%', left: '50%' }}>
-          <p>Your active postings</p>
+          <ActivePostings />
         </div>
 
         {/* Tile 3 */}
