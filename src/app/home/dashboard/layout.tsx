@@ -16,7 +16,7 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
       <div className="flex-none mb-4">
         <h1 className="text-3xl text-black">
           {'Welcome back, '}
-          <span className="text-orange-500">Bob</span>
+          <span className="text-[#ff6f00]">Bob</span>
           <span className="text-black">!</span>
         </h1>
         <h2 className='pt-3 text-2xl font-light'>Here are your insights at a glance</h2>
