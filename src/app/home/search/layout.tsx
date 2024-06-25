@@ -1,8 +1,9 @@
 'use client'
 import React from 'react';
-import Parameters from '@/app/ui/search/Parameters';
+import Parameters from '@/app/ui/search/parameters';
 import SideBar from "@/app/ui/home/sidebar"; 
-import StudentCard from "@/app/ui/search/StudentCard"
+import StudentCard from "@/app/ui/search/studentCard"
+import "../no-scrollbar.css"
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -113,7 +114,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
         {/* Pass the handleSearch as a prop */}
         <Parameters onSearch={handleSearch} />
       </div>
-      <div className="w-full md:w-3/4 p-4 flex flex-no-wrap overflow-y-auto grid grid-rows-2 grid-flow-col no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
+      <div className="w-full p-4 flex flex-wrap gap-4 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
         {showStudents && students.map((student, index) => (
           <StudentCard key={index} {...student} />
         ))}
