@@ -4,12 +4,24 @@ import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
 interface CollapsibleCardProps {
   title: string;
-  content: string;
+  content?: string;
   editable: boolean;
-  onContentChange: (newContent: string) => void;
+  onContentChange?: (newContent: string) => void;
+  sections?: {
+    title: string;
+    options: string[];
+    selectedOption: string;
+    onOptionChange: (newSelectedOption: string) => void;
+  }[];
 }
 
-const CollapsibleCard: React.FC<CollapsibleCardProps> = ({ title, content, editable, onContentChange }) => {
+const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
+    title,
+    content,
+    editable,
+    onContentChange,
+    sections
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [editableContent, setEditableContent] = useState(content);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -19,7 +31,6 @@ const CollapsibleCard: React.FC<CollapsibleCardProps> = ({ title, content, edita
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = event.target.value;
     setEditableContent(newContent);
-    onContentChange(newContent);
     adjustTextAreaHeight();
   };
 
@@ -51,18 +62,46 @@ const CollapsibleCard: React.FC<CollapsibleCardProps> = ({ title, content, edita
           <p className="text-lg text-black overflow-x-hidden">{title}</p>
         </div>
       </div>
-      <div className={`w-10/12 transition-max-height duration-1000 overflow-hidden ${isOpen ? 'max-h-96' : 'max-h-0'}`}>
+      <div className={`w-10/12 transition-max-height duration-1000 overflow-hidden ${isOpen ? 'max-h-dvh' : 'max-h-0'}`}>
         <div className="mt-2 border-l border-gray-800 pl-4">
+          {editable && !sections &&
+              <textarea
+                  ref={textAreaRef}
+                  className="w-full p-2 border border-gray-300 rounded resize-none"
+                  value={editableContent}
+                  onChange={handleContentChange}
+                  style={{ overflow: 'hidden' }}
+              />}
           {editable ? (
-            <textarea 
-              ref={textAreaRef}
-              className="w-full p-2 border border-gray-300 rounded resize-none"
-              value={editableContent}
-              onChange={handleContentChange}
-              style={{ overflow: 'hidden' }}
-            />
+            <>
+              {sections && sections.map((section, sectionIndex) => (
+                  <div key={sectionIndex} className="mt-4">
+                    <h4 className="font-bold">{section.title}</h4>
+                    <div className="flex space-x-2">
+                      {section.options.map((option, optionIndex) => (
+                          <button
+                              key={optionIndex}
+                              onClick={() => section.onOptionChange(option)}
+                              className={`px-4 py-1 mt-2 border ${section.selectedOption === option ? 'border-black font-bold' : 'border-gray-300 text-gray-300'} rounded transition duration-300`}
+                          >
+                            {option}
+                          </button>
+                      ))}
+                    </div>
+                  </div>
+              ))}
+            </>
           ) : (
+            <>
             <p>{editableContent}</p>
+              {sections && sections.map((section, sectionIndex) => (
+                  <div key={sectionIndex}>
+                    <ul className="list-disc pl-5 font-light">
+                      <li>{section.title}: {section.selectedOption}</li>
+                    </ul>
+                  </div>
+              ))}
+            </>
           )}
         </div>
       </div>

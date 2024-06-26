@@ -93,28 +93,28 @@ const ActivePostings = () => {
                     </span>
                 </h1>
                 <div className="grid grid-cols-5 gap-4 border-b pb-2 mt-4">
-                    <div className="text-left text-sm" style={{ width: '120px' }}></div>
-                    <div className="text-center text-sm" style={{ width: '100px' }}>
+                    <div className="text-left text-medium" style={{ width: '120px' }}></div>
+                    <div className="text-center text-medium" style={{ width: '100px' }}>
                         Days
-                        <span className="ml-1 text-xs text-gray-300 transform relative" style={{ top: '0.1em' }}>
+                        <span className="ml-1 text-xs text-gray-300 transform relative">
                             ▼
                         </span>
                     </div>
-                    <div className="text-left text-sm" style={{ width: '150px' }}>
+                    <div className="text-left text-medium" style={{ width: '150px' }}>
                         Applicants
-                        <span className="ml-1 text-xs text-gray-300 transform relative" style={{ top: '0.1em' }}>
+                        <span className="ml-1 text-xs text-gray-300 transform relative">
                             ▼
                         </span>
                     </div>
-                    <div className="ml-8 text-center text-sm" style={{ width: '90px' }}>
+                    <div className="ml-8 text-center text-medium" style={{ width: '90px' }}>
                         Progress
-                        <span className="ml-1 text-xs text-gray-300 transform relative" style={{ top: '0.1em' }}>
+                        <span className="ml-1 text-xs text-gray-300 transform relative">
                             ▼
                         </span>
                     </div>
-                    <div className="ml-4 text-center text-sm" style={{ width: '80px' }}>
+                    <div className="ml-4 text-center text-medium" style={{ width: '80px' }}>
                         Saves
-                        <span className="ml-1 text-xs text-gray-300 transform relative" style={{ top: '0.1em' }}>
+                        <span className="ml-1 text-xs text-gray-300 transform relative">
                             ▼
                         </span>
                     </div>
@@ -125,10 +125,10 @@ const ActivePostings = () => {
                 {data.map((item, index) => (
                     <div key={index} className="grid grid-cols-5 gap-4 items-center py-3 border-b">
                         <div className="text-left" style={{ width: '120px' }}>
-                            <span className="text-sm font-medium">{item.role}</span>
+                            <span className="text-medium font-medium">{item.role}</span>
                         </div>
                         <div className="text-center" style={{ width: '100px' }}>
-                            <span className="text-sm font-light">{item.days}</span>
+                            <span className="text-medium font-light">{item.days}</span>
                         </div>
                         <div className="relative flex items-center text-left" style={{ width: '150px' }}>
                             <div className="relative">
@@ -142,22 +142,22 @@ const ActivePostings = () => {
                                 )}
                             </div>
                             {item.applicants.length > 1 && (
-                                <span className="ml-5 text-gray-600 text-xs">+ {item.applicants.length - 2} others</span>
+                                <span className="ml-5 text-gray-400 text-xs">+ {item.applicants.length - 2} others</span>
                             )}
                         </div>
                         <div className="ml-8 flex flex-col items-center" style={{ width: '90px' }}>
-                            <div className="relative w-10/12 max-w-xs h-3 bg-orange-200 rounded-full">
+                            <div className="relative w-8/12 max-w-xs h-3 bg-orange-200 rounded-full">
                                 <div
                                     className="absolute top-0 left-0 h-full bg-orange-400 rounded-full"
                                     style={{ width: `${item.progress}%` }}
                                 ></div>
                             </div>
-                            <span className="mt-2 text-gray-600 text-sm">
+                            <span className="mt-2 text-gray-400 text-sm">
                                 {item.reviewed}/{item.applied}
                             </span>
                         </div>
                         <div className="ml-4 text-center" style={{ width: '80px' }}>
-                            <span className="text-sm font-light">{item.saves}</span>
+                            <span className="text-medium font-light">{item.saves}</span>
                         </div>
                     </div>
                 ))}
