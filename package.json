@@ -20,6 +20,7 @@
     "@mui/x-date-pickers": "^7.5.1",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.11",
+    "eslint": "^9",
     "flowbite": "^2.3.0",
     "next": "14.2.3",
     "nextjs-tui-date-picker": "^2.2.3",
@@ -32,8 +33,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.19",
-    "eslint": "^9",
-    "eslint-config-next": "14.2.3",
+    "eslint-config-next": "^14.2.4",
     "postcss": "^8",
     "tailwindcss": "^3.4.3",
     "typescript": "^5"
