@@ -75,6 +75,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
       company: "WorkInProgress",
       title: "Software Engineer",
       type: "Full-time",
+      location: "Completed, BC",
       jobDetail: "Currently seeking an experienced software Developer for development of our next generation security solution impacting multiple products...",
       jobBenefits: "Has listed the base salary ranges it in good faith expects to pay applicants for this role in the locations listed, as of the time of this posting.",
       jobDescription: "You will do full stack development working on both game client and backend services.",
@@ -121,7 +122,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
         {selectedJob && (
           <JobDetails 
             key={selectedJob.id} 
-            job={selectedJob} 
+            job={selectedJob}
             onClose={handleCloseJobDetails} 
             onJobUpdate={handleJobUpdate} // Pass the update handler
           />

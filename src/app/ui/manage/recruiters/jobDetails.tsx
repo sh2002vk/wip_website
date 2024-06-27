@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faTimes, faSearch, faCheck } from '@fortawesome/free-solid-svg-icons';
 import CollapsibleCard from './cards/collapsableCard';
 import JobOptionToggle from './cards/jobOptionToggle';
+import JobDashboard from "@/app/ui/manage/recruiters/jobDashboard";
 import "./style.css"
 
 interface JobDetailsProps {
@@ -22,6 +23,7 @@ interface JobDetailsProps {
     jobQualification: string;
     jobBenefits: string;
     type: string;
+    draft: boolean;
   };
   onClose: () => void;
   onJobUpdate: (updatedJob: any) => void; // Function to update job details
@@ -32,6 +34,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
   const [isJobDescriptionOpen, setIsJobDescriptionOpen] = useState(false);
   const [isJobQualificationOpen, setIsJobQualificationOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isDashboardView, setIsDashboardView] = useState(true);
 
   const [jobDetailsContent, setJobDetailsContent] = useState(job.jobDetail);
   const [jobDetailsJobType, setJobDetailsJobType] = useState(job.jobDetailJobType);
@@ -104,6 +107,10 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
     setIsEditing(!isEditing);
   };
 
+  const toggleView = () => {
+    setIsDashboardView(!isDashboardView);
+  }
+
   useEffect(() => {
     if (!isEditing) {
       console.log("Updated job:", job);
@@ -161,127 +168,157 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
           ) : (
             <>
               <p className="text-lg font-bold">{jobCompany}</p>
-              <p className="text-lg">{jobLocation}</p>
+              {job.draft ? (
+                  <p className="text-lg">{jobLocation}</p>
+              ) : (
+                <div className={"flex justify-between"}>
+                  <p className="text-lg">{jobLocation}</p>
+                  {isDashboardView ? (
+                      <p
+                        className="text-lg text-orange-500 underline cursor-pointer"
+                        onClick={toggleView}
+                      >
+                         Switch to job details
+                      </p>
+                      ) : (
+                      <p
+                       className="text-lg text-orange-500 underline cursor-pointer"
+                       onClick={toggleView}
+                       >
+                         Switch to job dashboard
+                       </p>
+                      )}
+                </div>
+             )}
             </>
           )}
         </div>
       </div>
 
-      <div className="border-b border-gray-300 mb-4">
-        <CollapsibleCard 
-          title="Job Details"
-          editable={isEditing}
-          sections={[
-            {
-              title: "Job Type",
-              options: ["Internship", "Contract", "Other"],
-              selectedOption: jobDetailsJobType,
-              onOptionChange: (newSelectedOptions) => handleOptionChange('Work Type', newSelectedOptions)
-            },
-            {
-              title: "Duration",
-              options: ["4 months", "8 months", "1+ year"],
-              selectedOption: jobDetailsDuration,
-              onOptionChange: (newSelectedOptions) => handleOptionChange('Duration', newSelectedOptions)
-            },
-            {
-              title: "Start Term",
-              options: ["Fall 24", "Winter 25", "Spring 25", "Summer 25"],
-              selectedOption: jobDetailsStartTerm,
-              onOptionChange: (newSelectedOptions) => handleOptionChange('Start Term', newSelectedOptions)
-            },
-            {
-              title: "Work Mode",
-              options: ["In-person", "Hybrid", "Remote"],
-              selectedOption: jobDetailsWorkMode,
-              onOptionChange: (newSelectedOptions) => handleOptionChange('Work Mode', newSelectedOptions)
-            },
-            {
-              title: "Industry",
-              options: ["Technology", "Business"],
-              selectedOption: jobDetailsIndustry,
-              onOptionChange: (newSelectedOptions) => handleOptionChange('Industry', newSelectedOptions)
-            },
-          ]}
-        />
-        <CollapsibleCard 
-          title="Job Description"
-          content={jobDescriptionContent}
-          editable={isEditing}
-          onContentChange={setJobDescriptionContent}
-        />
-        <CollapsibleCard 
-          title="Job Qualifications"
-          content={jobQualificationContent}
-          editable={isEditing}
-          onContentChange={setJobQualificationContent}
-        />
-      </div>
+      {isDashboardView ? (
+        <>
+          <div className="border-b border-gray-300 mb-4">
+            <CollapsibleCard
+              title="Job Details"
+              editable={isEditing}
+              sections={[
+                {
+                  title: "Job Type",
+                  options: ["Internship", "Contract", "Other"],
+                  selectedOption: jobDetailsJobType,
+                  onOptionChange: (newSelectedOptions) => handleOptionChange('Work Type', newSelectedOptions)
+                },
+                {
+                  title: "Duration",
+                  options: ["4 months", "8 months", "1+ year"],
+                  selectedOption: jobDetailsDuration,
+                  onOptionChange: (newSelectedOptions) => handleOptionChange('Duration', newSelectedOptions)
+                },
+                {
+                  title: "Start Term",
+                  options: ["Fall 24", "Winter 25", "Spring 25", "Summer 25"],
+                  selectedOption: jobDetailsStartTerm,
+                  onOptionChange: (newSelectedOptions) => handleOptionChange('Start Term', newSelectedOptions)
+                },
+                {
+                  title: "Work Mode",
+                  options: ["In-person", "Hybrid", "Remote"],
+                  selectedOption: jobDetailsWorkMode,
+                  onOptionChange: (newSelectedOptions) => handleOptionChange('Work Mode', newSelectedOptions)
+                },
+                {
+                  title: "Industry",
+                  options: ["Technology", "Business"],
+                  selectedOption: jobDetailsIndustry,
+                  onOptionChange: (newSelectedOptions) => handleOptionChange('Industry', newSelectedOptions)
+                },
+              ]}
+            />
+            <CollapsibleCard
+              title="Job Description"
+              content={jobDescriptionContent}
+              editable={isEditing}
+              onContentChange={setJobDescriptionContent}
+            />
+            <CollapsibleCard
+              title="Job Qualifications"
+              content={jobQualificationContent}
+              editable={isEditing}
+              onContentChange={setJobQualificationContent}
+            />
+          </div>
 
-      {/*We need to include states for these components, and have indicators for when they are active*/}
-      <div className="">
-        <h2 className="text-xl text-orange-500 font-bold mb-2">Optional Components</h2>
-        <div className="flex justify-between w-full">
-          {isEditing ? (
-              <>
-                <h2 className="text-lg font-bold">Cover Letter</h2>
-                <JobOptionToggle />
-              </>
-          ) : (
-              <>
-                  <h2 className="text-lg font-bold">Cover Letter</h2>
-              </>
-            )}
-        </div>
-        <div className="flex justify-between w-full">
-          {isEditing ? (
-              <>
-                <h2 className="text-lg font-bold">Video Application</h2>
-                <JobOptionToggle />
-              </>
-          ) : (
-              <>
-                <h2 className="text-lg font-bold">Video Application</h2>
-              </>
-          )}
-        </div>
-        <div className="flex justify-between w-full">
-          {isEditing ? (
-              <>
-                <h2 className="text-lg font-bold">Cognitive Test</h2>
-                <JobOptionToggle />
-              </>
-          ) : (
-              <>
-                <h2 className="text-lg font-bold">Cognitive Test</h2>
-              </>
-          )}
-        </div>
-        <div className="flex justify-between w-full">
-          {isEditing ? (
-              <>
-                <h2 className="text-lg font-bold">English Sample</h2>
-                <JobOptionToggle />
-              </>
-          ) : (
-              <>
-                <h2 className="text-lg font-bold">English Sample</h2>
-              </>
-          )}
-        </div>
-        <div className="flex justify-between w-full">
-          {isEditing ? (
-              <>
-                <h2 className="text-lg font-bold">Online Assessment</h2>
-                <JobOptionToggle />
-              </>
-          ) : (
-              <>
-                <h2 className="text-lg font-bold">Online Assessment</h2>
-              </>
-          )}
-        </div>
-      </div>
+          {/*We need to include states for these components, and have indicators for when they are active*/}
+          <div className="">
+            <h2 className="text-xl text-orange-500 font-bold mb-2">Optional Components</h2>
+            <div className="flex justify-between w-full">
+              {isEditing ? (
+                  <>
+                    <h2 className="text-lg font-bold">Cover Letter</h2>
+                    <JobOptionToggle
+                    />
+                  </>
+              ) : (
+                  <>
+                      <h2 className="text-lg font-bold">Cover Letter</h2>
+                  </>
+                )}
+            </div>
+            <div className="flex justify-between w-full">
+              {isEditing ? (
+                  <>
+                    <h2 className="text-lg font-bold">Video Application</h2>
+                    <JobOptionToggle />
+                  </>
+              ) : (
+                  <>
+                    <h2 className="text-lg font-bold">Video Application</h2>
+                  </>
+              )}
+            </div>
+            <div className="flex justify-between w-full">
+              {isEditing ? (
+                  <>
+                    <h2 className="text-lg font-bold">Cognitive Test</h2>
+                    <JobOptionToggle />
+                  </>
+              ) : (
+                  <>
+                    <h2 className="text-lg font-bold">Cognitive Test</h2>
+                  </>
+              )}
+            </div>
+            <div className="flex justify-between w-full">
+              {isEditing ? (
+                  <>
+                    <h2 className="text-lg font-bold">English Sample</h2>
+                    <JobOptionToggle />
+                  </>
+              ) : (
+                  <>
+                    <h2 className="text-lg font-bold">English Sample</h2>
+                  </>
+              )}
+            </div>
+            <div className="flex justify-between w-full">
+              {isEditing ? (
+                  <>
+                    <h2 className="text-lg font-bold">Online Assessment</h2>
+                    <JobOptionToggle />
+                  </>
+              ) : (
+                  <>
+                    <h2 className="text-lg font-bold">Online Assessment</h2>
+                  </>
+              )}
+            </div>
+          </div>
+        </>
+      ):(
+        <>
+          <JobDashboard />
+        </>
+      )}
     </div>
   );
 };
