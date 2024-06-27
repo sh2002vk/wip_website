@@ -22,6 +22,13 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
       jobQualification: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       jobDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       draft: true,
+      requiredDocuments: {
+        coverLetter: true,
+        videoApplication: false,
+        cognitiveTest: false,
+        englishSample: false,
+        onlineAssessment: false
+      }
     },
     {
       id: '2',
@@ -33,6 +40,13 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
       jobBenefits: "",
       jobDescription: "",
       draft: true,
+      requiredDocuments: {
+        coverLetter: true,
+        videoApplication: false,
+        cognitiveTest: false,
+        englishSample: false,
+        onlineAssessment: false
+      }
     },
     {
       id: '3',
@@ -44,6 +58,13 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
       jobBenefits: "",
       jobDescription: "",
       draft: true,
+      requiredDocuments: {
+        coverLetter: true,
+        videoApplication: false,
+        cognitiveTest: false,
+        englishSample: false,
+        onlineAssessment: false
+      }
     },
     {
       id: '4',
@@ -55,6 +76,13 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
       jobBenefits: "",
       jobDescription: "",
       draft: true,
+      requiredDocuments: {
+        coverLetter: true,
+        videoApplication: false,
+        cognitiveTest: false,
+        englishSample: false,
+        onlineAssessment: false
+      }
     },
     {
       id: '5',
@@ -66,6 +94,13 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
       jobBenefits: "",
       jobDescription: "",
       draft: true,
+      requiredDocuments: {
+        coverLetter: true,
+        videoApplication: false,
+        cognitiveTest: false,
+        englishSample: false,
+        onlineAssessment: false
+      }
     },
   ]
 
@@ -80,6 +115,13 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
       jobBenefits: "Has listed the base salary ranges it in good faith expects to pay applicants for this role in the locations listed, as of the time of this posting.",
       jobDescription: "You will do full stack development working on both game client and backend services.",
       draft: false,
+      requiredDocuments: {
+        coverLetter: true,
+        videoApplication: false,
+        cognitiveTest: false,
+        englishSample: false,
+        onlineAssessment: false
+      }
     },
   ]
 

@@ -24,6 +24,13 @@ interface JobDetailsProps {
     jobBenefits: string;
     type: string;
     draft: boolean;
+    requiredDocuments: {
+      coverLetter: boolean,
+      videoApplication: boolean,
+      cognitiveTest: boolean,
+      englishSample: boolean,
+      onlineAssessment: boolean
+    }
   };
   onClose: () => void;
   onJobUpdate: (updatedJob: any) => void; // Function to update job details
@@ -47,6 +54,13 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
   const [jobTitle, setJobTitle] = useState(job.title);
   const [jobCompany, setJobCompany] = useState(job.company);
   const [jobLocation, setJobLocation] = useState(job.location);
+  const [requiredDocuments, setRequiredDocuments] = useState({
+    coverLetter: job.requiredDocuments.coverLetter,
+    videoApplication: job.requiredDocuments.videoApplication,
+    cognitiveTest: job.requiredDocuments.cognitiveTest,
+    englishSample: job.requiredDocuments.englishSample,
+    onlineAssessment: job.requiredDocuments.onlineAssessment,
+  });
 
   useEffect(() => {
     setJobDetailsContent(job.jobDetail);
@@ -60,6 +74,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
     setJobTitle(job.title);
     setJobCompany(job.company);
     setJobLocation(job.location);
+    setRequiredDocuments(job.requiredDocuments)
   }, [job]);
 
   const toggleJobDetails = () => setIsJobDetailsOpen(!isJobDetailsOpen);
@@ -98,13 +113,21 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
         jobQualification: jobQualificationContent,
         title: jobTitle,
         company: jobCompany,
-        location: jobLocation
+        location: jobLocation,
+        requiredDocuments: requiredDocuments
       };
 
       onJobUpdate(updatedJob);
       console.log("Updating");
     }
     setIsEditing(!isEditing);
+  };
+
+  const handleToggleRequiredDocument = (doc: keyof typeof requiredDocuments) => {
+    setRequiredDocuments((prev) => ({
+      ...prev,
+      [doc]: !prev[doc]
+    }));
   };
 
   const toggleView = () => {
@@ -256,11 +279,16 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
                   <>
                     <h2 className="text-lg font-bold">Cover Letter</h2>
                     <JobOptionToggle
+                        isSelected={requiredDocuments.coverLetter}
+                        onToggle={() => handleToggleRequiredDocument("coverLetter")}
                     />
                   </>
               ) : (
                   <>
-                      <h2 className="text-lg font-bold">Cover Letter</h2>
+                    <h2 className={`${requiredDocuments.coverLetter ?
+                        "text-lg font-bold" :
+                        "text-gray-300 text-lg font-bold"}`}
+                    >Cover Letter</h2>
                   </>
                 )}
             </div>
@@ -268,11 +296,17 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
               {isEditing ? (
                   <>
                     <h2 className="text-lg font-bold">Video Application</h2>
-                    <JobOptionToggle />
+                    <JobOptionToggle
+                        isSelected={requiredDocuments.videoApplication}
+                        onToggle={() => handleToggleRequiredDocument("videoApplication")}
+                    />
                   </>
               ) : (
                   <>
-                    <h2 className="text-lg font-bold">Video Application</h2>
+                    <h2 className={`${requiredDocuments.videoApplication ?
+                        "text-lg font-bold" :
+                        "text-gray-300 text-lg font-bold"}`}
+                    >Video Application</h2>
                   </>
               )}
             </div>
@@ -280,11 +314,17 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
               {isEditing ? (
                   <>
                     <h2 className="text-lg font-bold">Cognitive Test</h2>
-                    <JobOptionToggle />
+                    <JobOptionToggle
+                        isSelected={requiredDocuments.cognitiveTest}
+                        onToggle={() => handleToggleRequiredDocument("cognitiveTest")}
+                    />
                   </>
               ) : (
                   <>
-                    <h2 className="text-lg font-bold">Cognitive Test</h2>
+                    <h2 className={`${requiredDocuments.cognitiveTest ?
+                        "text-lg font-bold" :
+                        "text-gray-300 text-lg font-bold"}`}
+                    >Cognitive Test</h2>
                   </>
               )}
             </div>
@@ -292,11 +332,17 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
               {isEditing ? (
                   <>
                     <h2 className="text-lg font-bold">English Sample</h2>
-                    <JobOptionToggle />
+                    <JobOptionToggle
+                        isSelected={requiredDocuments.englishSample}
+                        onToggle={() => handleToggleRequiredDocument("englishSample")}
+                    />
                   </>
               ) : (
                   <>
-                    <h2 className="text-lg font-bold">English Sample</h2>
+                    <h2 className={`${requiredDocuments.englishSample ?
+                        "text-lg font-bold" :
+                        "text-gray-300 text-lg font-bold"}`}
+                    >English Sample</h2>
                   </>
               )}
             </div>
@@ -304,11 +350,17 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
               {isEditing ? (
                   <>
                     <h2 className="text-lg font-bold">Online Assessment</h2>
-                    <JobOptionToggle />
+                    <JobOptionToggle
+                        isSelected={requiredDocuments.onlineAssessment}
+                        onToggle={() => handleToggleRequiredDocument("onlineAssessment")}
+                    />
                   </>
               ) : (
                   <>
-                    <h2 className="text-lg font-bold">Online Assessment</h2>
+                    <h2 className={`${requiredDocuments.onlineAssessment ?
+                        "text-lg font-bold" :
+                        "text-gray-300 text-lg font-bold"}`}
+                    >Online Assessment</h2>
                   </>
               )}
             </div>
