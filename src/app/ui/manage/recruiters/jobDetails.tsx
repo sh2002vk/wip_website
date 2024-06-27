@@ -218,7 +218,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
         </div>
       </div>
 
-      {isDashboardView ? (
+      {!isDashboardView || job.draft ? (
         <>
           <div className="border-b border-gray-300 mb-4">
             <CollapsibleCard
