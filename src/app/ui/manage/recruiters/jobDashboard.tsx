@@ -56,12 +56,15 @@ const JobDashboard = () => {
                 ))}
             </div>
             {showStudentDetail && selectedStudent && (
-                <StudentProfileView
-                    student={selectedStudent}
-                    onClose={handleCloseDetail}
-                    onBookmark={() => handleBookmarkClick(selectedStudent)}
-                    isBookmarked={isBookmarked(selectedStudent)}
-                />
+                <div className={"flex flex-col h-full"}>
+                    <StudentProfileView
+                        student={selectedStudent}
+                        onClose={handleCloseDetail}
+                        onBookmark={() => handleBookmarkClick(selectedStudent)}
+                        isBookmarked={isBookmarked(selectedStudent)}
+                        isApplication={true}
+                    />
+                </div>
             )}
         </>
     );
