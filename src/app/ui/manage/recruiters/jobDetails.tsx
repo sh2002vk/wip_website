@@ -1,9 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
-import { faPencilAlt, faTimes, faSearch, faCheck } from '@fortawesome/free-solid-svg-icons';
+import {faPencilAlt, faTimes, faSearch, faCheck, faTrash, faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import CollapsibleCard from './cards/collapsableCard';
 import JobOptionToggle from './cards/jobOptionToggle';
+import StudentProfileView from "@/app/ui/search/studentProfileView";
 import JobDashboard from "@/app/ui/manage/recruiters/jobDashboard";
 import "./style.css"
 
@@ -166,9 +167,13 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
             </div>
           ) : (
             <div className="flex space-x-4">
-              <FontAwesomeIcon icon={faCheck} size="xl" /> {/*onClick = {completeDraft}*/}
-              <FontAwesomeIcon icon={faPencilAlt} size="xl" onClick={toggleEdit} />
-              <FontAwesomeIcon icon={faSearch} size="xl" />
+              {(job.draft || !isDashboardView) ? (
+                  <>
+                    <FontAwesomeIcon icon={faTrashCan} size="xl"/>
+                    <FontAwesomeIcon icon={faPencilAlt} size="xl" onClick={toggleEdit} />
+                    {job.draft && <FontAwesomeIcon icon={faCheck} size="xl" />}
+                  </>
+                  ) : (<></>)}
             </div>
           )}
         </div>
@@ -218,7 +223,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
         </div>
       </div>
 
-      {isDashboardView ? (
+      {!isDashboardView || job.draft ? (
         <>
           <div className="border-b border-gray-300 mb-4">
             <CollapsibleCard

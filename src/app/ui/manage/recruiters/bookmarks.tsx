@@ -71,7 +71,9 @@ export default function Bookmarks({ onSelectJob, initialDrafts, initialCompleted
         
         <div className="mt-4 flex justify-center">
           <button className="bg-[#ff6f00] hover:bg-orange-400 text-white font-bold py-2 px-4 rounded">
-            + New Job Posting
+                  {/*OnClick call API to create new empty job*/}
+                  {/*onSelectJob(newEmptyJob)*/}
+                  + New Job Posting
           </button>
         </div>
       </div>
