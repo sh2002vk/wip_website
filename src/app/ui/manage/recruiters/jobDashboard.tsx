@@ -63,6 +63,7 @@ const JobDashboard = () => {
                         onBookmark={() => handleBookmarkClick(selectedStudent)}
                         isBookmarked={isBookmarked(selectedStudent)}
                         isApplication={true}
+                        applicationID={1}//The selected application
                     />
                 </div>
             )}
