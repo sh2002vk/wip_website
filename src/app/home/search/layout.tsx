@@ -6,12 +6,16 @@ import StudentProfileView from '@/app/ui/search/studentProfileView';
 import Bookmarks from '@/app/ui/search/bookmarks';
 import "../no-scrollbar.css";
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from '../../../firebase'; // Ensure the correct import path
+
 type LayoutProps = {
   children: React.ReactNode;
   title?: string;
 };
 
 const SearchLayout = ({ children, title }: LayoutProps) => {
+
   const students = [
     {
       name: "John Doe",
@@ -135,6 +139,20 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     // Add more student objects here
   ];
 
+  const [user, setUser] = useState(null);
+
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const [showStudents, setShowStudents] = useState(false);
   const [showStudentDetail, setShowStudentDetail] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -181,10 +199,15 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     setIsBookmarksExpanded(false);
   };
 
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="flex h-screen relative">
+
       <div className="w-full md:w-64 flex-none h-screen overflow-auto">
-        <Parameters onSearch={handleSearch} />
+        <Parameters onSearch={handleSearch} user={user} />
       </div>
       <div className="flex-grow flex flex-wrap gap-2 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
         {showStudents && !showStudentDetail && students.map((student, index) => (

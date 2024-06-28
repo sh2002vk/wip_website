@@ -20,6 +20,7 @@ type ParametersProps = {
     keyword: string;
     location: string;
   }) => void;
+  user: any; // Define a proper type for the user if needed
 };
 
 const StyledDatePicker = styled(DatePicker)({
@@ -42,7 +43,7 @@ const StyledDatePicker = styled(DatePicker)({
   },
 });
 
-export default function Parameters({ onSearch }: ParametersProps) {
+export default function Parameters({ onSearch, user }: ParametersProps) {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
   const [keyword, setKeyword] = useState("");
@@ -113,6 +114,10 @@ export default function Parameters({ onSearch }: ParametersProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="flex flex-col h-screen w-full mx-auto bg-white pl-4 py-4 space-y-4 border-r border-black">
+
+        {/*Used to test user login, delete later*/}
+        <p className='text-xs'>Email: {user.email}</p>
+
         <div className="container mx-auto pr-4 h-full flex flex-col">
           <div className="my-5">
             <ToggleSwitch
