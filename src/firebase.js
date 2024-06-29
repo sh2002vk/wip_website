@@ -4,8 +4,8 @@ import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-import dotenv from "dotenv";
-dotenv.config();
+// import dotenv from "dotenv";
+// dotenv.config();
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -20,8 +20,11 @@ const firebaseConfig = {
 console.log(firebaseConfig);
 
 const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
-
 const auth = getAuth(app);
 
-export { auth };
+let analytics;
+if (typeof window !== 'undefined') {
+  analytics = getAnalytics(app);
+}
+
+export { auth , app, analytics};

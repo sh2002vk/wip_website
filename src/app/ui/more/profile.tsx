@@ -20,7 +20,7 @@ type ProfileType = {
   photo: string;
 };
 
-export default function Profile() {
+export default function Profile(user) {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileType>({
     name: '',
@@ -66,9 +66,13 @@ export default function Profile() {
     }
   };
 
+  console.log(user.user.email);
+
   return (
     <div className="flex flex-col md:flex-row h-screen w-full mx-auto bg-white p-2">
+
       {/* Left Section */}
+
       <div className="flex flex-col items-center md:w-1/3">
         <div className="flex flex-col items-center">
           <div className="relative mt-10 mb-4">
