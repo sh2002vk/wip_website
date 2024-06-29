@@ -24,7 +24,7 @@ const Drafts = () => {
           <div key={index} className="flex items-center justify-between py-2 border-b">
             <p className="text-md font-light">{item.role}</p>
             <div className="flex items-center">
-              <div className="relative w-32 h-3 bg-gray-200 rounded-full">
+              <div className="relative w-32 h-3 bg-orange-200 rounded-full">
                 <div
                   className="absolute top-0 left-0 h-full bg-orange-400 rounded-full"
                   style={{ width: `${item.progress}%` }}
