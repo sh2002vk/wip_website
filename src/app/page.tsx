@@ -18,6 +18,7 @@ export default function Home() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      console.log('User signed up:', user);
       // Optionally, use Link for client-side navigation
       window.location.href = '/home/dashboard';
     } catch (error) {
