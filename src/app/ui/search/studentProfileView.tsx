@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
-
 const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isApplication, applicationID}) => {
     const [bookmarked, setBookmarked] = useState(isBookmarked);
 
