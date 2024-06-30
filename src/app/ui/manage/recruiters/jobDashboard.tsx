@@ -25,10 +25,12 @@ const JobDashboard = () => {
 
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [showStudentDetail, setShowStudentDetail] = useState(false);
+    const [isApplication, setIsApplication] = useState(false);
     const [bookmarkedStudents, setBookmarkedStudents] = useState([]);
 
-    const handleCardClick = (student) => {
+    const handleCardClick = (student, isApplication) => {
         setShowStudentDetail(true);
+        setIsApplication(isApplication);
         setSelectedStudent(student);
     };
 
@@ -56,17 +58,23 @@ const JobDashboard = () => {
                         <JobDashboardTables
                             onCardClick={handleCardClick}
                             isActionNeeded={true}
+                            isInvited={false}
+                            isContacting={false}
                         />
                     </div>
                     <div className="absolute bg-[#F5f5f5] p-2 rounded-lg shadow-md" style={{ width: '28%', height: '37%', left: '70%'}}>
                         <JobDashboardTables
                             onCardClick={handleCardClick}
+                            isActionNeeded={false}
                             isInvited={true}
+                            isContacting={false}
                         />
                     </div>
                     <div className="absolute bg-[#F5f5f5] p-2 rounded-lg shadow-md" style={{ width: '61.5%', height: '33%', top: '63%'}}>
                         <JobDashboardTables
                             onCardClick={handleCardClick}
+                            isActionNeeded={false}
+                            isInvited={false}
                             isContacting={true}
                         />
                     </div>
@@ -79,7 +87,7 @@ const JobDashboard = () => {
                             onClose={handleCloseDetail}
                             onBookmark={() => handleBookmarkClick(selectedStudent)}
                             isBookmarked={isBookmarked(selectedStudent)}
-                            isApplication={true}
+                            isApplication={isApplication}
                             applicationID={1}//The selected application
                         />
                     )}
