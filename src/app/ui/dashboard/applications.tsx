@@ -6,25 +6,29 @@ const applications = () => {
       name: 'Jake',
       university: 'University of British Columbia',
       role: 'Software Dev',
-      time: '22m'
+      time: '22m',
+      JobID: 1
     },
     {
       name: 'Max',
       university: 'University of Toronto',
       role: 'Data Scientist',
-      time: '50m'
+      time: '50m',
+      JobID: 1
     },
     {
       name: 'Melissa',
       university: 'University of Waterloo',
       role: 'Data Scientist',
-      time: '2h'
+      time: '2h',
+      JobID: 1,
     },
     {
       name: 'Gloria',
       university: 'Hardward University',
       role: 'Data Scientist',
-      time: '2h'
+      time: '2h',
+      JobID: 2,
     }
   ];
 

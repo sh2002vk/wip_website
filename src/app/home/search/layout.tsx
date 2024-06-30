@@ -18,125 +18,125 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
 
   const students = [
     {
-      name: "John Doe",
-      age: "22",
-      institution: "University of Example",
-      degree: "B.Sc Computer Science",
-      lookingfor: [
-        'Software Engineer',
-        'Backend Developer',
-        'Full Stack Developer'
+      StudentID: 1,
+      FirstName: 'John',
+      LastName: 'Doe',
+      School: 'University of Example',
+      EmailID: 'johndoe@example.com',
+      AcademicYear: 3,
+      Age: 22,
+      ResumeLink: 'https://example.com/resume/johndoe',
+      AcademicMajor: 'Computer Science',
+      GPA: 3.7,
+      WorkExperience: [ // TODO: ADD THIS TO BACKEND TABLE
+        {
+          Company: "Company X",
+          Role: "Role X"
+        }
       ],
-      availability: "Summer 2024",
-      experience: [
-        { title: 'Software Developer', company: 'Google', startTime: 'Jan 2023', endTime: 'Jun 2024' },
-        { title: 'Technical Assistant', company: 'Meta' },
+      PersonalStatement: 'Passionate about technology and innovation.',
+      Experience: 2.5,
+      Availability: "Fall 2025",  // TODO: ADD THIS TO BACKEND TABLE
+      Preference: [ // TODO: ADD THIS TO BACKEND TABLE
+          "Software",
+          "Tech"
       ],
-      skills: ['Python', 'Java', 'C++']
+      Skills: [ // TODO: ADD THIS TO BACKEND TABLE
+          "Frontend",
+          "Backend"
+      ],
+      Quota: 3
     },
     {
-      name: "Jane Smith",
-      age: "23",
-      institution: "Example State University",
-      degree: "B.A. Mathematics",
-      lookingfor: [
-        'Data Analyst',
-        'Business Analyst',
-        'Research Assistant'
+      StudentID: 2,
+      FirstName: 'Bill',
+      LastName: 'Hower',
+      School: 'University of Guelfe',
+      EmailID: 'billbillbill@hotmail.com',
+      AcademicYear: 3,
+      Age: 22,
+      ResumeLink: 'https://example.com/resume/johndoe',
+      AcademicMajor: 'Business',
+      GPA: 3.7,
+      WorkExperience: [ // TODO: ADD THIS TO BACKEND TABLE
+        {
+          Company: "Space X",
+          Role: "Technical Designer"
+        }
       ],
-      availability: "Fall 2024",
-      experience: [
-        { title: 'Data Analyst', company: 'Microsoft' },
-        { title: 'Research Assistant', company: 'Amazon' },
+      PersonalStatement: 'I like building rockets.',
+      Experience: 2.5,
+      Availability: "Fall 2025",  // TODO: ADD THIS TO BACKEND TABLE
+      Preference: [ // TODO: ADD THIS TO BACKEND TABLE
+        "Design",
+        "Tech"
       ],
-      skills: ['R', 'SQL', 'Tableau']
+      Skills: [ // TODO: ADD THIS TO BACKEND TABLE
+        "Design",
+        "Communication"
+      ],
+      Quota: 3
     },
     {
-      name: "Alice Johnson",
-      age: "21",
-      institution: "Tech Institute",
-      degree: "B.Sc Information Technology",
-      lookingfor: [
-        'IT Support Specialist',
-        'Software Tester',
-        'Web Developer'
+      StudentID: 3,
+      FirstName: 'Michael',
+      LastName: 'Rivers',
+      School: 'McGill University',
+      EmailID: 'mikey@mcgill.com',
+      AcademicYear: 3,
+      Age: 22,
+      ResumeLink: 'https://example.com/resume/johndoe',
+      AcademicMajor: 'Finance',
+      GPA: 3.7,
+      WorkExperience: [ // TODO: ADD THIS TO BACKEND TABLE
+        {
+          Company: "JPMorgan Chase",
+          Role: "Financial Analyst"
+        }
       ],
-      availability: "Winter 2024",
-      experience: [
-        { title: 'IT Support Intern', company: 'Dell' },
-        { title: 'Software Tester', company: 'IBM' },
+      PersonalStatement: 'i daytrade corn',
+      Experience: 2.5,
+      Availability: "Fall 2025",  // TODO: ADD THIS TO BACKEND TABLE
+      Preference: [ // TODO: ADD THIS TO BACKEND TABLE
+        "Software",
+        "Tech"
       ],
-      skills: ['JavaScript', 'HTML', 'CSS']
+      Skills: [ // TODO: ADD THIS TO BACKEND TABLE
+        "Gambling",
+        "Modelling"
+      ],
+      Quota: 3
     },
     {
-      name: "Bob Brown",
-      age: "24",
-      institution: "Example University",
-      degree: "M.Sc Data Science",
-      lookingfor: [
-        'Data Scientist',
-        'Machine Learning Engineer',
-        'Data Engineer'
+      StudentID: 4,
+      FirstName: 'Stu',
+      LastName: 'Beans',
+      School: 'McMasters University',
+      EmailID: 'stu@mcm.com',
+      AcademicYear: 3,
+      Age: 22,
+      ResumeLink: 'https://example.com/resume/johndoe',
+      AcademicMajor: 'Design',
+      GPA: 3.7,
+      WorkExperience: [ // TODO: ADD THIS TO BACKEND TABLE
+        {
+          Company: "Palantir",
+          Role: "Lead designer"
+        }
       ],
-      availability: "Spring 2024",
-      experience: [
-        { title: 'Data Scientist Intern', company: 'Netflix' },
-        { title: 'Machine Learning Intern', company: 'Spotify' },
+      PersonalStatement: 'i design using figma',
+      Experience: 2.5,
+      Availability: "Fall 2025",  // TODO: ADD THIS TO BACKEND TABLE
+      Preference: [ // TODO: ADD THIS TO BACKEND TABLE
+        "Design",
+        "Tech"
       ],
-      skills: ['Python', 'TensorFlow', 'Keras']
+      Skills: [ // TODO: ADD THIS TO BACKEND TABLE
+        "Figma",
+        "Modelling"
+      ],
+      Quota: 3
     },
-    {
-      name: "Charlie Davis",
-      age: "22",
-      institution: "Example Technical College",
-      degree: "B.Sc Computer Engineering",
-      lookingfor: [
-        'Embedded Systems Engineer',
-        'Hardware Engineer',
-        'Firmware Developer'
-      ],
-      availability: "Summer 2024",
-      experience: [
-        { title: 'Embedded Systems Intern', company: 'Intel' },
-        { title: 'Hardware Engineer Intern', company: 'NVIDIA' },
-      ],
-      skills: ['C', 'Verilog', 'Assembly']
-    },
-    {
-      name: "Eve Martinez",
-      age: "23",
-      institution: "University of Tech",
-      degree: "B.Sc Software Engineering",
-      lookingfor: [
-        'Front-End Developer',
-        'UI/UX Designer',
-        'Product Manager'
-      ],
-      availability: "Spring 2024",
-      experience: [
-        { title: 'Front-End Developer', company: 'Airbnb' },
-        { title: 'UI/UX Designer', company: 'Facebook' },
-      ],
-      skills: ['React', 'Adobe XD', 'CSS']
-    },
-    {
-      name: "Frank Wilson",
-      age: "24",
-      institution: "Example Academy",
-      degree: "B.Sc Cybersecurity",
-      lookingfor: [
-        'Security Analyst',
-        'Network Security Specialist',
-        'Penetration Tester'
-      ],
-      availability: "Winter 2024",
-      experience: [
-        { title: 'Security Analyst Intern', company: 'Cisco' },
-        { title: 'Network Security Intern', company: 'Oracle' },
-      ],
-      skills: ['Linux', 'Networking', 'Python']
-    }
-    // Add more student objects here
   ];
 
   const [user, setUser] = useState(null);
@@ -209,25 +209,30 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       <div className="w-full md:w-64 flex-none h-screen overflow-auto">
         <Parameters onSearch={handleSearch} user={user} />
       </div>
-      <div className="flex-grow flex flex-wrap gap-2 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
-        {showStudents && !showStudentDetail && students.map((student, index) => (
-          <StudentCard 
-            key={index} 
-            {...student} 
-            onClick={() => handleCardClick(student)} 
-            onBookmark={() => handleBookmarkClick(student)} 
-            isBookmarked={isBookmarked(student)} 
-          />
-        ))}
-        {showStudentDetail && selectedStudent && (
-          <StudentProfileView 
-            student={selectedStudent} 
-            onClose={handleCloseDetail} 
-            onBookmark={() => handleBookmarkClick(selectedStudent)}
-            isBookmarked={isBookmarked(selectedStudent)}
-          />
-        )}
-      </div>
+      {!showStudentDetail ? (
+          <div className="flex-grow flex flex-wrap gap-2 ml-4 overflow-y-auto no-scrollbar" style={{ height: 'calc(100% - 1rem)' }}>
+            {showStudents && !showStudentDetail && students.map((student, index) => (
+                <StudentCard
+                    key={index}
+                    {...student}
+                    onClick={() => handleCardClick(student)}
+                    onBookmark={() => handleBookmarkClick(student)}
+                    isBookmarked={isBookmarked(student)}
+                />
+            ))}
+          </div>
+      ) : (
+          <>
+          {showStudentDetail && selectedStudent && (
+              <StudentProfileView
+                  student={selectedStudent}
+                  onClose={handleCloseDetail}
+                  onBookmark={() => handleBookmarkClick(selectedStudent)}
+                  isBookmarked={isBookmarked(selectedStudent)}
+              />
+          )}
+          </>
+      )}
       {!showStudentDetail && (
         <div className="absolute top-0 right-0 h-screen">
           <Bookmarks 

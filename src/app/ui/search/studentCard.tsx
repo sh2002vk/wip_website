@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 
-export default function StudentCard({ name, age, institution, degree, availability, experience = [], skills = [], lookingfor = [], onClick, onBookmark, isBookmarked }) {
+export default function StudentCard({ FirstName, LastName, School, AcademicMajor, Availability, Preference, WorkExperience, Skills, onClick, onBookmark, isBookmarked }) {
     const [bookmarked, setBookmarked] = useState(isBookmarked);
 
     useEffect(() => {
@@ -35,10 +35,9 @@ export default function StudentCard({ name, age, institution, degree, availabili
                     <Image src="/wip.png" alt="profile picture" width={64} height={64} layout="responsive" />
                 </div>
                 <div className="text-center py-4">
-                    <div className="text-xl font-bold">{name}</div>
-                    <p className="text-sm text-gray-600">Age: {age}</p>
-                    <p className="text-sm text-gray-600">{institution}</p>
-                    <p className="text-sm text-gray-600">{degree}</p>
+                    <div className="text-xl font-bold">{FirstName} {LastName}</div>
+                    <p className="text-sm text-gray-600">{School}</p>
+                    <p className="text-sm text-gray-600">{AcademicMajor}</p>
                 </div>
             </div>
 
@@ -46,23 +45,23 @@ export default function StudentCard({ name, age, institution, degree, availabili
             <div className='text-left w-full'>
                 <div className="py-1">
                     <h3 className="text-base font-semibold">Looking for</h3>
-                    <p className="text-sm text-gray-600">{lookingfor.join(' · ')}</p>
+                    <p className="text-sm text-gray-600">{Preference.join(' · ')}</p>
                 </div>
                 <div className="py-1">
                     <h3 className="text-base font-semibold">Availability</h3>
-                    <p className="text-sm text-gray-600">{availability}</p>
+                    <p className="text-sm text-gray-600">{Availability}</p>
                 </div>
                 <div className="py-1">
                     <h3 className="text-base font-semibold">Previous Experience</h3>
                     <ul className="text-sm text-gray-600">
-                        {experience.map((job, index) => (
-                            <li key={index}>{job.title} - {job.company}</li>
+                        {WorkExperience.map((job, index) => (
+                            <li key={index}>{job.Role} - {job.Company}</li>
                         ))}
                     </ul>
                 </div>
                 <div className="py-1">
                     <h3 className="text-base font-semibold">Skill sets</h3>
-                    <p className="text-sm text-gray-600">{skills.join(', ')}</p>
+                    <p className="text-sm text-gray-600">{Skills.join(', ')}</p>
                 </div>
             </div>
         </div>

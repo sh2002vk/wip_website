@@ -30,9 +30,9 @@ const Bookmarks = ({ students, onStudentClick, isExpanded, toggleExpand, closeEx
           {students.length > 0 ? (
             students.map((student, index) => (
               <div key={index} className="border-b border-gray-200 py-2 cursor-pointer" onClick={() => onStudentClick(student)}>
-                <div className="font-semibold">{student.name}</div>
-                <div className="text-sm text-gray-600">{student.institution}</div>
-                <div className="text-sm text-gray-600">{student.degree}</div>
+                <div className="font-semibold">{student.FirstName} {student.LastName}</div>
+                <div className="text-sm text-gray-600">{student.School}</div>
+                <div className="text-sm text-gray-600">{student.AcademicMajor}</div>
               </div>
             ))
           ) : (
