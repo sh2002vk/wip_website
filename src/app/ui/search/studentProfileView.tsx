@@ -41,9 +41,9 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                     </div>
                 </div>
 
-                <h1 className="mt-5 text-2xl font-bold">{student.name}</h1>
-                <p className="text-xl font-bold">{student.institution}</p>
-                <p className="text-xl font-light">{student.degree}</p>
+                <h1 className="mt-5 text-2xl font-bold">{student.FirstName} {student.LastName}</h1>
+                <p className="text-xl font-bold">{student.School}</p>
+                <p className="text-xl font-light">Major in {student.AcademicMajor}</p>
                 <p className="mt-5 text-gray-500 font-light">City · Province · Country</p>
                 <p className="mt-4 text-orange-500 font-medium">Some highlighted key words here, Consider adding a highlight attribute for a student object</p>
             </div>
@@ -52,9 +52,9 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                 <div className="flex justify-between items-start">
                     <div>
                         <p className="text-base text-gray-500">Looking for:</p>
-                        <p className="text-lg font-medium text-gray-700">{student.lookingfor.join(' · ')}</p>
+                        <p className="text-lg font-medium text-gray-700">{student.Preference.join(' · ')}</p>
                         <p className="text-base text-gray-500 mt-4">Availability</p>
-                        <p className="text-lg font-medium text-gray-700">{student.availability}</p>
+                        <p className="text-lg font-medium text-gray-700">{student.Availability}</p>
                     </div>
                     <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-3xl font-bold leading-none">
                         &times;
@@ -91,20 +91,20 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                 </div>
                 <div className="mt-4">
                     <h2 className="text-base font-bold">Skill sets</h2>
-                    <p className="text-medium font-light">{student.skills.join(', ')}</p>
+                    <p className="text-medium font-light">{student.Skills.join(', ')}</p>
                 </div>
                 <div className="mt-4">
                     <h2 className="text-base font-bold">Previous Experience</h2>
-                    {student.experience.map((exp, index) => (
+                    {student.WorkExperience.map((exp, index) => (
                         <div key={index} className="text-medium mb-1">
                             <p>
-                                <span className="font-semibold italic">{exp.title}</span> · {exp.company}
+                                <span className="font-semibold italic">{exp.Role}</span> · {exp.Company}
                             </p>
-                            {(exp.startTime || exp.endTime) && (
-                                <p className="text-base text-gray-500 font-light">
-                                    {exp.startTime ? `${exp.startTime} -` : ' -'} {exp.endTime}
-                                </p>
-                            )}
+                            {/*{(exp.startTime || exp.endTime) && (*/}
+                            {/*    <p className="text-base text-gray-500 font-light">*/}
+                            {/*        {exp.startTime ? `${exp.startTime} -` : ' -'} {exp.endTime}*/}
+                            {/*    </p>*/}
+                            {/*)}*/}
                         </div>
                     ))}
                 </div>

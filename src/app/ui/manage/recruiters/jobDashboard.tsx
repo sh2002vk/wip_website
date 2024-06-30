@@ -2,25 +2,25 @@
 import React, { useState, useEffect } from 'react';
 import "./style.css"
 import StudentProfileView from "@/app/ui/search/studentProfileView";
+import JobDashboardTables from "@/app/ui/manage/recruiters/jobDashboardTables";
 const JobDashboard = () => {
+    const jobID = 1;
     const students = [
         {
-            name: "John Doe",
-            age: "22",
-            institution: "University of Example",
-            degree: "B.Sc Computer Science",
-            lookingfor: [
-                'Software Engineer',
-                'Backend Developer',
-                'Full Stack Developer'
-            ],
-            availability: "Summer 2024",
-            experience: [
-                { title: 'Software Developer', company: 'Google', startTime: 'Jan 2023', endTime: 'Jun 2024' },
-                { title: 'Technical Assistant', company: 'Meta' },
-            ],
-            skills: ['Python', 'Java', 'C++']
-        }
+            FirstName: 'John',
+            LastName: 'Doe',
+            School: 'University of Example',
+            EmailID: 'johndoe@example.com',
+            AcademicYear: 3,
+            Age: 22,
+            ResumeLink: 'https://example.com/resume/johndoe',
+            AcademicMajor: 'Computer Science',
+            GPA: 3.7,
+            WorkExperience: 'Intern at Company X, Freelancer',
+            PersonalStatement: 'Passionate about technology and innovation.',
+            Experience: 2.5,
+            Quota: 3
+        },
     ]
 
     const [selectedStudent, setSelectedStudent] = useState(null);
@@ -49,25 +49,43 @@ const JobDashboard = () => {
     const isBookmarked = (student) => bookmarkedStudents.some(s => s.name === student.name);
 
     return (
-        <>
-            <div>
-                {!showStudentDetail && students.map((student) => (
-                    <span onClick={() => handleCardClick(student)} >{student.name}</span>
-                ))}
-            </div>
-            {showStudentDetail && selectedStudent && (
-                <div className={"flex flex-col h-full"}>
-                    <StudentProfileView
-                        student={selectedStudent}
-                        onClose={handleCloseDetail}
-                        onBookmark={() => handleBookmarkClick(selectedStudent)}
-                        isBookmarked={isBookmarked(selectedStudent)}
-                        isApplication={true}
-                        applicationID={1}//The selected application
-                    />
+        <div className="flex flex-col h-full bg-white">
+            {!showStudentDetail ? (
+                <>
+                    <div className="absolute bg-[#F5f5f5] p-2 rounded-lg shadow-md" style={{ width: '31%', height: '37%' }}>
+                        <JobDashboardTables
+                            onCardClick={handleCardClick}
+                            isActionNeeded={true}
+                        />
+                    </div>
+                    <div className="absolute bg-[#F5f5f5] p-2 rounded-lg shadow-md" style={{ width: '28%', height: '37%', left: '70%'}}>
+                        <JobDashboardTables
+                            onCardClick={handleCardClick}
+                            isInvited={true}
+                        />
+                    </div>
+                    <div className="absolute bg-[#F5f5f5] p-2 rounded-lg shadow-md" style={{ width: '61.5%', height: '33%', top: '63%'}}>
+                        <JobDashboardTables
+                            onCardClick={handleCardClick}
+                            isContacting={true}
+                        />
+                    </div>
+                </>
+                ) : (
+                <div>
+                    {showStudentDetail && selectedStudent && (
+                        <StudentProfileView
+                            student={selectedStudent}
+                            onClose={handleCloseDetail}
+                            onBookmark={() => handleBookmarkClick(selectedStudent)}
+                            isBookmarked={isBookmarked(selectedStudent)}
+                            isApplication={true}
+                            applicationID={1}//The selected application
+                        />
+                    )}
                 </div>
             )}
-        </>
+        </div>
     );
 };
 export default JobDashboard;
