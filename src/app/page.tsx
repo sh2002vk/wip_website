@@ -11,6 +11,7 @@ export default function Home() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(''); 
   const router = useRouter();
 
   useEffect(() => {
@@ -46,11 +47,7 @@ export default function Home() {
         <div className="flex justify-center mb-6">
           <Image src="/wip.png" alt="Logo" width={150} height={150} />
         </div>
-<<<<<<< HEAD
         <form onSubmit={handleAuth} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-=======
-        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
->>>>>>> 9a426a4f575cf7e415c702d2cec8f0caafb89613
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
               Email
@@ -80,7 +77,6 @@ export default function Home() {
           {error && <p className="text-red-500 text-xs italic">{error}</p>}
           <div className="flex items-center justify-between">
             <button
-<<<<<<< HEAD
               type="submit"
               className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
             >
@@ -97,20 +93,9 @@ export default function Home() {
             </button>
             <Link href="/home" className="font-bold text-sm text-blue-500 hover:text-blue-800">
               Forgot Password?
-=======
-              onClick={handleSignUp}
-              className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-            >
-              <span>Sign Up</span>
-            </button>
-            <Link href="/home">
-              {/* <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"> */}
-                Forgot Password?
-              {/* </a> */}
->>>>>>> 9a426a4f575cf7e415c702d2cec8f0caafb89613
             </Link>
           </div>
-        </div>
+        </form>
       </div>
     </main>
   );
