@@ -7,26 +7,46 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import JobCard from './cards/jobCard';
 
-export default function Bookmarks({ onSelectJob, initialDrafts, initialCompleted }) {
-  
-  const [drafts, setDrafts] = useState(initialDrafts);
-  const [completed, setCompleted] = useState(initialCompleted);
+export default function Bookmarks({ onSelectJob, onGetJobPostings, drafts, completed }) {
 
   useEffect(() => {
-    setDrafts(initialDrafts);
-  }, [initialDrafts]);
+    onGetJobPostings();
+  }, );
 
-  useEffect(() => {
-    setCompleted(initialCompleted);
-  }, [initialCompleted]);
+  const fetchNewPosting = async() => {
+    try {
+      const recruiterID = 1;
+      const companyID = 57;
+      const response = await fetch('http://localhost:4000/action/recruiter/createJobPosting', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          RecruiterID: recruiterID,
+          CompanyID: companyID,
+          DatePosted: new Date(),
+          Status: 'DRAFT'
+        }),
 
-  const handleRemoveBookmark = (id, isDraft) => {
-    if (isDraft === true) {
-      setDrafts(drafts.filter(draft => draft.id !== id));
-    } else {
-      setCompleted(completed.filter(comp => comp.id !== id));
+      })
+      const data = await response.json();
+
+      if (response.ok) {
+        await onGetJobPostings();
+        console.log("OK");
+        const newJob = drafts[drafts.length-1];
+        onSelectJob(newJob);
+        console.log(newJob)
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log("error");
+    } finally {
+      console.log("Done loading");
     }
-  };
+  }
 
   const [activeToggle, setActiveToggle] = useState('Drafts');
 
@@ -48,31 +68,29 @@ export default function Bookmarks({ onSelectJob, initialDrafts, initialCompleted
           {/* Conditionally render drafts or completed based on activeToggle */}
           {activeToggle === 'Drafts' && drafts.map((job) => (
             <JobCard 
-              key={job.id}
-              company={job.company}
-              title={job.title}
-              type={job.type}
-              onClick={() => onSelectJob(job)} 
-              onRemove={() => handleRemoveBookmark(job.id, job.draft)} 
+              key={job.JobID}
+              company={job.companyModel.Name}
+              title={job.Role}
+              type={job.Environment}
+              onClick={() => onSelectJob(job)}
             />
           ))}
 
           {activeToggle === 'Completed' && completed.map((job) => (
             <JobCard 
-              key={job.id}
-              company={job.company}
-              title={job.title}
-              type={job.type}
-              onClick={() => onSelectJob(job)} 
-              onRemove={() => handleRemoveBookmark(job.id, job.draft)} 
+              key={job.JobID}
+              company={job.companyModel.Name}
+              title={job.Role}
+              type={job.Environment}
+              onClick={() => onSelectJob(job)}
             />
           ))}
         </div>
         
         <div className="mt-4 flex justify-center">
-          <button className="bg-[#ff6f00] hover:bg-orange-400 text-white font-bold py-2 px-4 rounded">
-                  {/*OnClick call API to create new empty job*/}
-                  {/*onSelectJob(newEmptyJob)*/}
+          <button
+              className="bg-[#ff6f00] hover:bg-orange-400 text-white font-bold py-2 px-4 rounded"
+              onClick={fetchNewPosting}>
                   + New Job Posting
           </button>
         </div>

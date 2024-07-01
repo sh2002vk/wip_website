@@ -37,34 +37,33 @@ interface JobDetailsProps {
   onJobUpdate: (updatedJob: any) => void; // Function to update job details
 }
 
-const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) => {
+const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
   const [isJobDetailsOpen, setIsJobDetailsOpen] = useState(false);
   const [isJobDescriptionOpen, setIsJobDescriptionOpen] = useState(false);
   const [isJobQualificationOpen, setIsJobQualificationOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isDashboardView, setIsDashboardView] = useState(true);
 
-  const [jobDetailsContent, setJobDetailsContent] = useState(job.jobDetail);
-  const [jobDetailsJobType, setJobDetailsJobType] = useState(job.jobDetailJobType);
-  const [jobDetailsDuration, setJobDetailsDuration] = useState(job.jobDetailDuration);
-  const [jobDetailsStartTerm, setJobDetailsStartTerm] = useState(job.jobDetailStartTerm);
-  const [jobDetailsWorkMode, setJobDetailsWorkMode] = useState(job.jobDetailWorkMode);
-  const [jobDetailsIndustry, setJobDetailsIndustry] = useState(job.jobDetailIndustry);
-  const [jobDescriptionContent, setJobDescriptionContent] = useState(job.jobDescription);
-  const [jobQualificationContent, setJobQualificationContent] = useState(job.jobQualification);
-  const [jobTitle, setJobTitle] = useState(job.title);
-  const [jobCompany, setJobCompany] = useState(job.company);
-  const [jobLocation, setJobLocation] = useState(job.location);
+  const [jobDetailsJobType, setJobDetailsJobType] = useState(job.Type);
+  const [jobDetailsDuration, setJobDetailsDuration] = useState(job.Duration);
+  const [jobDetailsStartTerm, setJobDetailsStartTerm] = useState(job.StartTime);
+  const [jobDetailsWorkMode, setJobDetailsWorkMode] = useState(job.Environment);
+  const [jobDetailsIndustry, setJobDetailsIndustry] = useState(job.Industry);
+  const [jobDescriptionContent, setJobDescriptionContent] = useState(job.JobDescription);
+  const [jobQualificationContent, setJobQualificationContent] = useState(job.JobQualification);
+  const [jobTitle, setJobTitle] = useState(job.Role);
+  const [jobCompany, setJobCompany] = useState(job.companyModel.Name);
+  const [jobLocation, setJobLocation] = useState(job.Location);
+  const [jobStatus, setJobStatus] = useState(job.Status);
+  //ADD PAY?
   const [requiredDocuments, setRequiredDocuments] = useState({
-    coverLetter: job.requiredDocuments.coverLetter,
-    videoApplication: job.requiredDocuments.videoApplication,
-    cognitiveTest: job.requiredDocuments.cognitiveTest,
-    englishSample: job.requiredDocuments.englishSample,
-    onlineAssessment: job.requiredDocuments.onlineAssessment,
+    Resume: job.RequiredDocuments?.resume || false,
+    CoverLetter: job.RequiredDocuments?.coverLetter || false,
+    // VideoApplication: job.RequiredDocuments?.videoApplication || false,
+    EnglishSample: job.RequiredDocuments?.englishSample || false,
   });
 
   useEffect(() => {
-    setJobDetailsContent(job.jobDetail);
     setJobDetailsJobType(job.jobDetailJobType)
     setJobDetailsDuration(job.jobDetailDuration)
     setJobDetailsStartTerm(job.jobDetailStartTerm)
@@ -100,25 +99,26 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
     }
     // Add more conditions if you have more sections
   };
-  const toggleEdit = () => {
+  const toggleEdit = async () => {
     if (isEditing) {
-      const updatedJob = {
-        ...job,
-        jobDetail: jobDetailsContent,
-        jobDetailsJobType: jobDetailsJobType,
-        jobDetailsDuration: jobDetailsDuration,
-        jobDetailsStartTerm: jobDetailsStartTerm,
-        jobDetailsWorkMode: jobDetailsWorkMode,
-        jobDetailsIndustry: jobDetailsIndustry,
-        jobDescription: jobDescriptionContent,
-        jobQualification: jobQualificationContent,
-        title: jobTitle,
-        company: jobCompany,
-        location: jobLocation,
-        requiredDocuments: requiredDocuments
-      };
+      // const updatedJob = {
+      //   ...job,
+      //   jobDetailsJobType: jobDetailsJobType,
+      //   jobDetailsDuration: jobDetailsDuration,
+      //   jobDetailsStartTerm: jobDetailsStartTerm,
+      //   jobDetailsWorkMode: jobDetailsWorkMode,
+      //   jobDetailsIndustry: jobDetailsIndustry,
+      //   jobDescription: jobDescriptionContent,
+      //   jobQualification: jobQualificationContent,
+      //   title: jobTitle,
+      //   company: jobCompany,
+      //   location: jobLocation,
+      //   requiredDocuments: requiredDocuments
+      // };
+      await handleUpdate();
+      await onGetJobPostings();
 
-      onJobUpdate(updatedJob);
+      // onJobUpdate(updatedJob);
       console.log("Updating");
     }
     setIsEditing(!isEditing);
@@ -137,28 +137,88 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
 
   useEffect(() => {
     if (!isEditing) {
-      console.log("Updated job:", job);
+      console.log("Showing:", job);
     }
   }, [isEditing, job]);
 
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/action/recruiter/deleteJobPosting`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jobID: job.JobID
+        })
+      })
+      if (!response.ok) {
+        console.log("ERROR")
+      }
+      const data = await response.json();
+      console.log("successfully deleted:", data)
+      onClose();
+    } catch (error) {
+      console.log("ERROR");
+    }
+  }
+
+  const handleUpdate = async () => {
+    const updateData = {
+      Type: jobDetailsJobType,
+      Role: jobTitle,
+      Location: jobLocation,
+      // Pay: 0, CHANGE LATER IF NEEDED
+      Environment: jobDetailsWorkMode,
+      Duration: jobDetailsDuration,
+      StartTime: jobDetailsStartTerm,
+      // EndTime:
+      Industry: jobDetailsIndustry,
+      JobDescription: jobDescriptionContent,
+      JobQualification: jobQualificationContent,
+      Status: jobStatus,
+      RequiredDocuments: {
+        Resume: requiredDocuments?.Resume || false,
+        CoverLetter: requiredDocuments?.CoverLetter || false,
+        EnglishSample: requiredDocuments?.EnglishSample || false,
+      },
+    }
+    try {
+      const response = await fetch(`http://localhost:4000/action/recruiter/updateJobPosting`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          jobID: job.JobID,
+          updatedData: updateData
+        })
+      })
+      console.log(job.JobID)
+      if (!response.ok) {
+        console.log("error updating");
+      } else {
+        console.log("successfully updated: ", response)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
-    <div key={job.id} className="p-4 bg-white overflow-y-auto no-scrollbar">
+    <div key={job.JobID} className="p-4 bg-white overflow-y-auto no-scrollbar">
       <div className="border-b border-gray-300 mb-4">
-        {/*<div className="flex justify-end">*/}
-        {/*  <button onClick={onClose} className="bg-transparent font-bold text-black hover:text-gray-600">*/}
-        {/*    <FontAwesomeIcon icon={faTimes} size="2x"/>*/}
-        {/*  </button>*/}
-        {/*</div>*/}
+        <>{job.JobID}</>
         <div className="flex justify-between mt-4">
           {isEditing ? (
             <input
               type="text"
-              value={jobTitle}
+              value={job.Role}
               onChange={(e) => setJobTitle(e.target.value)}
               className="w-1/2 p-1 text-xl font-bold mb-2 border text-gray-600 border-gray-300 rounded"
             />
           ) : (
-            <h2 className="text-xl font-bold mb-2">{jobTitle}</h2>
+            <h2 className="text-xl font-bold mb-2">{job.Role}</h2>
           )}
           {isEditing ? (
             <div className="flex space-x-4">
@@ -167,11 +227,11 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
             </div>
           ) : (
             <div className="flex space-x-4">
-              {(job.draft || !isDashboardView) ? (
+              {(job.Status === "DRAFT" || !isDashboardView) ? (
                   <>
-                    <FontAwesomeIcon icon={faTrashCan} size="xl"/>
+                    <FontAwesomeIcon icon={faTrashCan} size="xl" onClick={handleDelete}/>
                     <FontAwesomeIcon icon={faPencilAlt} size="xl" onClick={toggleEdit} />
-                    {job.draft && <FontAwesomeIcon icon={faCheck} size="xl" />}
+                    {job.Status == "DRAFT" && <FontAwesomeIcon icon={faCheck} size="xl" />}
                   </>
                   ) : (<></>)}
             </div>
@@ -182,25 +242,25 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
             <>
               <input
                 type="text"
-                value={jobCompany}
+                value={job.companyModel.Name}
                 onChange={(e) => setJobCompany(e.target.value)}
                 className="w-1/2 p-1 text-lg font-bold mb-2 border text-gray-400 border-gray-300 rounded"
               />
               <input
                 type="text"
-                value={jobLocation}
+                value={job.Location}
                 onChange={(e) => setJobLocation(e.target.value)}
                 className="w-1/2 p-1 text-lg mb-2 border text-gray-400 border-gray-300 rounded"
               />
             </>
           ) : (
             <>
-              <p className="text-lg font-bold">{jobCompany}</p>
-              {job.draft ? (
-                  <p className="text-lg">{jobLocation}</p>
+              <p className="text-lg font-bold">{job.companyModel.Name}</p>
+              {job.Status == "DRAFT" ? (
+                  <p className="text-lg">{job.Location}</p>
               ) : (
                 <div className={"flex justify-between"}>
-                  <p className="text-lg">{jobLocation}</p>
+                  <p className="text-lg">{job.Location}</p>
                   {isDashboardView ? (
                       <p
                         className="text-lg text-orange-500 underline cursor-pointer"
@@ -223,7 +283,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
         </div>
       </div>
 
-      {!isDashboardView || job.draft ? (
+      {!isDashboardView || job.Status === "DRAFT" ? (
         <>
           <div className="border-b border-gray-300 mb-4">
             <CollapsibleCard
@@ -233,31 +293,31 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
                 {
                   title: "Job Type",
                   options: ["Internship", "Contract", "Other"],
-                  selectedOption: jobDetailsJobType,
+                  selectedOption: job.Type,
                   onOptionChange: (newSelectedOptions) => handleOptionChange('Work Type', newSelectedOptions)
                 },
                 {
                   title: "Duration",
                   options: ["4 months", "8 months", "1+ year"],
-                  selectedOption: jobDetailsDuration,
+                  selectedOption: job.Duration,
                   onOptionChange: (newSelectedOptions) => handleOptionChange('Duration', newSelectedOptions)
                 },
                 {
                   title: "Start Term",
                   options: ["Fall 24", "Winter 25", "Spring 25", "Summer 25"],
-                  selectedOption: jobDetailsStartTerm,
+                  selectedOption: job.StartTime,
                   onOptionChange: (newSelectedOptions) => handleOptionChange('Start Term', newSelectedOptions)
                 },
                 {
                   title: "Work Mode",
                   options: ["In-person", "Hybrid", "Remote"],
-                  selectedOption: jobDetailsWorkMode,
+                  selectedOption: job.Environment,
                   onOptionChange: (newSelectedOptions) => handleOptionChange('Work Mode', newSelectedOptions)
                 },
                 {
                   title: "Industry",
                   options: ["Technology", "Business"],
-                  selectedOption: jobDetailsIndustry,
+                  selectedOption: job.Industry,
                   onOptionChange: (newSelectedOptions) => handleOptionChange('Industry', newSelectedOptions)
                 },
               ]}
@@ -283,14 +343,14 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
               {isEditing ? (
                   <>
                     <h2 className="text-lg font-bold">Cover Letter</h2>
-                    <JobOptionToggle
-                        isSelected={requiredDocuments.coverLetter}
-                        onToggle={() => handleToggleRequiredDocument("coverLetter")}
-                    />
+                    {/*<JobOptionToggle*/}
+                    {/*    isSelected={job.RequiredDocuments.coverLetter}*/}
+                    {/*    onToggle={() => handleToggleRequiredDocument("coverLetter")}*/}
+                    {/*/>*/}
                   </>
               ) : (
                   <>
-                    <h2 className={`${requiredDocuments.coverLetter ?
+                    <h2 className={`${job.RequiredDocuments?.coverLetter ?? false ?
                         "text-lg font-bold" :
                         "text-gray-300 text-lg font-bold"}`}
                     >Cover Letter</h2>
@@ -301,74 +361,74 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobUpdate }) =>
               {isEditing ? (
                   <>
                     <h2 className="text-lg font-bold">Video Application</h2>
-                    <JobOptionToggle
-                        isSelected={requiredDocuments.videoApplication}
-                        onToggle={() => handleToggleRequiredDocument("videoApplication")}
-                    />
+                    {/*<JobOptionToggle*/}
+                    {/*    isSelected={job.RequiredDocuments.videoApplication}*/}
+                    {/*    onToggle={() => handleToggleRequiredDocument("videoApplication")}*/}
+                    {/*/>*/}
                   </>
               ) : (
                   <>
-                    <h2 className={`${requiredDocuments.videoApplication ?
+                    <h2 className={`${job.RequiredDocuments?.videoApplication ?? false ?
                         "text-lg font-bold" :
                         "text-gray-300 text-lg font-bold"}`}
                     >Video Application</h2>
                   </>
               )}
             </div>
-            <div className="flex justify-between w-full">
-              {isEditing ? (
-                  <>
-                    <h2 className="text-lg font-bold">Cognitive Test</h2>
-                    <JobOptionToggle
-                        isSelected={requiredDocuments.cognitiveTest}
-                        onToggle={() => handleToggleRequiredDocument("cognitiveTest")}
-                    />
-                  </>
-              ) : (
-                  <>
-                    <h2 className={`${requiredDocuments.cognitiveTest ?
-                        "text-lg font-bold" :
-                        "text-gray-300 text-lg font-bold"}`}
-                    >Cognitive Test</h2>
-                  </>
-              )}
-            </div>
+            {/*<div className="flex justify-between w-full">*/}
+            {/*  {isEditing ? (*/}
+            {/*      <>*/}
+            {/*        <h2 className="text-lg font-bold">Cognitive Test</h2>*/}
+            {/*        <JobOptionToggle*/}
+            {/*            isSelected={requiredDocuments.cognitiveTest}*/}
+            {/*            onToggle={() => handleToggleRequiredDocument("cognitiveTest")}*/}
+            {/*        />*/}
+            {/*      </>*/}
+            {/*  ) : (*/}
+            {/*      <>*/}
+            {/*        <h2 className={`${requiredDocuments.cognitiveTest ?*/}
+            {/*            "text-lg font-bold" :*/}
+            {/*            "text-gray-300 text-lg font-bold"}`}*/}
+            {/*        >Cognitive Test</h2>*/}
+            {/*      </>*/}
+            {/*  )}*/}
+            {/*</div>*/}
             <div className="flex justify-between w-full">
               {isEditing ? (
                   <>
                     <h2 className="text-lg font-bold">English Sample</h2>
-                    <JobOptionToggle
-                        isSelected={requiredDocuments.englishSample}
-                        onToggle={() => handleToggleRequiredDocument("englishSample")}
-                    />
+                    {/*<JobOptionToggle*/}
+                    {/*    isSelected={job.RequiredDocuments.englishSample}*/}
+                    {/*    onToggle={() => handleToggleRequiredDocument("englishSample")}*/}
+                    {/*/>*/}
                   </>
               ) : (
                   <>
-                    <h2 className={`${requiredDocuments.englishSample ?
+                    <h2 className={`${job.RequiredDocuments?.englishSample ?? false ?
                         "text-lg font-bold" :
                         "text-gray-300 text-lg font-bold"}`}
                     >English Sample</h2>
                   </>
               )}
             </div>
-            <div className="flex justify-between w-full">
-              {isEditing ? (
-                  <>
-                    <h2 className="text-lg font-bold">Online Assessment</h2>
-                    <JobOptionToggle
-                        isSelected={requiredDocuments.onlineAssessment}
-                        onToggle={() => handleToggleRequiredDocument("onlineAssessment")}
-                    />
-                  </>
-              ) : (
-                  <>
-                    <h2 className={`${requiredDocuments.onlineAssessment ?
-                        "text-lg font-bold" :
-                        "text-gray-300 text-lg font-bold"}`}
-                    >Online Assessment</h2>
-                  </>
-              )}
-            </div>
+            {/*<div className="flex justify-between w-full">*/}
+            {/*  {isEditing ? (*/}
+            {/*      <>*/}
+            {/*        <h2 className="text-lg font-bold">Online Assessment</h2>*/}
+            {/*        <JobOptionToggle*/}
+            {/*            isSelected={requiredDocuments.onlineAssessment}*/}
+            {/*            onToggle={() => handleToggleRequiredDocument("onlineAssessment")}*/}
+            {/*        />*/}
+            {/*      </>*/}
+            {/*  ) : (*/}
+            {/*      <>*/}
+            {/*        <h2 className={`${requiredDocuments.onlineAssessment ?*/}
+            {/*            "text-lg font-bold" :*/}
+            {/*            "text-gray-300 text-lg font-bold"}`}*/}
+            {/*        >Online Assessment</h2>*/}
+            {/*      </>*/}
+            {/*  )}*/}
+            {/*</div>*/}
           </div>
         </>
       ):(

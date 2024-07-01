@@ -13,78 +13,6 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
 
   const initialDrafts = [
     {
-      id: '1',
-      company: "WorkInProgress",
-      title: "Software Engineer",
-      type: "Full-time",
-      location: "Vancouver, BC",
-      jobDetail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      jobQualification: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      jobDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      draft: true,
-      requiredDocuments: {
-        coverLetter: true,
-        videoApplication: false,
-        cognitiveTest: false,
-        englishSample: false,
-        onlineAssessment: false
-      }
-    },
-    {
-      id: '2',
-      company: "WorkInProgress",
-      title: "To Delete",
-      type: "Full-time",
-      location: "",
-      jobDetail: "",
-      jobBenefits: "",
-      jobDescription: "",
-      draft: true,
-      requiredDocuments: {
-        coverLetter: true,
-        videoApplication: false,
-        cognitiveTest: false,
-        englishSample: false,
-        onlineAssessment: false
-      }
-    },
-    {
-      id: '3',
-      company: "WorkInProgress",
-      title: "Test Index 1",
-      type: "Full-time",
-      location: "",
-      jobDetail: "",
-      jobBenefits: "",
-      jobDescription: "",
-      draft: true,
-      requiredDocuments: {
-        coverLetter: true,
-        videoApplication: false,
-        cognitiveTest: false,
-        englishSample: false,
-        onlineAssessment: false
-      }
-    },
-    {
-      id: '4',
-      company: "WorkInProgress",
-      title: "Test Index 2",
-      type: "Full-time",
-      location: "",
-      jobDetail: "",
-      jobBenefits: "",
-      jobDescription: "",
-      draft: true,
-      requiredDocuments: {
-        coverLetter: true,
-        videoApplication: false,
-        cognitiveTest: false,
-        englishSample: false,
-        onlineAssessment: false
-      }
-    },
-    {
       id: '5',
       company: "WorkInProgress",
       title: "Test Index 3",
@@ -127,6 +55,10 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
 
   const [selectedJob, setSelectedJob] = useState(null);
   const [jobs, setJobs] = useState(initialDrafts);
+  const [drafts, setDrafts] = useState([]);
+  const [completed, setCompleted] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleSelectJob = (job) => {
     setSelectedJob(job);
@@ -136,15 +68,39 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
     setSelectedJob(null);
   };
 
-  const handleJobUpdate = (updatedJob) => {
-    // console.log("Updated Job:", updatedJob);
-    setJobs((currentJobs) => {
-      const updatedJobs = currentJobs.map((job) => 
-        job.id === updatedJob.id ? updatedJob : job
-      );
-      // console.log("Updated Jobs List:", updatedJobs);
-      return updatedJobs;
-    });
+  // const handleJobUpdate = (updatedJob) => {
+  //   // console.log("Updated Job:", updatedJob);
+  //   setJobs((currentJobs) => {
+  //     const updatedJobs = currentJobs.map((job) =>
+  //       job.id === updatedJob.id ? updatedJob : job
+  //     );
+  //     // console.log("Updated Jobs List:", updatedJobs);
+  //     return updatedJobs;
+  //   });
+  // };
+
+  const fetchJobPostings = async () => {
+    try {
+      const recruiterID = 1;
+      const response = await fetch(`http://localhost:4000/action/recruiter/getJobPostings?recruiterID=${recruiterID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        const drafts = data.data.filter((job) => job.Status === "DRAFT");
+        const completed = data.data.filter((job) => job.Status === "COMPLETED");
+        setDrafts(drafts);
+        setCompleted(completed);
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError("Error");
+    }
   };
 
   useEffect(() => {
@@ -155,18 +111,21 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
     <div className="flex h-screen">
       <div className="w-full md:w-64 flex-none h-screen overflow-auto">
         <Bookmarks 
-          onSelectJob={handleSelectJob} 
-          initialDrafts={jobs} 
-          initialCompleted={initialCompleted}
+          onSelectJob={handleSelectJob}
+          onGetJobPostings={fetchJobPostings}
+          drafts={drafts}
+          completed={completed}
         />
       </div>
       <div className="flex-1 p-4 overflow-x-auto overflow-y-auto no-scrollbar">
+
         {selectedJob && (
           <JobDetails 
-            key={selectedJob.id} 
+            key={selectedJob.JobID}
             job={selectedJob}
-            onClose={handleCloseJobDetails} 
-            onJobUpdate={handleJobUpdate} // Pass the update handler
+            onClose={handleCloseJobDetails}
+            onGetJobPostings={fetchJobPostings}
+            // onJobUpdate={handleJobUpdate} // Pass the update handler
           />
         )}
       </div>
