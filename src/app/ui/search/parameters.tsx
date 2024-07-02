@@ -52,6 +52,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
   const [activeToggle, setActiveToggle] = useState("Global");
   const [preferences, setPreferences] = useState([]);
   const [availabilities, setAvailabilities] = useState([]);
+  const [workingTypes, setWorkingTypes] = useState([]);
   const [degreeLevels, setDegreeLevels] = useState([]);
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
@@ -62,6 +63,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
   const handleShowResults = () => {
     const currentFilters = {
       availabilities,
+      workingTypes,
       preferences,
       degreeLevels,
       startDate,
@@ -205,6 +207,18 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
               middleToggle="8 Months"
               activeToggles={availabilities}
               setActiveToggles={setAvailabilities}
+            />
+          </div>
+
+{/* -------------------------Working Type Availability------------------------------- */}
+
+<div className="bg-gray-200 rounded-xs mb-2">
+            <TripleToggle
+              leftToggle="Local"
+              rightToggle="Hybrid"
+              middleToggle="Remote"
+              activeToggles={workingTypes}
+              setActiveToggles={setWorkingTypes}
             />
           </div>
 
