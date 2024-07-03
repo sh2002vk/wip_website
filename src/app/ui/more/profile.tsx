@@ -40,6 +40,33 @@ export default function Profile(user) {
     photo: '',
   });
 
+  {/*Replace with actual api endpoint once launched */}
+  React.useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/profile/recruiter/getFullProfile?recruiterID=${user.user.uid}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // setProfile(data.data);
+          console.log(data.data);
+        } else {
+          console.error('Failed to fetch profile:', data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, [user.user.uid]);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setProfile((prevProfile) => ({
@@ -66,7 +93,8 @@ export default function Profile(user) {
     }
   };
 
-  console.log(user.user.email);
+  // console.log(user.user);
+  // console.log(user.user.email);
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-full mx-auto bg-white p-2">
