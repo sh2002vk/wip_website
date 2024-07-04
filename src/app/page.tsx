@@ -35,7 +35,7 @@ export default function Home() {
         await createUserWithEmailAndPassword(auth, email, password);
       }
       console.log("Login success");
-      router.push('/home/dashboard'); // Redirect to dashboard after successful login/sign up
+      router.push('/home-student'); // /home for recruiter view, /home-student for student view
     } catch (error) {
       console.error('Authentication error:', error);
     }
