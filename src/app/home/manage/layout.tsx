@@ -54,11 +54,12 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
   ]
 
   const [selectedJob, setSelectedJob] = useState(null);
-  const [jobs, setJobs] = useState(initialDrafts);
   const [drafts, setDrafts] = useState([]);
   const [completed, setCompleted] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [companyName, setCompanyName] = useState('');
+  const [companyID, setCompanyID] = useState('');
 
   const handleSelectJob = (job) => {
     setSelectedJob(job);
@@ -68,16 +69,15 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
     setSelectedJob(null);
   };
 
-  // const handleJobUpdate = (updatedJob) => {
-  //   // console.log("Updated Job:", updatedJob);
-  //   setJobs((currentJobs) => {
-  //     const updatedJobs = currentJobs.map((job) =>
-  //       job.id === updatedJob.id ? updatedJob : job
-  //     );
-  //     // console.log("Updated Jobs List:", updatedJobs);
-  //     return updatedJobs;
-  //   });
-  // };
+  const handleJobUpdate = (updatedJob: any) => {
+    setSelectedJob(updatedJob);
+    setDrafts((prevDrafts) =>
+        prevDrafts.map((job) => job.JobID === updatedJob.JobID ? updatedJob : job)
+    );
+    setCompleted((prevCompleted) =>
+        prevCompleted.map((job) => job.JobID === updatedJob.JobID ? updatedJob : job)
+    );
+  };
 
   const fetchJobPostings = async () => {
     try {
@@ -95,17 +95,47 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
         const completed = data.data.filter((job) => job.Status === "COMPLETED");
         setDrafts(drafts);
         setCompleted(completed);
+
+        if (data.data.length > 0 && data.data[0].CompanyID !== companyID) {
+          setCompanyID(data.data[0].CompanyID);
+        }
+
+        setLoading(false);
       } else {
         setError(data.message);
+        setLoading(false);
       }
     } catch (error) {
       setError("Error");
+      setLoading(false);
+    }
+  };
+
+  const fetchCompany = async (companyID) => { // We can delete this later, and instead pass the companyID in later given the recruiterID. Right now, there will be no Company ID if there are no jobs
+    try {
+      const response = await fetch(`http://localhost:4000/profile/company/getFullProfile?companyID=${companyID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      setCompanyName(data.data.Name);
+    } catch (error) {
+      console.log('Error getting information on Company');
     }
   };
 
   useEffect(() => {
-    // console.log("Jobs State:", jobs);
-  }, [jobs]);
+    fetchJobPostings();
+  }, []);
+
+  useEffect(() => {
+    if (companyID) {
+      fetchCompany(companyID);
+    }
+  }, [companyID]);
+
 
   return (
     <div className="flex h-screen">
@@ -115,6 +145,8 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
           onGetJobPostings={fetchJobPostings}
           drafts={drafts}
           completed={completed}
+          companyID = {companyID}
+          companyName = {companyName}
         />
       </div>
       <div className="flex-1 p-4 overflow-x-auto overflow-y-auto no-scrollbar">
@@ -125,7 +157,8 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
             job={selectedJob}
             onClose={handleCloseJobDetails}
             onGetJobPostings={fetchJobPostings}
-            // onJobUpdate={handleJobUpdate} // Pass the update handler
+            companyName={companyName}
+            onJobUpdate={handleJobUpdate} // Pass the update handler
           />
         )}
       </div>

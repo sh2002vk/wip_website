@@ -8,36 +8,7 @@ import StudentProfileView from "@/app/ui/search/studentProfileView";
 import JobDashboard from "@/app/ui/manage/recruiters/jobDashboard";
 import "./style.css"
 
-interface JobDetailsProps {
-  job: {
-    id: string;
-    company: string;
-    title: string;
-    location: string;
-    jobDescription: string;
-    jobDetail: string;
-    jobDetailJobType: string;
-    jobDetailDuration: string;
-    jobDetailStartTerm: string;
-    jobDetailWorkMode: string;
-    jobDetailIndustry: string;
-    jobQualification: string;
-    jobBenefits: string;
-    type: string;
-    draft: boolean;
-    requiredDocuments: {
-      coverLetter: boolean,
-      videoApplication: boolean,
-      cognitiveTest: boolean,
-      englishSample: boolean,
-      onlineAssessment: boolean
-    }
-  };
-  onClose: () => void;
-  onJobUpdate: (updatedJob: any) => void; // Function to update job details
-}
-
-const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
+const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings}) => { //onJobUpdate
   const [isJobDetailsOpen, setIsJobDetailsOpen] = useState(false);
   const [isJobDescriptionOpen, setIsJobDescriptionOpen] = useState(false);
   const [isJobQualificationOpen, setIsJobQualificationOpen] = useState(false);
@@ -46,50 +17,54 @@ const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
 
   const [jobDetailsJobType, setJobDetailsJobType] = useState(job.Type);
   const [jobDetailsDuration, setJobDetailsDuration] = useState(job.Duration);
-  const [jobDetailsStartTerm, setJobDetailsStartTerm] = useState(job.StartTime);
+  const [jobDetailsTerms, setJobDetailsTerms] = useState(job.Terms);
   const [jobDetailsWorkMode, setJobDetailsWorkMode] = useState(job.Environment);
   const [jobDetailsIndustry, setJobDetailsIndustry] = useState(job.Industry);
   const [jobDescriptionContent, setJobDescriptionContent] = useState(job.JobDescription);
   const [jobQualificationContent, setJobQualificationContent] = useState(job.JobQualification);
   const [jobTitle, setJobTitle] = useState(job.Role);
-  const [jobCompany, setJobCompany] = useState(job.companyModel.Name);
+  const [jobCompany, setJobCompany] = useState(companyName);
   const [jobLocation, setJobLocation] = useState(job.Location);
   const [jobStatus, setJobStatus] = useState(job.Status);
   //ADD PAY?
   const [requiredDocuments, setRequiredDocuments] = useState({
-    Resume: job.RequiredDocuments?.resume || false,
-    CoverLetter: job.RequiredDocuments?.coverLetter || false,
+    Resume: job.RequiredDocuments?.Resume || false,
+    CoverLetter: job.RequiredDocuments?.CoverLetter || false,
     // VideoApplication: job.RequiredDocuments?.videoApplication || false,
-    EnglishSample: job.RequiredDocuments?.englishSample || false,
+    EnglishSample: job.RequiredDocuments?.EnglishSample || false,
   });
 
   useEffect(() => {
-    setJobDetailsJobType(job.jobDetailJobType)
-    setJobDetailsDuration(job.jobDetailDuration)
-    setJobDetailsStartTerm(job.jobDetailStartTerm)
-    setJobDetailsWorkMode(job.jobDetailWorkMode)
-    setJobDetailsIndustry(job.jobDetailIndustry)
-    setJobDescriptionContent(job.jobDescription);
-    setJobQualificationContent(job.jobQualification);
-    setJobTitle(job.title);
-    setJobCompany(job.company);
-    setJobLocation(job.location);
-    setRequiredDocuments(job.requiredDocuments)
+    updateJobDetails();
   }, [job]);
 
-  const toggleJobDetails = () => setIsJobDetailsOpen(!isJobDetailsOpen);
-  const toggleJobDescription = () => setIsJobDescriptionOpen(!isJobDescriptionOpen);
-  const toggleJobQualification = () => setIsJobQualificationOpen(!isJobQualificationOpen);
+  const updateJobDetails = () => {
+    setJobTitle(job.Role);
+    setJobLocation(job.Location);
+    setJobDetailsJobType(job.Type);
+    setJobDetailsDuration(job.Duration);
+    setJobDetailsTerms(job.Terms);
+    setJobDetailsWorkMode(job.Environment);
+    setJobDetailsIndustry(job.Industry);
+    setJobDescriptionContent(job.JobDescription);
+    setJobQualificationContent(job.JobQualification);
+    setJobCompany(companyName);
+    setRequiredDocuments({
+      Resume: job.RequiredDocuments?.Resume || false,
+      CoverLetter: job.RequiredDocuments?.CoverLetter || false,
+      EnglishSample: job.RequiredDocuments?.EnglishSample || false,
+    });
+  }
 
-  const handleOptionChange = (sectionName: string, newSelectedOptions: string) => {
+  const handleOptionChange = (sectionName: string, newSelectedOptions: string | string[])  => {
     if (sectionName === 'Work Type') {
       setJobDetailsJobType(newSelectedOptions);
     }
     if (sectionName === 'Duration') {
       setJobDetailsDuration(newSelectedOptions);
     }
-    if (sectionName === 'Start Term') {
-      setJobDetailsStartTerm(newSelectedOptions);
+    if (sectionName === 'Terms') {
+      setJobDetailsTerms(newSelectedOptions);
     }
     if (sectionName === 'Work Mode') {
       setJobDetailsWorkMode(newSelectedOptions);
@@ -101,27 +76,11 @@ const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
   };
   const toggleEdit = async () => {
     if (isEditing) {
-      // const updatedJob = {
-      //   ...job,
-      //   jobDetailsJobType: jobDetailsJobType,
-      //   jobDetailsDuration: jobDetailsDuration,
-      //   jobDetailsStartTerm: jobDetailsStartTerm,
-      //   jobDetailsWorkMode: jobDetailsWorkMode,
-      //   jobDetailsIndustry: jobDetailsIndustry,
-      //   jobDescription: jobDescriptionContent,
-      //   jobQualification: jobQualificationContent,
-      //   title: jobTitle,
-      //   company: jobCompany,
-      //   location: jobLocation,
-      //   requiredDocuments: requiredDocuments
-      // };
       await handleUpdate();
-      await onGetJobPostings();
-
-      // onJobUpdate(updatedJob);
-      console.log("Updating");
+      setIsEditing(!isEditing);
+    } else {
+      setIsEditing(!isEditing);
     }
-    setIsEditing(!isEditing);
   };
 
   const handleToggleRequiredDocument = (doc: keyof typeof requiredDocuments) => {
@@ -164,6 +123,7 @@ const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
   }
 
   const handleUpdate = async () => {
+    console.log("title being used to update is:" + jobTitle);
     const updateData = {
       Type: jobDetailsJobType,
       Role: jobTitle,
@@ -171,8 +131,7 @@ const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
       // Pay: 0, CHANGE LATER IF NEEDED
       Environment: jobDetailsWorkMode,
       Duration: jobDetailsDuration,
-      StartTime: jobDetailsStartTerm,
-      // EndTime:
+      Terms: jobDetailsTerms,
       Industry: jobDetailsIndustry,
       JobDescription: jobDescriptionContent,
       JobQualification: jobQualificationContent,
@@ -194,11 +153,12 @@ const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
           updatedData: updateData
         })
       })
-      console.log(job.JobID)
       if (!response.ok) {
         console.log("error updating");
       } else {
-        console.log("successfully updated: ", response)
+        const updatedJob = await response.json();
+        onJobUpdate(updatedJob); // Pass updated job back to parent
+        console.log("successfully updated: ", updatedJob);
       }
     } catch (error) {
       console.log(error);
@@ -208,17 +168,16 @@ const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
   return (
     <div key={job.JobID} className="p-4 bg-white overflow-y-auto no-scrollbar">
       <div className="border-b border-gray-300 mb-4">
-        <>{job.JobID}</>
         <div className="flex justify-between mt-4">
           {isEditing ? (
             <input
               type="text"
-              value={job.Role}
+              value={jobTitle}
               onChange={(e) => setJobTitle(e.target.value)}
               className="w-1/2 p-1 text-xl font-bold mb-2 border text-gray-600 border-gray-300 rounded"
             />
           ) : (
-            <h2 className="text-xl font-bold mb-2">{job.Role}</h2>
+            <h2 className="text-xl font-bold mb-2">{jobTitle}</h2>
           )}
           {isEditing ? (
             <div className="flex space-x-4">
@@ -242,25 +201,25 @@ const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
             <>
               <input
                 type="text"
-                value={job.companyModel.Name}
+                value={companyName}
                 onChange={(e) => setJobCompany(e.target.value)}
                 className="w-1/2 p-1 text-lg font-bold mb-2 border text-gray-400 border-gray-300 rounded"
               />
               <input
                 type="text"
-                value={job.Location}
+                value={jobLocation}
                 onChange={(e) => setJobLocation(e.target.value)}
                 className="w-1/2 p-1 text-lg mb-2 border text-gray-400 border-gray-300 rounded"
               />
             </>
           ) : (
             <>
-              <p className="text-lg font-bold">{job.companyModel.Name}</p>
+              <p className="text-lg font-bold">{companyName}</p>
               {job.Status == "DRAFT" ? (
-                  <p className="text-lg">{job.Location}</p>
+                  <p className="text-lg">{jobLocation}</p>
               ) : (
                 <div className={"flex justify-between"}>
-                  <p className="text-lg">{job.Location}</p>
+                  <p className="text-lg">{jobLocation}</p>
                   {isDashboardView ? (
                       <p
                         className="text-lg text-orange-500 underline cursor-pointer"
@@ -293,31 +252,32 @@ const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
                 {
                   title: "Job Type",
                   options: ["Internship", "Contract", "Other"],
-                  selectedOption: job.Type,
+                  selectedOptions: jobDetailsJobType,
                   onOptionChange: (newSelectedOptions) => handleOptionChange('Work Type', newSelectedOptions)
                 },
                 {
                   title: "Duration",
-                  options: ["4 months", "8 months", "1+ year"],
-                  selectedOption: job.Duration,
+                  options: ["4 months", "8 months", "12 months"],
+                  selectedOptions: jobDetailsDuration,
                   onOptionChange: (newSelectedOptions) => handleOptionChange('Duration', newSelectedOptions)
                 },
                 {
-                  title: "Start Term",
-                  options: ["Fall 24", "Winter 25", "Spring 25", "Summer 25"],
-                  selectedOption: job.StartTime,
-                  onOptionChange: (newSelectedOptions) => handleOptionChange('Start Term', newSelectedOptions)
+                  title: "Terms",
+                  options: ["F24", "W25", "S25"],
+                  selectedOptions: jobDetailsTerms,
+                  onOptionChange: (newSelectedOptions) => handleOptionChange('Terms', newSelectedOptions),
+                  multiple: true // Indicate this section allows multiple selections
                 },
                 {
                   title: "Work Mode",
                   options: ["In-person", "Hybrid", "Remote"],
-                  selectedOption: job.Environment,
+                  selectedOptions: jobDetailsWorkMode,
                   onOptionChange: (newSelectedOptions) => handleOptionChange('Work Mode', newSelectedOptions)
                 },
                 {
                   title: "Industry",
                   options: ["Technology", "Business"],
-                  selectedOption: job.Industry,
+                  selectedOptions: jobDetailsIndustry,
                   onOptionChange: (newSelectedOptions) => handleOptionChange('Industry', newSelectedOptions)
                 },
               ]}
@@ -342,39 +302,57 @@ const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
             <div className="flex justify-between w-full">
               {isEditing ? (
                   <>
-                    <h2 className="text-lg font-bold">Cover Letter</h2>
-                    {/*<JobOptionToggle*/}
-                    {/*    isSelected={job.RequiredDocuments.coverLetter}*/}
-                    {/*    onToggle={() => handleToggleRequiredDocument("coverLetter")}*/}
-                    {/*/>*/}
+                    <h2 className="text-lg font-bold">Resume</h2>
+                    <JobOptionToggle
+                        isSelected={requiredDocuments?.Resume}
+                        onToggle={() => handleToggleRequiredDocument("Resume")}
+                    />
                   </>
               ) : (
                   <>
-                    <h2 className={`${job.RequiredDocuments?.coverLetter ?? false ?
+                    <h2 className={`${requiredDocuments?.Resume ?? false ?
+                        "text-lg font-bold" :
+                        "text-gray-300 text-lg font-bold"}`}
+                    >Resume</h2>
+                  </>
+              )}
+            </div>
+            <div className="flex justify-between w-full">
+              {isEditing ? (
+                  <>
+                    <h2 className="text-lg font-bold">Cover Letter</h2>
+                    <JobOptionToggle
+                        isSelected={requiredDocuments?.CoverLetter}
+                        onToggle={() => handleToggleRequiredDocument("CoverLetter")}
+                    />
+                  </>
+              ) : (
+                  <>
+                    <h2 className={`${requiredDocuments?.CoverLetter ?? false ?
                         "text-lg font-bold" :
                         "text-gray-300 text-lg font-bold"}`}
                     >Cover Letter</h2>
                   </>
                 )}
             </div>
-            <div className="flex justify-between w-full">
-              {isEditing ? (
-                  <>
-                    <h2 className="text-lg font-bold">Video Application</h2>
+            {/*<div className="flex justify-between w-full">*/}
+            {/*  {isEditing ? (*/}
+            {/*      <>*/}
+            {/*        <h2 className="text-lg font-bold">Video Application</h2>*/}
                     {/*<JobOptionToggle*/}
                     {/*    isSelected={job.RequiredDocuments.videoApplication}*/}
                     {/*    onToggle={() => handleToggleRequiredDocument("videoApplication")}*/}
                     {/*/>*/}
-                  </>
-              ) : (
-                  <>
-                    <h2 className={`${job.RequiredDocuments?.videoApplication ?? false ?
-                        "text-lg font-bold" :
-                        "text-gray-300 text-lg font-bold"}`}
-                    >Video Application</h2>
-                  </>
-              )}
-            </div>
+            {/*      </>*/}
+            {/*  ) : (*/}
+            {/*      <>*/}
+            {/*        <h2 className={`${job.RequiredDocuments?.videoApplication ?? false ?*/}
+            {/*            "text-lg font-bold" :*/}
+            {/*            "text-gray-300 text-lg font-bold"}`}*/}
+            {/*        >Video Application</h2>*/}
+            {/*      </>*/}
+            {/*  )}*/}
+            {/*</div>*/}
             {/*<div className="flex justify-between w-full">*/}
             {/*  {isEditing ? (*/}
             {/*      <>*/}
@@ -397,14 +375,14 @@ const JobDetails = ({ job, onClose, onGetJobPostings}) => { //onJobUpdate
               {isEditing ? (
                   <>
                     <h2 className="text-lg font-bold">English Sample</h2>
-                    {/*<JobOptionToggle*/}
-                    {/*    isSelected={job.RequiredDocuments.englishSample}*/}
-                    {/*    onToggle={() => handleToggleRequiredDocument("englishSample")}*/}
-                    {/*/>*/}
+                    <JobOptionToggle
+                        isSelected={requiredDocuments?.EnglishSample}
+                        onToggle={() => handleToggleRequiredDocument("EnglishSample")}
+                    />
                   </>
               ) : (
                   <>
-                    <h2 className={`${job.RequiredDocuments?.englishSample ?? false ?
+                    <h2 className={`${requiredDocuments?.EnglishSample ?? false ?
                         "text-lg font-bold" :
                         "text-gray-300 text-lg font-bold"}`}
                     >English Sample</h2>

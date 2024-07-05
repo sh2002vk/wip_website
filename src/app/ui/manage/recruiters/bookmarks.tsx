@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import JobCard from './cards/jobCard';
 
-export default function Bookmarks({ onSelectJob, onGetJobPostings, drafts, completed }) {
+export default function Bookmarks({ companyName, companyID, onSelectJob, onGetJobPostings, drafts, completed }) {
 
   useEffect(() => {
     onGetJobPostings();
@@ -16,7 +16,6 @@ export default function Bookmarks({ onSelectJob, onGetJobPostings, drafts, compl
   const fetchNewPosting = async() => {
     try {
       const recruiterID = 1;
-      const companyID = 57;
       const response = await fetch('http://localhost:4000/action/recruiter/createJobPosting', {
         method: 'POST',
         headers: {
@@ -34,10 +33,8 @@ export default function Bookmarks({ onSelectJob, onGetJobPostings, drafts, compl
 
       if (response.ok) {
         await onGetJobPostings();
-        console.log("OK");
-        const newJob = drafts[drafts.length-1];
+        const newJob = data;
         onSelectJob(newJob);
-        console.log(newJob)
       } else {
         console.log(data.message);
       }
@@ -69,7 +66,7 @@ export default function Bookmarks({ onSelectJob, onGetJobPostings, drafts, compl
           {activeToggle === 'Drafts' && drafts.map((job) => (
             <JobCard 
               key={job.JobID}
-              company={job.companyModel.Name}
+              company={companyName}
               title={job.Role}
               type={job.Environment}
               onClick={() => onSelectJob(job)}
@@ -79,7 +76,7 @@ export default function Bookmarks({ onSelectJob, onGetJobPostings, drafts, compl
           {activeToggle === 'Completed' && completed.map((job) => (
             <JobCard 
               key={job.JobID}
-              company={job.companyModel.Name}
+              company={companyName}
               title={job.Role}
               type={job.Environment}
               onClick={() => onSelectJob(job)}
