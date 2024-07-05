@@ -40,6 +40,62 @@ export default function Profile(user) {
     photo: '',
   });
 
+  
+  //Since there are some attributes missing in the backend, need to filter the profile and pass the correct variables to the backend
+  const getAvailableFields = (profile) => {
+    // Mapping from frontend keys to backend keys
+    const keyMapping = {
+      name: ['FirstName', 'LastName'], // name should be split into FirstName and LastName
+      company: 'CompanyName',
+      email: 'EmailID',
+      location: 'Locations',
+      hiringFor: 'Roles',
+    };
+  
+    let filteredProfile = {};
+  
+    for (let key in keyMapping) {
+      if (profile[key]) {
+        if (Array.isArray(keyMapping[key])) {
+          // Handle case where one key maps to multiple backend keys
+          filteredProfile[keyMapping[key][0]] = profile[key].split(' ')[0];
+          filteredProfile[keyMapping[key][1]] = profile[key].split(' ')[1];
+        } else {
+          filteredProfile[keyMapping[key]] = profile[key];
+        }
+      }
+    }
+  
+    return filteredProfile;
+  };
+
+  const updateProfile = async (updatedProfile) => {
+    const filteredProfile = getAvailableFields(updatedProfile);
+
+    try {
+      const response = await fetch('http://localhost:4000/account/recruiter/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recruiterID: user.user.uid,
+          updatedData: filteredProfile
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Profile updated successfully:', data);
+      } else {
+        console.error('Failed to update profile:', data.message);
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
   {/*Replace with actual api endpoint once launched */}
   React.useEffect(() => {
     const fetchProfile = async () => {
@@ -54,7 +110,25 @@ export default function Profile(user) {
         const data = await response.json();
 
         if (response.ok) {
-          // setProfile(data.data);
+
+          let recruiter = data.data;
+          setProfile({
+            name: `${recruiter.FirstName} ${recruiter.LastName}`,
+            company: recruiter.CompanyName,
+            position: recruiter.Position ||'Position TODO', //Need to add this attribute to backend
+            email: recruiter.EmailID,
+            location: recruiter.Locations || '', //********Need to discuss about how to separate city, province and country
+            hiringFor: recruiter.Roles || '', //********Need to discuss about how to separate different roles
+            area: recruiter.Area || 'TODO', //Need to add this attribute to backend
+            documents: recruiter.Documents || 'TODO', //Need to add this attribute to backend
+            bio: recruiter.Bio || 'Need to add this attribute to backend', //Need to add this attribute to backend
+            contactEmail: recruiter.EmailID,
+            phone: recruiter.Phone || 'TODO', //Need to add this attribute to backend
+            culture: recruiter.Culture || 'Need to add this attribute to backend', //Need to add this attribute to backend
+            learningOpportunities: recruiter.LearningOpportunities || 'Need to add this attribute to backend', //Need to add this attribute to backend
+            benefits: recruiter.Benefits || 'Need to add this attribute to backend', //Need to add this attribute to backend
+            photo: '',
+          });
           console.log(data.data);
         } else {
           console.error('Failed to fetch profile:', data.message);
@@ -77,6 +151,9 @@ export default function Profile(user) {
 
   const handleSave = () => {
     setIsEditing(false);
+    console.log(profile);
+
+    updateProfile(profile);
   };
 
   const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -92,9 +169,6 @@ export default function Profile(user) {
       reader.readAsDataURL(file);
     }
   };
-
-  // console.log(user.user);
-  // console.log(user.user.email);
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-full mx-auto bg-white p-2">
