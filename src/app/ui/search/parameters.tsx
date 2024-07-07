@@ -12,9 +12,9 @@ import { styled } from "@mui/material/styles";
 
 type ParametersProps = {
   onSearch: (filters: {
-    availability: number;
+    duration: number;
     preference: string;
-    degreeLevel: string;
+    level: number;
     startDate: Dayjs | null;
     endDate: Dayjs | null;
     keyword: string;
@@ -70,6 +70,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
       location,
       minSalary,
       maxSalary,
+      selectedPrograms,
     };
     onSearch(currentFilters);
   };
