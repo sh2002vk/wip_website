@@ -52,6 +52,8 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
   const [activeToggle, setActiveToggle] = useState("Global");
   const [preferences, setPreferences] = useState([]);
   const [availabilities, setAvailabilities] = useState([]);
+  const [workingTypes, setWorkingTypes] = useState([]);
+  const [workingSessions, setWorkingSessions] = useState([]);
   const [degreeLevels, setDegreeLevels] = useState([]);
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
@@ -62,6 +64,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
   const handleShowResults = () => {
     const currentFilters = {
       availabilities,
+      workingTypes,
       preferences,
       degreeLevels,
       startDate,
@@ -209,8 +212,32 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
             />
           </div>
 
-{/* -------------------------Month Picker------------------------------- */}
+{/* -------------------------Working Type Availability------------------------------- */}
 
+<div className="bg-gray-200 rounded-xs mb-2">
+            <TripleToggle
+              leftToggle="Local"
+              rightToggle="Hybrid"
+              middleToggle="Remote"
+              activeToggles={workingTypes}
+              setActiveToggles={setWorkingTypes}
+            />
+          </div>
+
+{/* -------------------------Working Session------------------------------- */}
+<div className="bg-gray-200 rounded-xs mb-2">
+            <TripleToggle
+              leftToggle="Fall 24"
+              rightToggle="Summer 25"
+              middleToggle="Winter 25"
+              activeToggles={workingSessions}
+              setActiveToggles={setWorkingSessions}
+            />
+          </div>
+
+
+{/* -------------------------Month Picker------------------------------- */}
+{/* 
           <div id="start-end-dates" className="flex py-4 justify-between space-x-2">
             <StyledDatePicker
               label="Start Month"
@@ -228,7 +255,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
               views={["year", "month"]}
               format="MMMM YYYY"
             />
-          </div>
+          </div> */}
 
 {/* -------------------------Degree Level------------------------------- */}
 

@@ -7,21 +7,21 @@ interface JobCardProps {
   company: string;
   title: string;
   type: string;
-  onRemove: () => void;
+  // onRemove: () => void;
   onClick: () => void;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ company, title, type, onRemove, onClick }) => {
+const JobCard: React.FC<JobCardProps> = ({ company, title, type, onClick }) => {
   return (
     <div className="bg-gray-100 hover:bg-gray-200 p-4 rounded-lg h-[9vh]" onClick={onClick}>
       <div className="flex justify-between">
         <p className="text-sm font-bold italic text-black">{company}</p>
-        <button onClick={(e) => { e.stopPropagation(); onRemove(); }} className="bg-transparent font-bold text-gray-400 hover:text-gray-600">
-          <FontAwesomeIcon icon={faTimes} />
-        </button>
+        {/*<button onClick={(e) => { e.stopPropagation(); onRemove(); }} className="bg-transparent font-bold text-gray-400 hover:text-gray-600">*/}
+        {/*  <FontAwesomeIcon icon={faTimes} />*/}
+        {/*</button>*/}
       </div>
       <div className="flex justify-between">
-        <p className="text-sm">{title}</p>
+        <p className="text-sm truncate ">{title}</p>
         <p>|</p>
         <p className="text-sm">{type}</p>
       </div>
