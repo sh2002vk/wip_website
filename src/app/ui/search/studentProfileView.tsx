@@ -51,7 +51,7 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                 <div className="flex justify-between items-start">
                     <div>
                         <p className="text-base text-gray-500">Looking for:</p>
-                        <p className="text-lg font-medium text-gray-700">{student.Preference.join(' · ')}</p>
+                        <p className="text-lg font-medium text-gray-700">{student.Preference}</p>
                         <p className="text-base text-gray-500 mt-4">Availability</p>
                         <p className="text-lg font-medium text-gray-700">{student.Availability}</p>
                     </div>
@@ -90,21 +90,12 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                 </div>
                 <div className="mt-4">
                     <h2 className="text-base font-bold">Skill sets</h2>
-                    <p className="text-medium font-light">{student.Skills.join(', ')}</p>
+                    <p className="text-medium font-light">{student.Skills}</p>
                 </div>
                 <div className="mt-4">
                     <h2 className="text-base font-bold">Previous Experience</h2>
-                    {student.WorkExperience.map((exp, index) => (
-                        <div key={index} className="text-medium mb-1">
-                            <p>
-                                <span className="font-semibold italic">{exp.Role}</span> · {exp.Company}
-                            </p>
-                            {/*{(exp.startTime || exp.endTime) && (*/}
-                            {/*    <p className="text-base text-gray-500 font-light">*/}
-                            {/*        {exp.startTime ? `${exp.startTime} -` : ' -'} {exp.endTime}*/}
-                            {/*    </p>*/}
-                            {/*)}*/}
-                        </div>
+                    {student.WorkExperience.map((job, index) => (
+                        <li key={index}>{job.position} - {job.company}</li>
                     ))}
                 </div>
 

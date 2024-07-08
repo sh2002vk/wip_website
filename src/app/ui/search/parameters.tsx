@@ -74,6 +74,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
       minSalary,
       maxSalary,
       selectedPrograms,
+      workingSessions,
     };
     onSearch(currentFilters);
   };
