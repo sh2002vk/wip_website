@@ -36,7 +36,7 @@ export default function SideBar() {
           </Link>
         </nav>
         <div id='morebutton' className="flex justify-center mt-auto mb-10">
-          <Link href="/home/more" className="group flex items-center pl-10 pr-4 h-12 w-full hover:bg-gray-300">
+          <Link href="/home-student/more" className="group flex items-center pl-10 pr-4 h-12 w-full hover:bg-gray-300">
               <Image src="/ThreeBars.png" alt="Logo" width={50} height={50} className="mr-3" />
               <span className="text-sm font-medium">More</span> 
           </Link>
