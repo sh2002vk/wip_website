@@ -3,8 +3,17 @@ import React, { useState, useEffect } from 'react';
 import "./style.css"
 import StudentProfileView from "@/app/ui/search/studentProfileView";
 import JobDashboardTables from "@/app/ui/manage/recruiters/jobDashboardTables";
-const JobDashboard = () => {
-    const jobID = 1;
+
+interface Application {
+    Status: string;
+    StudentID: number;
+}
+
+interface Shortlist {
+    StudentID: number;
+}
+const JobDashboard = ({jobID}) => {
+    // const jobID = 1;
     const students = [
         {
             FirstName: 'John',
@@ -27,6 +36,100 @@ const JobDashboard = () => {
     const [showStudentDetail, setShowStudentDetail] = useState(false);
     const [isApplication, setIsApplication] = useState(false);
     const [bookmarkedStudents, setBookmarkedStudents] = useState([]);
+
+    const [applications, setApplications] = useState([]);
+    const [shortlist, setShortlist] = useState<Shortlist[]>([]);
+    const [applicationInformation, setApplicationInformation] = useState<Application[]>([]);
+    const [actionApplications, setActionApplications] = useState<Application[]>([]);
+    const [invitedApplications, setInvitedApplications] = useState<Shortlist[]>([]);
+    const [contactingApplications, setContactingApplications] = useState<Application[]>([]);
+    const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+    const fetchApplicationsAndShortlist = async (jobID: string) => {
+        try {
+            const [applicationsResponse, shortlistResponse] = await Promise.all([
+                fetch(`http://localhost:4000/action/recruiter/getApplicants?jobID=${jobID}`),
+                fetch(`http://localhost:4000/action/recruiter/getShortlistedStudents?jobID=${jobID}`)
+            ]);
+
+            const applications: Application[] = await applicationsResponse.json();
+            const shortlist: { data: Shortlist[] } = await shortlistResponse.json();
+
+            setApplications(applications);
+            setShortlist(shortlist.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchApplicationInformation = async (applicationID: number): Promise<Application | undefined> => {
+        try {
+            const response = await fetch(`http://localhost:4000/profile/application/getApplication?applicationID=${applicationID}`);
+            const applicationInfo: Application = await response.json();
+            return applicationInfo;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchApplicationsAndShortlist(jobID);
+    }, [jobID]);
+
+    useEffect(() => {
+        const fetchAllApplicationInformation = async () => {
+            let applicationInfo: Application[] = [];
+            for (const application of applications) {
+                const appInfo = await fetchApplicationInformation(application);
+                if (appInfo) {
+                    applicationInfo.push(appInfo);
+                }
+            }
+            setApplicationInformation(applicationInfo);
+            setIsDataLoaded(true);
+        };
+
+        if (applications.length > 0) {
+            fetchAllApplicationInformation();
+        }
+    }, [applications]);
+
+    useEffect(() => {
+        if (!isDataLoaded) return;  // Wait until data is fully loaded
+        const sortTables = () => {
+            let actionApps: Application[] = [];
+            let invitedApps: Shortlist[] = [];
+            let contactingApps: Application[] = [];
+
+            const shortlistSet = new Set(shortlist.map(item => item.StudentID));
+            const applicationSet = new Set(applicationInformation.map(app => app.StudentID));
+
+            console.log("shortlistSet", shortlistSet);
+            console.log("applicationSet", applicationSet);
+
+            applicationInformation.forEach(app => {
+                if ((app.Status === "REVIEWED" || app.Status === "APPLIED") && !shortlistSet.has(app.StudentID)) {
+                    actionApps.push(app);
+                } else if (shortlistSet.has(app.StudentID) || app.Status === "ACCEPT") {
+                    contactingApps.push(app);
+                }
+            });
+
+            invitedApps = shortlist.filter(item => !applicationSet.has(item.StudentID));
+
+            setActionApplications(actionApps);
+            setInvitedApplications(invitedApps);
+            setContactingApplications(contactingApps);
+
+            console.log("ACTION", actionApps);
+            console.log("INVITED", invitedApps);
+            console.log("CONTACTING", contactingApps);
+        };
+
+        if (applicationInformation.length > 0 || shortlist.length > 0) {
+            sortTables();
+        }
+    }, [applicationInformation, shortlist]);
 
     const handleCardClick = (student, isApplication) => {
         setShowStudentDetail(true);
@@ -60,6 +163,7 @@ const JobDashboard = () => {
                             isActionNeeded={true}
                             isInvited={false}
                             isContacting={false}
+                            data={actionApplications}
                         />
                     </div>
                     <div className="absolute bg-[#F5f5f5] p-2 rounded-lg shadow-md" style={{ width: '28%', height: '37%', left: '70%'}}>
@@ -68,6 +172,7 @@ const JobDashboard = () => {
                             isActionNeeded={false}
                             isInvited={true}
                             isContacting={false}
+                            data={invitedApplications}
                         />
                     </div>
                     <div className="absolute bg-[#F5f5f5] p-2 rounded-lg shadow-md" style={{ width: '61.5%', height: '33%', top: '63%'}}>
@@ -76,6 +181,7 @@ const JobDashboard = () => {
                             isActionNeeded={false}
                             isInvited={false}
                             isContacting={true}
+                            data={contactingApplications}
                         />
                     </div>
                 </>
@@ -88,7 +194,6 @@ const JobDashboard = () => {
                             onBookmark={() => handleBookmarkClick(selectedStudent)}
                             isBookmarked={isBookmarked(selectedStudent)}
                             isApplication={isApplication}
-                            applicationID={1}//The selected application
                         />
                     )}
                 </div>

@@ -165,6 +165,26 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
     }
   }
 
+  const handleCompleteJob = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/action/recruiter/updateJobPosting`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          jobID: job.JobID,
+          updatedData: {
+            Status: "COMPLETED"
+          }
+        })
+      })
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div key={job.JobID} className="p-4 bg-white overflow-y-auto no-scrollbar">
       <div className="border-b border-gray-300 mb-4">
@@ -190,7 +210,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
                   <>
                     <FontAwesomeIcon icon={faTrashCan} size="xl" onClick={handleDelete}/>
                     <FontAwesomeIcon icon={faPencilAlt} size="xl" onClick={toggleEdit} />
-                    {job.Status == "DRAFT" && <FontAwesomeIcon icon={faCheck} size="xl" />}
+                    {job.Status == "DRAFT" && <FontAwesomeIcon icon={faCheck} size="xl" onClick={handleCompleteJob}/>}
                   </>
                   ) : (<></>)}
             </div>
@@ -411,7 +431,9 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
         </>
       ):(
         <>
-          <JobDashboard />
+          <JobDashboard
+            jobID={job.JobID}
+          />
         </>
       )}
     </div>
