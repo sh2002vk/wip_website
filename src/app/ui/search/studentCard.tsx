@@ -45,7 +45,7 @@ export default function StudentCard({ FirstName, LastName, School, AcademicMajor
             <div className='text-left w-full'>
                 <div className="py-1">
                     <h3 className="text-base font-semibold">Looking for</h3>
-                    <p className="text-sm text-gray-600">{Preference.join(' · ')}</p>
+                    <p className="text-sm text-gray-600">{Preference}</p>
                 </div>
                 <div className="py-1">
                     <h3 className="text-base font-semibold">Availability</h3>
@@ -55,13 +55,13 @@ export default function StudentCard({ FirstName, LastName, School, AcademicMajor
                     <h3 className="text-base font-semibold">Previous Experience</h3>
                     <ul className="text-sm text-gray-600">
                         {WorkExperience.map((job, index) => (
-                            <li key={index}>{job.Role} - {job.Company}</li>
+                            <li key={index}>{job.position} - {job.company}</li>
                         ))}
                     </ul>
                 </div>
                 <div className="py-1">
                     <h3 className="text-base font-semibold">Skill sets</h3>
-                    <p className="text-sm text-gray-600">{Skills.join(', ')}</p>
+                    <p className="text-sm text-gray-600">{Skills}</p>
                 </div>
             </div>
         </div>

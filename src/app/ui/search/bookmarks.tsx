@@ -28,12 +28,14 @@ const Bookmarks = ({ students, onStudentClick, isExpanded, toggleExpand, closeEx
             />
           </div>
           {students.length > 0 ? (
-            students.map((student, index) => (
-              <div key={index} className="border-b border-gray-200 py-2 cursor-pointer" onClick={() => onStudentClick(student)}>
-                <div className="font-semibold">{student.FirstName} {student.LastName}</div>
-                <div className="text-sm text-gray-600">{student.School}</div>
-                <div className="text-sm text-gray-600">{student.AcademicMajor}</div>
-              </div>
+            students.filter(student => student !== null).map((student, index) => (
+              student && ( // Check if student is not null or undefined
+                <div key={index} className="border-b border-gray-200 py-2 cursor-pointer" onClick={() => onStudentClick(student)}>
+                  <div className="font-semibold">{student.FirstName} {student.LastName}</div>
+                  <div className="text-sm text-gray-600">{student.School}</div>
+                  <div className="text-sm text-gray-600">{student.AcademicMajor}</div>
+                </div>
+              )
             ))
           ) : (
             <p className="text-sm text-gray-600">No bookmarks yet</p>

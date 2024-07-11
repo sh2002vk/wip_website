@@ -131,11 +131,13 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                             </div>
                         </div>
 
+
                         <h1 className="mt-5 text-2xl font-bold">{student.FirstName} {student.LastName}</h1>
                         <p className="text-xl font-bold">{student.School}</p>
                         <p className="text-xl font-light">Major in {student.AcademicMajor}</p>
                         <p className="mt-5 text-gray-500 font-light">City · Province · Country</p>
                         <p className="mt-4 text-orange-500 font-medium">Some highlighted key words here, Consider adding a highlight attribute for a student object</p>
+
                     </div>
 
                     <div className={`flex-1 p-4 ${isApplication ? "py-4" : "py-8"}`}>
@@ -187,6 +189,7 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                             <h2 className="text-base font-bold">Skill sets</h2>
                             {/*<p className="text-medium font-light">{student.Skills.join(', ')}</p>*/}
                         </div>
+
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Previous Experience</h2>
                             {/*{student.WorkExperience.map((exp, index) => (*/}
@@ -202,6 +205,23 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                             {/*    </div>*/}
                             {/*))}*/}
                         </div>
+
+                    </div>
+                )}
+                <div className="mt-4">
+                    <h2 className="text-base font-bold">About</h2>
+                    <p className="text-medium font-light" style={{ textIndent: '2em' }}>This is where the candidate will insert a concise introduction about themselves, where they will share some information about things they would like recruiters to know about them. We need to set a word limit to this section. Ideally this section will not be too long, but I've also included a scroll bar at the right just in case.</p>
+                </div>
+                <div className="mt-4">
+                    <h2 className="text-base font-bold">Skill sets</h2>
+                    <p className="text-medium font-light">{student.Skills}</p>
+                </div>
+                <div className="mt-4">
+                    <h2 className="text-base font-bold">Previous Experience</h2>
+                    {student.WorkExperience.map((job, index) => (
+                        <li key={index}>{job.position} - {job.company}</li>
+                    ))}
+                </div>
 
                         <div className="flex-grow"></div>
 

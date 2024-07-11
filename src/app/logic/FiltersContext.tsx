@@ -3,9 +3,9 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface Filters {
-  availability: number;
+  duration: number;
   preference: string;
-  degreeLevel: string;
+  level: number;
   date: Date | null;
   keyword: string;
 }
@@ -32,9 +32,9 @@ interface FiltersProviderProps {
 
 export const FiltersProvider: React.FC<FiltersProviderProps> = ({ children }) => {
   const [filters, setFilters] = useState<Filters>({
-    availability: 0,
+    duration: 0,
     preference: "UNAVAILABLE",
-    degreeLevel: "UNAVAILABLE",
+    level: 0,
     date: null,
     keyword: '',
   });
