@@ -151,7 +151,7 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                         </div>
                         {isApplication && (
                             <div className={"flex space-x-2 mt-2"}>
-                                <div> {/*TODO: API calls instead of hard coded sampleApplication*/}
+                                <div>
                                     {(applicationInformation.SubmittedDocuments?.Resume ?? false) && (
                                         <button className="bg-[#ff6f00] hover:bg-orange-400 text-white font-bold py-0.5 px-2 rounded"
                                                 onClick={() => handleDocumentClick("Resume")}>
@@ -183,17 +183,13 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                         </div>
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Skill sets</h2>
-                            <p className="text-medium font-light">
-                                {student.Skills && JSON.parse(student.Skills).join(', ')}
-                            </p>
+                            <p className="text-medium font-light">{JSON.parse(student.Skills).join(', ')}</p>
                         </div>
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Previous Experience</h2>
-                            <ul>
-                                {student.WorkExperience && JSON.parse(student.WorkExperience).map((job, index) => (
-                                    <li key={index}>{job.Role} - {job.Company}</li>
-                                ))}
-                            </ul>
+                            {student.WorkExperience && JSON.parse(student.WorkExperience).map((job, index) => (
+                                <li key={index}>{job.Role} - {job.Company}</li>
+                            ))}
                         </div>
 
                         <div className="flex-grow"></div>
