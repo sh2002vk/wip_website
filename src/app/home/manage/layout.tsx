@@ -81,7 +81,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
 
   const fetchJobPostings = async () => {
     try {
-      const recruiterID = 1;
+      const recruiterID = "oDNcwmuEt7XabxdBUHwtmSiG12T2"; ///TODO change this to the current recruiter
       const response = await fetch(`http://localhost:4000/action/recruiter/getJobPostings?recruiterID=${recruiterID}`, {
         method: 'GET',
         headers: {

@@ -119,7 +119,6 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                         <div className="flex">
                             <div className="w-[20px]"></div>
                             <div className="flex h-[150px] w-[150px] rounded-full bg-gray-300 overflow-hidden items-center justify-center">
-                                {/* For now, using WIP logo as a template */}
                                 <Image src="/wip.png" alt="profile picture" width={64} height={64} layout="responsive" />
                             </div>
                             <div className="w-[16px] text-sm" onClick={handleBookmarkClick}>
@@ -131,13 +130,11 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                             </div>
                         </div>
 
-
                         <h1 className="mt-5 text-2xl font-bold">{student.FirstName} {student.LastName}</h1>
                         <p className="text-xl font-bold">{student.School}</p>
                         <p className="text-xl font-light">Major in {student.AcademicMajor}</p>
                         <p className="mt-5 text-gray-500 font-light">City · Province · Country</p>
                         <p className="mt-4 text-orange-500 font-medium">Some highlighted key words here, Consider adding a highlight attribute for a student object</p>
-
                     </div>
 
                     <div className={`flex-1 p-4 ${isApplication ? "py-4" : "py-8"}`}>
@@ -145,7 +142,6 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                             <div>
                                 <p className="text-base text-gray-500">Looking for:</p>
                                 <p className="text-lg font-medium text-gray-700">{student.Preference}</p>
-                                {/*{student.Preference.join(' · ')*/}
                                 <p className="text-base text-gray-500 mt-4">Availability</p>
                                 <p className="text-lg font-medium text-gray-700">{student.Availability}</p>
                             </div>
@@ -158,7 +154,7 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                                 <div> {/*TODO: API calls instead of hard coded sampleApplication*/}
                                     {(applicationInformation.SubmittedDocuments?.Resume ?? false) && (
                                         <button className="bg-[#ff6f00] hover:bg-orange-400 text-white font-bold py-0.5 px-2 rounded"
-                                            onClick={() => handleDocumentClick("Resume")}>
+                                                onClick={() => handleDocumentClick("Resume")}>
                                             Resume
                                         </button>
                                     )}
@@ -187,41 +183,18 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                         </div>
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Skill sets</h2>
-                            {/*<p className="text-medium font-light">{student.Skills.join(', ')}</p>*/}
+                            <p className="text-medium font-light">
+                                {student.Skills && JSON.parse(student.Skills).join(', ')}
+                            </p>
                         </div>
-
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Previous Experience</h2>
-                            {/*{student.WorkExperience.map((exp, index) => (*/}
-                            {/*    <div key={index} className="text-medium mb-1">*/}
-                            {/*        <p>*/}
-                            {/*            <span className="font-semibold italic">{exp.Role}</span> · {exp.Company}*/}
-                            {/*        </p>*/}
-                            {/*        /!*{(exp.startTime || exp.endTime) && (*!/*/}
-                            {/*        /!*    <p className="text-base text-gray-500 font-light">*!/*/}
-                            {/*        /!*        {exp.startTime ? `${exp.startTime} -` : ' -'} {exp.endTime}*!/*/}
-                            {/*        /!*    </p>*!/*/}
-                            {/*        /!*)}*!/*/}
-                            {/*    </div>*/}
-                            {/*))}*/}
+                            <ul>
+                                {student.WorkExperience && JSON.parse(student.WorkExperience).map((job, index) => (
+                                    <li key={index}>{job.Role} - {job.Company}</li>
+                                ))}
+                            </ul>
                         </div>
-
-                    </div>
-                )}
-                <div className="mt-4">
-                    <h2 className="text-base font-bold">About</h2>
-                    <p className="text-medium font-light" style={{ textIndent: '2em' }}>This is where the candidate will insert a concise introduction about themselves, where they will share some information about things they would like recruiters to know about them. We need to set a word limit to this section. Ideally this section will not be too long, but I've also included a scroll bar at the right just in case.</p>
-                </div>
-                <div className="mt-4">
-                    <h2 className="text-base font-bold">Skill sets</h2>
-                    <p className="text-medium font-light">{student.Skills}</p>
-                </div>
-                <div className="mt-4">
-                    <h2 className="text-base font-bold">Previous Experience</h2>
-                    {student.WorkExperience.map((job, index) => (
-                        <li key={index}>{job.position} - {job.company}</li>
-                    ))}
-                </div>
 
                         <div className="flex-grow"></div>
 
@@ -262,7 +235,6 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                         ) : (
                             <p>Loading document...</p>
                         )}
-                        {/*<p>{applicationInformation.SubmittedDocuments[shownDocument]}</p> /!*TODO change this to an api call to the google cloud storage bucket resume*!/*/}
                     </div>
                 </div>
             )}
