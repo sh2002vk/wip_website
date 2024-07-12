@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import JobCard from './cards/jobCard';
 
-export default function Bookmarks({ companyName, companyID, onSelectJob, onGetJobPostings, drafts, completed }) {
+export default function Bookmarks({ user, companyName, companyID, onSelectJob, onGetJobPostings, drafts, completed }) {
 
   useEffect(() => {
     onGetJobPostings();
@@ -15,14 +15,13 @@ export default function Bookmarks({ companyName, companyID, onSelectJob, onGetJo
 
   const fetchNewPosting = async() => {
     try {
-      const recruiterID = 1;
       const response = await fetch('http://localhost:4000/action/recruiter/createJobPosting', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          RecruiterID: recruiterID,
+          RecruiterID: user.uid,
           CompanyID: companyID,
           DatePosted: new Date(),
           Status: 'DRAFT'
