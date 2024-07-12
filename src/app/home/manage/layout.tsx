@@ -2,7 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import Bookmarks from '@/app/ui/manage/recruiters/bookmarks';
 import JobDetails from '@/app/ui/manage/recruiters/jobDetails';
-import SideBar from "@/app/ui/home/sidebar"; 
+import SideBar from "@/app/ui/home/sidebar";
+
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from '../../../firebase'; // Ensure the correct import path
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -53,6 +56,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
     },
   ]
 
+  const [user, setUser] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
   const [drafts, setDrafts] = useState([]);
   const [completed, setCompleted] = useState([]);
@@ -60,6 +64,18 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
   const [error, setError] = useState(null);
   const [companyName, setCompanyName] = useState('');
   const [companyID, setCompanyID] = useState('');
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleSelectJob = (job) => {
     setSelectedJob(job);
@@ -79,9 +95,28 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
     );
   };
 
+  useEffect(() => {
+    const fetchRecruiterProfile = async () => {
+      setLoading(true);
+      try {
+        if (user) {
+          const response = await fetch(`http://localhost:4000/profile/recruiter/getFullProfile?recruiterID=${user.uid}`);
+          const recruiter = await response.json();
+          setCompanyID(recruiter.data.CompanyID);
+        }
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecruiterProfile();
+  }, [user]);
+
   const fetchJobPostings = async () => {
     try {
-      const recruiterID = "oDNcwmuEt7XabxdBUHwtmSiG12T2"; ///TODO change this to the current recruiter
+      const recruiterID = user.uid;
       const response = await fetch(`http://localhost:4000/action/recruiter/getJobPostings?recruiterID=${recruiterID}`, {
         method: 'GET',
         headers: {
@@ -140,7 +175,8 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
   return (
     <div className="flex h-screen">
       <div className="w-full md:w-64 flex-none h-screen overflow-auto">
-        <Bookmarks 
+        <Bookmarks
+          user={user}
           onSelectJob={handleSelectJob}
           onGetJobPostings={fetchJobPostings}
           drafts={drafts}
