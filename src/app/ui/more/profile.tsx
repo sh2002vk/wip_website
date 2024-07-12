@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useState, ChangeEvent } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
+import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
+
 
 type ProfileType = {
   name: string;
@@ -8,15 +11,16 @@ type ProfileType = {
   position: string;
   email: string;
   location: string;
-  hiringFor: string;
-  area: string;
-  documents: string;
-  bio: string;
+  hiringFor: string[];
+  // area: string;
+  // documents: string;
+  // bio: string;
   contactEmail: string;
   phone: string;
-  culture: string;
-  learningOpportunities: string;
-  benefits: string;
+  linkedInProfile: string;
+  // culture: string;
+  // learningOpportunities: string;
+  // benefits: string;
   photo: string;
 };
 
@@ -28,15 +32,16 @@ export default function Profile(user) {
     position: '',
     email: '',
     location: '',
-    hiringFor: '',
-    area: '',
-    documents: '',
-    bio: '',
+    hiringFor: [],
+    // area: '',
+    // documents: '',
+    // bio: '',
     contactEmail: '',
     phone: '',
-    culture: '',
-    learningOpportunities: '',
-    benefits: '',
+    linkedInProfile: '',
+    // culture: '',
+    // learningOpportunities: '',
+    // benefits: '',
     photo: '',
   });
 
@@ -49,7 +54,9 @@ export default function Profile(user) {
       company: 'CompanyName',
       email: 'EmailID',
       location: 'Locations',
-      hiringFor: 'Roles',
+      position: 'Roles',
+      phone: 'PhoneNumber',
+      linkedInProfile: 'LinkedInProfile',
     };
   
     let filteredProfile = {};
@@ -111,25 +118,45 @@ export default function Profile(user) {
 
         if (response.ok) {
 
+          //If no problem fetching recruiter profile, fetch their job posting titles
+          const jobRolesResponse = await fetch(`http://localhost:4000/action/job/getJobRoles?recruiterID=${user.user.uid}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          const jobRolesData = await jobRolesResponse.json();
+          let topJobRoles: string[] = [];
+
+          if (jobRolesResponse.ok) {
+            console.log(jobRolesData);
+            topJobRoles = getTopJobRoles(jobRolesData);
+          } else {
+            console.error(jobRolesData.message);
+          }
+
+
           let recruiter = data.data;
           setProfile({
             name: `${recruiter.FirstName} ${recruiter.LastName}`,
             company: recruiter.CompanyName,
-            position: recruiter.Position ||'Position TODO', //Need to add this attribute to backend
+            position: recruiter.Roles,
             email: recruiter.EmailID,
             location: recruiter.Locations || '', //********Need to discuss about how to separate city, province and country
-            hiringFor: recruiter.Roles || '', //********Need to discuss about how to separate different roles
-            area: recruiter.Area || 'TODO', //Need to add this attribute to backend
-            documents: recruiter.Documents || 'TODO', //Need to add this attribute to backend
-            bio: recruiter.Bio || 'Need to add this attribute to backend', //Need to add this attribute to backend
+            hiringFor: topJobRoles || [], //********Need to discuss about how to separate different roles
+            // area: recruiter.Area || 'TODO', //Need to add this attribute to backend
+            // documents: recruiter.Documents || 'TODO', //Need to add this attribute to backend
+            // bio: recruiter.Bio || 'Need to add this attribute to backend', //Need to add this attribute to backend
             contactEmail: recruiter.EmailID,
-            phone: recruiter.Phone || 'TODO', //Need to add this attribute to backend
-            culture: recruiter.Culture || 'Need to add this attribute to backend', //Need to add this attribute to backend
-            learningOpportunities: recruiter.LearningOpportunities || 'Need to add this attribute to backend', //Need to add this attribute to backend
-            benefits: recruiter.Benefits || 'Need to add this attribute to backend', //Need to add this attribute to backend
+            phone: recruiter.PhoneNumber || '',
+            linkedInProfile: recruiter.LinkedInProfile || '',
+            // culture: recruiter.Culture || 'Need to add this attribute to backend', //Need to add this attribute to backend
+            // learningOpportunities: recruiter.LearningOpportunities || 'Need to add this attribute to backend', //Need to add this attribute to backend
+            // benefits: recruiter.Benefits || 'Need to add this attribute to backend', //Need to add this attribute to backend
             photo: '',
           });
-          console.log(data.data);
+          // console.log(data.data);
+
         } else {
           console.error('Failed to fetch profile:', data.message);
         }
@@ -140,6 +167,18 @@ export default function Profile(user) {
 
     fetchProfile();
   }, [user.user.uid]);
+
+  //Combined use for api call to job/getJobRoles, this function will count the top 4 most frequently appearing job titles the recruiter post
+  const getTopJobRoles = (jobRolesData) => {
+    const jobRoleCounts = jobRolesData.reduce((acc, role) => {
+      acc[role] = (acc[role] || 0) + 1;
+      return acc;
+    }, {});
+
+    const sortedJobRoles = Object.entries(jobRoleCounts).sort((a, b) => b[1] - a[1]);
+    return sortedJobRoles.slice(0, 4).map(entry => entry[0]);
+  };
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -167,6 +206,19 @@ export default function Profile(user) {
         }));
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleOpenLinkedinProfile = () => {
+    if(profile.linkedInProfile){
+      console.log(profile.linkedInProfile);
+      try {
+        let url = new URL(profile.linkedInProfile);
+        window.open(url, '_blank', 'noopener,noreferrer');
+
+      } catch (e) {
+        console.error("Invalid URL: ", e);
+      }
     }
   };
 
@@ -220,14 +272,7 @@ export default function Profile(user) {
                 placeholder="Position Title(s)"
                 className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
               />
-              <input
-                type="email"
-                name="email"
-                value={profile.email}
-                onChange={handleChange}
-                placeholder="email@example.com"
-                className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
-              />
+              <p className="mt-2 text-gray-600">{profile.email || 'email@example.com'}</p>
               <input
                 type="text"
                 name="location"
@@ -258,42 +303,16 @@ export default function Profile(user) {
 
       {/* Right Section */}
       <div className="flex flex-col md:w-2/3 p-4 space-y-6 mt-10 mr-8">
-        <div className="flex flex-col mb-4 space-y-2">
-          {isEditing ? (
-            <>
-              <div className="flex items-center mb-2">
-                <p className="mr-2 w-32">Hiring for:</p>
-                <input
-                  type="text"
-                  name="hiringFor"
-                  value={profile.hiringFor}
-                  onChange={handleChange}
-                  placeholder="Google | Amazon | Facebook"
-                  className="border-gray-300 rounded text-sm flex-grow"
-                />
+        <p>
+          <strong>Hiring for:</strong> 
+          {profile.hiringFor.map((role, index) => (
+              <div key={index} className="">
+                <p>{role}</p>
               </div>
-              <div className="flex items-center mb-2">
-                <p className="mr-2 w-32">Area:</p>
-                <input
-                  type="text"
-                  name="area"
-                  value={profile.area}
-                  onChange={handleChange}
-                  placeholder="Tech Roles"
-                  className="border-gray-300 rounded text-sm flex-grow"
-                />
-              </div>
-            </>
-          ) : (
-            <>
-              <p><strong>Hiring for:</strong> {profile.hiringFor || 'Google | Amazon | Facebook'}</p>
-              <p><strong>Area:</strong> {profile.area || 'Tech Roles'}</p>
-              <p><strong>Documents:</strong> {profile.documents || 'Company, Logo Image'}</p>
-            </>
-          )}
-        </div>
+          ))}
+      </p>
 
-        <div className="mb-4 space-y-2">
+        {/* <div className="mb-4 space-y-2">
           <h3 className="text-lg font-bold">Professional Bio</h3>
           {isEditing ? (
             <textarea
@@ -306,7 +325,7 @@ export default function Profile(user) {
           ) : (
             <p>{profile.bio || 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis quas sapiente inventore totam ullam obcaecati amet consectetur animi nesciunt esse?'}</p>
           )}
-        </div>
+        </div> */}
 
         <div className="mb-4 space-y-2">
           <h3 className="text-lg font-bold">Contact Information</h3>
@@ -314,14 +333,15 @@ export default function Profile(user) {
             <>
               <div className="flex items-center mb-2">
                 <p className="mr-2 w-32">Email:</p>
-                <input
+                {/* <input
                   type="email"
                   name="contactEmail"
                   value={profile.contactEmail}
                   onChange={handleChange}
                   placeholder="something@email.com"
                   className="border-gray-300 rounded text-sm flex-grow"
-                />
+                /> */}
+                <p>{profile.contactEmail}</p>
               </div>
               <div className="flex items-center mb-2">
                 <p className="mr-2 w-32">Phone:</p>
@@ -334,15 +354,31 @@ export default function Profile(user) {
                   className="border-gray-300 rounded text-sm flex-grow"
                 />
               </div>
+              <div className="flex items-center mb-2">
+                <p className="mr-2 w-32">LinkedIn Profile:</p>
+                <input
+                  type="text"
+                  name="linkedInProfile"
+                  value={profile.linkedInProfile}
+                  onChange={handleChange}
+                  placeholder="https://www.linkedin.com/in/example/"
+                  className="border-gray-300 rounded text-sm flex-grow"
+                />
+              </div>
             </>
           ) : (
             <>
               <p>Email: {profile.contactEmail}</p>
               <p>Phone: {profile.phone}</p>
+              <p onClick={handleOpenLinkedinProfile} style={{ cursor: 'pointer' }}>                    
+                <FontAwesomeIcon icon={faLinkedin} size="xl"/>
+                &nbsp; LinkedIn Profile
+              </p>
             </>
           )}
         </div>
-
+        
+        {/*
         <div className="mb-16 space-y-2">
           <h3 className="text-lg font-bold">Company Culture and Benefits</h3>
           {isEditing ? (
@@ -386,6 +422,7 @@ export default function Profile(user) {
             </>
           )}
         </div>
+        */}
       </div>
     </div>
   );
