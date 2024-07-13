@@ -183,7 +183,7 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                         </div>
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Skill sets</h2>
-                            <p className="text-medium font-light">{student.Skills.join(', ')}</p>
+                            <p className="text-medium font-light">{student.Skills && student.Skills.join(', ')}</p>
                         </div>
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Previous Experience</h2>
