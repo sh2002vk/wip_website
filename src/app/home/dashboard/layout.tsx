@@ -55,7 +55,9 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
       <div className="relative top-2 w-full h-full">
         {/* Tile 1 */}
         <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md overflow-hidden" style={{ width: '46%', height: '40%' }}>
-          <Applications />
+          <Applications
+            user={user}
+          />
         </div>
 
         {/* Tile 2 */}
