@@ -48,7 +48,7 @@ const JobDashboard = ({jobID}) => {
     const fetchApplicationsAndShortlist = async (jobID: string) => {
         try {
             const [applicationsResponse, shortlistResponse] = await Promise.all([
-                fetch(`http://localhost:4000/action/recruiter/getApplicants?jobID=${jobID}`),
+                fetch(`http://localhost:4000/action/recruiter/getJobApplicants?jobID=${jobID}`),
                 fetch(`http://localhost:4000/action/recruiter/getShortlistedStudents?jobID=${jobID}`)
             ]);
 
