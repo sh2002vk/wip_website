@@ -97,6 +97,14 @@ const ActivePostings = ({user}) => {
         }
     }
 
+    const daysUntilClosed = (dateClosed) => {
+        const today = new Date();
+        const closedDate = new Date(dateClosed);
+        const differenceInTime = closedDate - today;
+        const differenceInDays = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
+        return differenceInDays;
+    }
+
     useEffect(() => {
         fetchRowInformation();
     }, [user.uid])
@@ -146,20 +154,20 @@ const ActivePostings = ({user}) => {
                             <span className="text-medium font-medium">{item.job.Role}</span>
                         </div>
                         <div className="text-center" style={{ width: '100px' }}>
-                            <span className="text-medium font-light">{item.job.DatePosted}</span>
+                            <span className="text-medium font-light">{daysUntilClosed(item.job.DateClosed)}</span>
                         </div>
                         <div className="relative flex items-center text-left" style={{ width: '150px' }}>
                             <div className="relative">
                                 {item.applications.length > 0 && (
-                                    <div className="w-10 h-10 rounded-full overflow-hidden z-20 relative">
+                                    <div className="w-10 h-10 rounded-full overflow-hidden z-20 relative flex items-center justify-center bg-gray-300">
                                         {/*<img src={item.applicants.imageUrl} alt={item.role} className="w-full h-full object-cover" />*/}
-                                        <div className="bg-gray-300 rounded-full h-10 w-10 flex items-center justify-center text-lg font-bold text-gray-500">{item.applications[0].studentModel.FirstName.charAt(0)}</div>
+                                        <div className="text-lg font-bold text-gray-500">{item.applications[0].studentModel.FirstName.charAt(0)}</div>
                                     </div>
                                 )}
                                 {item.applications.length > 1 && (
-                                    <div className="w-6 h-6 rounded-full overflow-hidden absolute bottom-0 left-8 z-10">
+                                    <div className="w-6 h-6 rounded-full overflow-hidden absolute bottom-0 left-8 z-10 flex items-center justify-center bg-gray-300">
                                         {/*<img src={item.applicants.imageUrl} alt={item.role} className="w-full h-full object-cover" />*/}
-                                        <div className="bg-gray-300 rounded-full h-10 w-10 flex items-center justify-center text-lg font-bold text-gray-500">{item.applications[1].studentModel.FirstName.charAt(0)}</div>
+                                        <div className="text-sm font-bold text-gray-500">{item.applications[1].studentModel.FirstName.charAt(0)}</div>
                                     </div>
                                 )}
                             </div>
