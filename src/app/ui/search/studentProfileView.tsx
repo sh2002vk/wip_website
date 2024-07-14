@@ -9,7 +9,7 @@ import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { app } from "@/firebase";
 
-const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isApplication}) => {
+const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isApplication, refreshData}) => {
     const [bookmarked, setBookmarked] = useState(isBookmarked);
 
     const sampleApplications = [
@@ -85,7 +85,8 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                     }
                 })
             })
-            onClose();
+            refreshData(); // Refresh the data in the dashboard
+            onClose(); // Close the detail view
         } catch (error) {
             console.log(error)
         }
