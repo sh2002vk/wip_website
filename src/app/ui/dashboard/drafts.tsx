@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const Drafts = ({user}) => {
-  // const data = [
-  //   { role: 'Operations Intern', progress: 90 },
-  //   { role: 'Data Analyst', progress: 60 },
-  //   { role: 'Product Manager', progress: 60 },
-  //   { role: 'Project Manager', progress: 20 },
-  //   { role: 'Logistics Coordinator', progress: 10 },
-  //   { role: 'Logistics Coordinator', progress: 10 },
-  //   { role: 'Logistics Coordinator', progress: 10 }
-  // ];
 
   const [data, setData] = useState([]);
 
