@@ -65,7 +65,7 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
 
         {/* Tile 3 */}
         <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md overflow-hidden" style={{ width: '46%', height: '50%', top: '45%' }}>
-           <Drafts />
+           <Drafts user={user}/>
         </div>
 
         {/* Tile 4 */}

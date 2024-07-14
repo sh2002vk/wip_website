@@ -187,8 +187,8 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                         </div>
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Previous Experience</h2>
-                            {student.WorkExperience && JSON.parse(student.WorkExperience).map((job, index) => (
-                                <li key={index}>{job.Role} - {job.Company}</li>
+                            {student.WorkExperience && student.WorkExperience.map((job, index) => (
+                                <li key={index}>{job.position} - {job.company}</li>
                             ))}
                         </div>
 
