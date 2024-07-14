@@ -55,12 +55,15 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
       <div className="relative top-2 w-full h-full">
         {/* Tile 1 */}
         <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md overflow-hidden" style={{ width: '46%', height: '40%' }}>
-          <Applications />
+          <Applications
+            user={user}
+          />
         </div>
 
         {/* Tile 2 */}
         <div className="absolute bg-[#F5f5f5] p-4 rounded-lg shadow-md overflow-hidden" style={{ width: '49%', height: '53%', left: '50%' }}>
-          <ActivePostings />
+          <ActivePostings
+            user={user}/>
         </div>
 
         {/* Tile 3 */}
@@ -70,7 +73,9 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
 
         {/* Tile 4 */}
         <div className="absolute bg-[#FFFFFF] p-2 rounded-lg overflow-hidden" style={{ width: '49%', height: '40%', top: '57%', left: '50%' }}>
-          <ClosedPostings />
+          <ClosedPostings
+            user={user}
+          />
         </div>
       </div>
     </div>
