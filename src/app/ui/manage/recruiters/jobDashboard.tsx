@@ -44,7 +44,6 @@ const JobDashboard = ({jobID}) => {
     const [invitedApplications, setInvitedApplications] = useState<Shortlist[]>([]);
     const [contactingApplications, setContactingApplications] = useState<Application[]>([]);
     const [isDataLoaded, setIsDataLoaded] = useState(false);
-
     const fetchApplicationsAndShortlist = async (jobID: string) => {
         try {
             const [applicationsResponse, shortlistResponse] = await Promise.all([
@@ -73,10 +72,12 @@ const JobDashboard = ({jobID}) => {
     };
 
     useEffect(() => {
+        console.log("Fetching application and shortlist");
         fetchApplicationsAndShortlist(jobID);
     }, [jobID]);
 
     useEffect(() => {
+        console.log("Fetching Application Information");
         const fetchAllApplicationInformation = async () => {
             let applicationInfo: Application[] = [];
             for (const application of applications) {
@@ -95,6 +96,7 @@ const JobDashboard = ({jobID}) => {
     }, [applications]);
 
     useEffect(() => {
+        console.log("Sorting Tables");
         if (!isDataLoaded) return;  // Wait until data is fully loaded
         const sortTables = () => {
             let actionApps: Application[] = [];
@@ -153,6 +155,10 @@ const JobDashboard = ({jobID}) => {
     };
     const isBookmarked = (student) => bookmarkedStudents.some(s => s.name === student.name);
 
+    const refreshData = () => {
+        fetchApplicationsAndShortlist(jobID);
+    };
+
     return (
         <div className="flex flex-col h-full bg-white">
             {!showStudentDetail ? (
@@ -194,6 +200,7 @@ const JobDashboard = ({jobID}) => {
                             onBookmark={() => handleBookmarkClick(selectedStudent)}
                             isBookmarked={isBookmarked(selectedStudent)}
                             isApplication={isApplication}
+                            refreshData={refreshData}
                         />
                     )}
                 </div>
