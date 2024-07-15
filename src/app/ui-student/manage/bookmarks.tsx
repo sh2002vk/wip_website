@@ -45,6 +45,7 @@ export default function Bookmarks({ onSelectJob, initialDrafts}) {
         <div className="mt-4 flex justify-center">
           <p className="text-center text-md font-semibold">
             You have <span className="text-orange-500">{drafts.length}</span> applications left
+            {/*Add logic here to display how many applications are not completed */}
           </p>
         </div>
       </div>
