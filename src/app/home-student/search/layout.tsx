@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
 import Parameters from '@/app/ui-student/search/parameters';
 import JobCard from '@/app/ui-student/search/JobCard';
@@ -18,9 +18,9 @@ type Job = {
   citizenshipRequirement: string;
   applicationDeadline: string;
   duration: '4 months' | '8 months' | '1 year';
-  resume: string;
-  coverLetter: string;
-  transcript: string;
+  resume: boolean;
+  coverLetter: boolean;
+  transcript: boolean;
 };
 
 type LayoutProps = {
@@ -43,9 +43,9 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       citizenshipRequirement: "N/A",
       applicationDeadline: "2024-05-30",
       duration: "4 months",
-      resume: "https://example.com/resume1.pdf",
-      coverLetter: "https://example.com/coverletter1.pdf",
-      transcript: "https://example.com/transcript1.pdf"
+      resume: false,
+      coverLetter: true,
+      transcript: true
     },
     {
       title: "Data Analyst",
@@ -60,9 +60,9 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       citizenshipRequirement: "N/A",
       applicationDeadline: "2024-06-15",
       duration: "8 months",
-      resume: "https://example.com/resume2.pdf",
-      coverLetter: "https://example.com/coverletter2.pdf",
-      transcript: "https://example.com/transcript2.pdf"
+      resume: true,
+      coverLetter: false,
+      transcript: true
     },
     {
       title: "IT Support Specialist",
@@ -77,9 +77,9 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       citizenshipRequirement: "N/A",
       applicationDeadline: "2024-07-01",
       duration: "1 year",
-      resume: "https://example.com/resume3.pdf",
-      coverLetter: "https://example.com/coverletter3.pdf",
-      transcript: "https://example.com/transcript3.pdf"
+      resume: false,
+      coverLetter: true,
+      transcript: true
     },
     {
       title: "Machine Learning Engineer",
@@ -94,9 +94,9 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       citizenshipRequirement: "N/A",
       applicationDeadline: "2024-08-20",
       duration: "4 months",
-      resume: "https://example.com/resume4.pdf",
-      coverLetter: "https://example.com/coverletter4.pdf",
-      transcript: "https://example.com/transcript4.pdf"
+      resume: true,
+      coverLetter: true,
+      transcript: true
     },
     {
       title: "Embedded Systems Engineer",
@@ -111,9 +111,9 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       citizenshipRequirement: "N/A",
       applicationDeadline: "2024-09-10",
       duration: "8 months",
-      resume: "https://example.com/resume5.pdf",
-      coverLetter: "https://example.com/coverletter5.pdf",
-      transcript: "https://example.com/transcript5.pdf"
+      resume: true,
+      coverLetter: true,
+      transcript: true
     },
     {
       title: "Front-End Developer",
@@ -128,9 +128,9 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       citizenshipRequirement: "N/A",
       applicationDeadline: "2024-10-05",
       duration: "1 year",
-      resume: "https://example.com/resume6.pdf",
-      coverLetter: "https://example.com/coverletter6.pdf",
-      transcript: "https://example.com/transcript6.pdf"
+      resume: true,
+      coverLetter: true,
+      transcript: true
     }
   ];
 
@@ -203,7 +203,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
         )}
       </div>
       {!showJobDetail && (
-        <div className="absolute top-0 right-0 h-screen">
+        <div>
           <Bookmarks 
             jobs={bookmarkedJobs} 
             onJobClick={handleCardClick} 
