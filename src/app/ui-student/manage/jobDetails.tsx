@@ -57,10 +57,6 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobDelete }) =>
     onlineAssessment: job.requiredDocuments.onlineAssessment,
   });
 
-  const toggleJobDetails = () => setIsJobDetailsOpen(!isJobDetailsOpen);
-  const toggleJobDescription = () => setIsJobDescriptionOpen(!isJobDescriptionOpen);
-  const toggleJobQualification = () => setIsJobQualificationOpen(!isJobQualificationOpen);
-
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     console.log("Uploaded file:", file);
@@ -124,72 +120,80 @@ const JobDetails: React.FC<JobDetailsProps> = ({ job, onClose, onJobDelete }) =>
       </div>
 
       <div className="">
-        <h2 className="text-xl text-orange-500 font-bold mb-2">Application Status</h2>
-          {requiredDocuments.coverLetter && (
-            <div className="flex justify-between w-full">
-              <h2 className="text-lg font-bold">Cover Letter</h2>
-              <label className="text-lg italic font-bold cursor-pointer underline">
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  onChange={handleFileUpload} 
-                />
-                Submit
-              </label>
-            </div>
-          )}
-          {requiredDocuments.videoApplication && (
-            <div className="flex justify-between w-full">
-              <h2 className="text-lg font-bold">Video Application</h2>
-              <label className="text-lg italic font-bold cursor-pointer underline">
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  onChange={handleFileUpload} 
-                />
-                Submit
-              </label>
-            </div>
-          )}
-          {requiredDocuments.cognitiveTest && (
-            <div className="flex justify-between w-full">
-              <h2 className="text-lg font-bold">Cognitive Test</h2>
-              <label className="text-lg italic font-bold cursor-pointer underline">
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  onChange={handleFileUpload} 
-                />
-                Submit
-              </label>
-            </div>
-          )}
-          {requiredDocuments.englishSample && (
-            <div className="flex justify-between w-full">
-              <h2 className="text-lg font-bold">English Sample</h2>
-              <label className="text-lg italic font-bold cursor-pointer underline">
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  onChange={handleFileUpload} 
-                />
-                Submit
-              </label>
-            </div>
-          )}
-          {requiredDocuments.onlineAssessment && (
-            <div className="flex justify-between w-full">
-              <h2 className="text-lg font-bold">Online Assessment</h2>
-              <label className="text-lg italic font-bold cursor-pointer underline">
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  onChange={handleFileUpload} 
-                />
-                Submit
-              </label>
-            </div>
-          )}
+        <div className='flex justify-start'>
+          <h2 className="text-xl text-orange-500 font-bold mb-2">Application Status</h2>
+          <p className="text-lg text-gray-300 ml-3">
+            (Last Modified on 04, April, 2024)
+            {/*Add logic for displaying the last modified*/}
+          </p>
+        </div>
+
+        {requiredDocuments.coverLetter && (
+          <div className="flex justify-between w-full">
+            <h2 className="text-lg font-bold">Cover Letter</h2>
+            <label className="text-lg italic font-bold cursor-pointer underline">
+              <input 
+                type="file" 
+                className="hidden" 
+                onChange={handleFileUpload} 
+              />
+              Submit
+              {/*Add logic here to display Re-Submit, ex: when GET file returns true*/}
+            </label>
+          </div>
+        )}
+        {requiredDocuments.videoApplication && (
+          <div className="flex justify-between w-full">
+            <h2 className="text-lg font-bold">Video Application</h2>
+            <label className="text-lg italic font-bold cursor-pointer underline">
+              <input 
+                type="file" 
+                className="hidden" 
+                onChange={handleFileUpload} 
+              />
+              Submit
+            </label>
+          </div>
+        )}
+        {requiredDocuments.cognitiveTest && (
+          <div className="flex justify-between w-full">
+            <h2 className="text-lg font-bold">Cognitive Test</h2>
+            <label className="text-lg italic font-bold cursor-pointer underline">
+              <input 
+                type="file" 
+                className="hidden" 
+                onChange={handleFileUpload} 
+              />
+              Submit
+            </label>
+          </div>
+        )}
+        {requiredDocuments.englishSample && (
+          <div className="flex justify-between w-full">
+            <h2 className="text-lg font-bold">English Sample</h2>
+            <label className="text-lg italic font-bold cursor-pointer underline">
+              <input 
+                type="file" 
+                className="hidden" 
+                onChange={handleFileUpload} 
+              />
+              Submit
+            </label>
+          </div>
+        )}
+        {requiredDocuments.onlineAssessment && (
+          <div className="flex justify-between w-full">
+            <h2 className="text-lg font-bold">Online Assessment</h2>
+            <label className="text-lg italic font-bold cursor-pointer underline">
+              <input 
+                type="file" 
+                className="hidden" 
+                onChange={handleFileUpload} 
+              />
+              Submit
+            </label>
+          </div>
+        )}
       </div>
     </div>
   );
