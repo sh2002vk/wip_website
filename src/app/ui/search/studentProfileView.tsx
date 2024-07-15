@@ -9,7 +9,7 @@ import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { app } from "@/firebase";
 
-const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isApplication}) => {
+const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isApplication, refreshData}) => {
     const [bookmarked, setBookmarked] = useState(isBookmarked);
 
     const sampleApplications = [
@@ -85,7 +85,8 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                     }
                 })
             })
-            onClose();
+            refreshData(); // Refresh the data in the dashboard
+            onClose(); // Close the detail view
         } catch (error) {
             console.log(error)
         }
@@ -183,12 +184,12 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                         </div>
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Skill sets</h2>
-                            <p className="text-medium font-light">{JSON.parse(student.Skills).join(', ')}</p>
+                            <p className="text-medium font-light">{student.Skills && student.Skills.join(', ')}</p>
                         </div>
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Previous Experience</h2>
-                            {student.WorkExperience && JSON.parse(student.WorkExperience).map((job, index) => (
-                                <li key={index}>{job.Role} - {job.Company}</li>
+                            {student.WorkExperience && student.WorkExperience.map((job, index) => (
+                                <li key={index}>{job.position} - {job.company}</li>
                             ))}
                         </div>
 

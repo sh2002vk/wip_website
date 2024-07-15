@@ -22,7 +22,7 @@ export default function SideBar() {
               <Image src="/Dashboard.png" alt="Logo" width={50} height={50} className="mr-3" />{/* Add margin-right to create space between icon and text */}
               <span className="text-sm font-medium text-gray-700">Dashboard</span>
           </Link>
-          <Link href="/home/search" className="group flex items-center pl-10 pr-4 h-12 w-full hover:bg-gray-300">
+          <Link href="/home-student/search" className="group flex items-center pl-10 pr-4 h-12 w-full hover:bg-gray-300">
               <Image src="/Search.png" alt="Logo" width={50} height={50} className="mr-3" />
               <span className="text-sm font-medium text-gray-700">Search</span>
           </Link>
