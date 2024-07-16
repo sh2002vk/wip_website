@@ -26,7 +26,7 @@ export default function SideBar() {
               <Image src="/Search.png" alt="Logo" width={50} height={50} className="mr-3" />
               <span className="text-sm font-medium text-gray-700">Search</span>
           </Link>
-          <Link href="/home-student/manage" className="group flex items-center pl-10 pr-4 h-12 w-full hover:bg-gray-300">
+          <Link href="/home-student/dashboard" className="group flex items-center pl-10 pr-4 h-12 w-full hover:bg-gray-300">
               <Image src="/Manage.png" alt="Logo" width={50} height={50} className="mr-3" />
               <span className="text-sm font-medium text-gray-700">Manage</span>
           </Link>
