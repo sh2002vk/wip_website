@@ -15,6 +15,7 @@ type ParametersProps = {
     endDate: Dayjs | null;
     keyword: string;
     location: string;
+    selectedPrograms: [];
   }) => void;
   user: any;
 };
@@ -67,6 +68,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
       location,
       minSalary,
       maxSalary,
+      selectedPrograms
     };
     onSearch(currentFilters);
   };
