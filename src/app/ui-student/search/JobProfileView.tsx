@@ -29,7 +29,7 @@ const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
                     </div>
                     <div className="mb-4">
                         <p className="text-base font-semibold">Recruiter</p>
-                        <p className="text-lg font-light text-gray-700">{job.recruiter}</p>
+                        <p className="text-lg font-light text-gray-700">{job.RecruiterID}</p>
                     </div>
                     <div>
                         <p className="text-base font-semibold mb-1">Required Documents</p>
@@ -59,7 +59,7 @@ const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
             <div className="flex-1 p-8">
                 <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center">
-                        <h1 className="text-2xl font-bold mb-1">{job.title}</h1>
+                        <h1 className="text-2xl font-bold mb-1">{job.Role}</h1>
                         <button onClick={handleBookmarkClick} className="ml-3">
                             <FontAwesomeIcon
                                 icon={bookmarked ? solidBookmark : regularBookmark}
@@ -75,12 +75,12 @@ const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
                     </div>
                 </div>
                 <div>
-                    <p className="text-base font-semibold mb-1">Duration: <span className='font-light'>{job.duration}</span></p>
-                    <p className="text-base font-semibold mb-1">Work Mode: <span className='font-light'>{job.workMode}</span></p>
-                    <p className="text-base font-semibold mb-1">Pay: <span className='font-light'>{job.pay}</span></p>
+                    <p className="text-base font-semibold mb-1">Duration: <span className='font-light'>{job.Duration}</span></p>
+                    <p className="text-base font-semibold mb-1">Work Mode: <span className='font-light'>{job.Environment}</span></p>
+                    <p className="text-base font-semibold mb-1">Pay: <span className='font-light'>{job.Pay}</span></p>
                     <p className="text-base font-semibold mb-4">Citizenship Requirement: <span className='font-light'>{job.citizenshipRequirement}</span></p>
                     <h2 className="text-xl font-bold mb-2">Job Description</h2>
-                    <p className="text-medium font-light mb-4">{job.description}</p>
+                    <p className="text-medium font-light mb-4">{job.JobDescription}</p>
                 </div>
             </div>
         </div>

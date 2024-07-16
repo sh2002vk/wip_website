@@ -30,9 +30,9 @@ const Bookmarks = ({ jobs, onJobClick, isExpanded, toggleExpand, closeExpand }) 
           {jobs.length > 0 ? (
             jobs.map((job, index) => (
               <div key={index} className="border-b border-gray-200 py-2 cursor-pointer" onClick={() => onJobClick(job)}>
-                <div className="font-semibold">{job.title}</div>
-                <div className="text-sm text-gray-600">{job.role}</div>
-                <div className="text-sm text-gray-600">{job.location}</div>
+                <div className="font-semibold">{job.Role}</div>
+                <div className="text-sm text-gray-600">{job.Industry}</div>
+                <div className="text-sm text-gray-600">{job.Location}</div>
               </div>
             ))
           ) : (

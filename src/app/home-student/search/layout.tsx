@@ -5,23 +5,8 @@ import JobCard from '@/app/ui-student/search/JobCard';
 import JobProfileView from '@/app/ui-student/search/JobProfileView';
 import Bookmarks from '@/app/ui-student/search/bookmarks';
 
-type Job = {
-  title: string;
-  role: string;
-  description: string;
-  pay: string;
-  dates: string;
-  location: string;
-  recruiter: string;
-  companyName: string;
-  workMode: 'In-Person' | 'Remote' | 'Hybrid';
-  citizenshipRequirement: string;
-  applicationDeadline: string;
-  duration: '4 months' | '8 months' | '1 year';
-  resume: boolean;
-  coverLetter: boolean;
-  transcript: boolean;
-};
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from '../../../firebase';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -29,122 +14,103 @@ type LayoutProps = {
 };
 
 const SearchLayout = ({ children, title }: LayoutProps) => {
-  const jobs: Job[] = [
-    {
-      title: "Software Engineer",
-      role: "Full Stack Developer",
-      description: "Develop and maintain web applications.",
-      pay: "$70,000 - $90,000",
-      dates: "Summer 2024",
-      location: "San Francisco, CA",
-      recruiter: "Tech Solutions Inc.",
-      companyName: "Tech Solutions Inc.",
-      workMode: "Hybrid",
-      citizenshipRequirement: "N/A",
-      applicationDeadline: "2024-05-30",
-      duration: "4 months",
-      resume: false,
-      coverLetter: true,
-      transcript: true
-    },
-    {
-      title: "Data Analyst",
-      role: "Business Analyst",
-      description: "Analyze data and generate insights.",
-      pay: "$60,000 - $80,000",
-      dates: "Fall 2024",
-      location: "New York, NY",
-      recruiter: "Data Insights Co.",
-      companyName: "Data Insights Co.",
-      workMode: "Remote",
-      citizenshipRequirement: "N/A",
-      applicationDeadline: "2024-06-15",
-      duration: "8 months",
-      resume: true,
-      coverLetter: false,
-      transcript: true
-    },
-    {
-      title: "IT Support Specialist",
-      role: "Support Specialist",
-      description: "Provide IT support and troubleshooting.",
-      pay: "$50,000 - $70,000",
-      dates: "Winter 2024",
-      location: "Austin, TX",
-      recruiter: "IT Solutions Pro",
-      companyName: "IT Solutions Pro",
-      workMode: "In-Person",
-      citizenshipRequirement: "N/A",
-      applicationDeadline: "2024-07-01",
-      duration: "1 year",
-      resume: false,
-      coverLetter: true,
-      transcript: true
-    },
-    {
-      title: "Machine Learning Engineer",
-      role: "ML Engineer",
-      description: "Develop machine learning models and algorithms.",
-      pay: "$90,000 - $110,000",
-      dates: "Spring 2024",
-      location: "Seattle, WA",
-      recruiter: "ML Experts Inc.",
-      companyName: "ML Experts Inc.",
-      workMode: "Hybrid",
-      citizenshipRequirement: "N/A",
-      applicationDeadline: "2024-08-20",
-      duration: "4 months",
-      resume: true,
-      coverLetter: true,
-      transcript: true
-    },
-    {
-      title: "Embedded Systems Engineer",
-      role: "Hardware Engineer",
-      description: "Design and develop embedded systems.",
-      pay: "$80,000 - $100,000",
-      dates: "Summer 2024",
-      location: "San Jose, CA",
-      recruiter: "Embedded Solutions Ltd.",
-      companyName: "Embedded Solutions Ltd.",
-      workMode: "In-Person",
-      citizenshipRequirement: "N/A",
-      applicationDeadline: "2024-09-10",
-      duration: "8 months",
-      resume: true,
-      coverLetter: true,
-      transcript: true
-    },
-    {
-      title: "Front-End Developer",
-      role: "UI Developer",
-      description: "Design and implement user interfaces.",
-      pay: "$60,000 - $80,000",
-      dates: "Spring 2024",
-      location: "Chicago, IL",
-      recruiter: "UI Innovations Inc.",
-      companyName: "UI Innovations Inc.",
-      workMode: "Remote",
-      citizenshipRequirement: "N/A",
-      applicationDeadline: "2024-10-05",
-      duration: "1 year",
-      resume: true,
-      coverLetter: true,
-      transcript: true
-    }
-  ];
-
+  const [user, setUser] = useState(null);
+  const [jobs, setJobs] = useState([]);
   const [showJobs, setShowJobs] = useState(false);
   const [showJobDetail, setShowJobDetail] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [bookmarkedJobs, setBookmarkedJobs] = useState<Job[]>([]);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [bookmarkedJobs, setBookmarkedJobs] = useState([]);
   const [isBookmarksExpanded, setIsBookmarksExpanded] = useState(false);
 
-  const handleSearch = (filters: { availability: number; preference: string; degreeLevel: string; date: Dayjs | null; keyword: string }) => {
-    console.log("Filters to send to API: ", filters);
-    setShowJobs(true);
-    setShowJobDetail(false);
-    // Here, you could also make an API call using the filters
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+        fetchBookmarkedJobs(user.uid);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const fetchBookmarkedJobs = async (studentID) => {
+    try {
+      // console.log('fetching bookmarks');
+      const response = await fetch(`http://localhost:4000/action/student/getBookmarkedJobs?studentID=${studentID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      // console.log('bookmarks found: ', data.data);
+      setBookmarkedJobs(data.data);
+    } catch (error) {
+      console.error('There was a problem with the get operation:', error);
+    }
+  };
+
+  const handleSearch = async (filters) => {
+    // console.log("Filters to send to API: ", filters);
+    const availabilityMapping = {
+      "4 Months": "4",
+      "8 Months": "8",
+      "1+ Year": "12"
+    };
+
+    const worktypeMapping = {
+      "In-Person": "INPERSON",
+      "Hybrid": "HYBRID",
+      "Remote": "REMOTE"
+    }
+
+    let whereClause = {};
+
+    if (filters.workingTypes) {
+      whereClause.environment = filters.workingTypes.map((type) => worktypeMapping[type]);
+    }
+
+    if (filters.availabilities) {
+      whereClause.duration = filters.availabilities.map((availability) => availabilityMapping[availability]);
+    }
+
+    if (filters.location) {
+      whereClause.location = filters.location;
+    }
+
+    if (filters.selectedPrograms) {
+      whereClause.industry = filters.selectedPrograms;
+    }
+
+    // console.log('where clause: ', whereClause);
+
+    try {
+      const response = await fetch('http://localhost:4000/action/student/getJobs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(whereClause),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setJobs(data.data);
+      setShowJobs(true);
+      setShowJobDetail(false);
+    } catch (error) {
+      console.error('There was a problem with the get operation:', error);
+    }
   };
 
   const handleCardClick = (job: Job) => {
@@ -153,13 +119,46 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     setIsBookmarksExpanded(false); // Hide bookmarks tab when viewing a job profile
   };
 
-  const handleBookmarkClick = (job: Job) => {
-    setBookmarkedJobs(prev => {
-      if (prev.some(bJob => bJob.title === job.title)) {
-        return prev.filter(bJob => bJob.title !== job.title);
+  const handleBookmarkClick = async (job: Job) => {
+    let studentID = user.uid;
+    let recruiterID = job.RecruiterID;
+
+    const isBookmarked = bookmarkedJobs.some((j) => {
+      if (!j || !j.JobID) {
+        console.warn("Invalid bookmarked student data", j);
+        return false;
       }
-      return [...prev, job];
+      return j.JobID === job.JobID;
     });
+
+    // console.log('is  bookmarked?: ', isBookmarked);
+
+    try {
+      if (isBookmarked) {
+        // console.log('deleting bookmark for: ', recruiterID);
+        await fetch('http://localhost:4000/action/student/unbookmarkJob', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ JobID: job.JobID, StudentID: studentID }),
+        });
+        setBookmarkedJobs((prev) => prev.filter((j) => j.JobID !== job.JobID));
+      } else {
+        // console.log('creating bookmark for:', recruiterID);
+        await fetch('http://localhost:4000/action/student/bookmarkJob', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ RecruiterID: recruiterID, StudentID: studentID, JobID: job.JobID }),
+        });
+        setBookmarkedJobs((prev) => [...prev, job]);
+        // console.log('bookmarked jobs are: ', bookmarkedJobs);
+      }
+    } catch (error) {
+      console.error('There was a problem with the bookmark operation:', error);
+    }
   };
 
   const handleCloseDetail = () => {
@@ -168,7 +167,14 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     setShowJobs(true);
   };
 
-  const isBookmarked = (job: Job) => bookmarkedJobs.some(j => j.title === job.title);
+  // const isBookmarked = (job: Job) => bookmarkedJobs.some(j => j.title === job.title);
+  const isBookmarked = (job) => bookmarkedJobs.some((j) => {
+    if (!j || !j.JobID) {
+      console.warn("Invalid bookmarked job data", j);
+      return false;
+    }
+    return j.JobID === job.JobID;
+  });
 
   const toggleBookmarksTab = () => {
     setIsBookmarksExpanded(!isBookmarksExpanded);
@@ -177,6 +183,10 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
   const closeBookmarksTab = () => {
     setIsBookmarksExpanded(false);
   };
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex h-screen relative">
