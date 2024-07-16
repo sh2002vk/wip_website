@@ -8,7 +8,7 @@ export default function SideBar() {
     <div className="flex flex-col h-screen w-20 md:w-64 bg-white-200 border-r border-black">
       {/* Logo or Home Link */}
       <div className="flex items-center justify-center h-20 w-20 md:h-40 md:w-60">
-        <Link href="/home" className="flex items-center justify-center h-full w-full">
+        <Link href="/home-student" className="flex items-center justify-center h-full w-full">
             <Image src="/wip.png" alt="Logo" width={100} height={100} />
         </Link>
       </div>
@@ -30,7 +30,7 @@ export default function SideBar() {
               <Image src="/Manage.png" alt="Logo" width={50} height={50} className="mr-3" />
               <span className="text-sm font-medium text-gray-700">Manage</span>
           </Link>
-          <Link href="/home/message" className="group flex items-center pl-10 pr-4 h-12 w-full hover:bg-gray-300">
+          <Link href="/home-student/dashboard" className="group flex items-center pl-10 pr-4 h-12 w-full hover:bg-gray-300">
               <Image src="/Message.png" alt="Logo" width={50} height={50} className="mr-3" />
               <span className="text-sm font-medium text-gray-700">Message</span>
           </Link>
