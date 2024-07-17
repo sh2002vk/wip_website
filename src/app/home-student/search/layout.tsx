@@ -30,6 +30,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       } else {
         setUser(null);
       }
+      console.log("SEARCH", user);
     });
 
     return () => unsubscribe();

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
-const applications = () => {
+const applications = ({user}) => {
   const applicationData = [
     {
       icon: 'https://i.natgeofe.com/k/7ce14b7f-df35-4881-95ae-650bce0adf4d/mallard-male-standing_square.jpg', 
@@ -36,38 +36,118 @@ const applications = () => {
     },
   ];
 
+  const [applicationInsights, setApplicationInsights] = useState([]);
+
+  const fetchJobCompetition = async (jobID) => {
+    try {
+      const response = await fetch(`http://localhost:4000/action/student/getCompetition?jobID=${jobID}`);
+      const competition = await response.json();
+      if (!response.ok) {
+        console.log("Error in fetching competition numbers");
+        return 0;
+      }
+      return competition;
+    } catch (error) {
+      console.log("error fetching job competition");
+    }
+  }
+  const fetchApplicationInsights = async () => {
+    if (!user) return;
+
+    try {
+      const rows = [];
+      const response = await fetch(`http://localhost:4000/action/student/getApplicationInsights?studentID=${user.uid}`);
+      const data = await response.json();
+      const filteredData = data.filter(application => application.Status !== 'DRAFT');
+      if (!response.ok) {
+        console.log("Error in retrieving applications")
+      }
+      for (const application of filteredData) {
+        const item = {};
+        item.role = application.jobModel.Role;
+        item.dateClosed = application.jobModel.DateClosed;
+        item.percentage = getPercentage(application.Status);
+        const jobID = application.jobModel.JobID;
+        const competition = await fetchJobCompetition(jobID);
+        item.competition = competition.competition;
+        item.jobStatus = application.jobModel.Status;
+        item.appStatus = application.Status;
+        rows.push(item);
+      }
+      setApplicationInsights(rows);
+      console.log("ROWS", rows);
+    } catch (error) {
+      console.log("Error fetching applicationInsights")
+    }
+  }
+
+  const daysUntilClosed = (dateClosed) => {
+    const today = new Date();
+    const closedDate = new Date(dateClosed);
+    const differenceInTime = closedDate - today;
+    const differenceInDays = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
+    return differenceInDays;
+  }
+
+  useEffect(() => {
+    fetchApplicationInsights(user);
+  }, [user])
+
+  const statusMapping = {
+    "APPLIED": "Applied",
+    "REVIEWED": "Reviewed",
+    "INTERVIEW": "Interviewing",
+    "ACCEPT": "Accepted",
+    "REJECT": "Rejected",
+  }
+
+  const getPercentage = (status) => {
+    switch (status) {
+      case "APPLIED":
+        return 25;
+      case "REVIEWED":
+        return 50;
+      case "INTERVIEW":
+        return 75;
+      case "ACCEPT":
+        return 100;
+      default:
+        return 0;
+    }
+  }
+
   return (
     <div className="h-full overflow-y-auto p-5">
       <div className="sticky top-0 bg-[#F5f5f5] z-10">
       <h1 className=" text-xl font-light mb-2">
-          Your Applications <span className="bg-gray-200 text-sm font-medium py-1 px-2 rounded-full ml-2">{applicationData.length}</span>
+          Your Applications <span className="bg-gray-200 text-sm font-medium py-1 px-2 rounded-full ml-2">{applicationInsights.length}</span>
         </h1>
         <div className="grid grid-cols-12 text-gray-500 text-sm mb-2">
           <span className="col-span-5"></span>
-          <span className="col-span-2">Days</span>
+          <span className="col-span-2">Days left</span>
           <span className="col-span-3">Progress</span>
           <span className="col-span-2">Competition</span>
         </div>
         <hr className="border-gray-300 mb-2" />
       </div>
       <div className=" pt-0">
-        {applicationData.map((application, index) => (
+        {applicationInsights.map((application, index) => (
           <div key={index} className="grid grid-cols-12 items-center py-2 border-b">
             <div className="col-span-5 flex items-center space-x-4">
-              <img src={application.icon} alt={application.title} className="w-8 h-8 rounded-full" />
-              <span className={`font-light ${application.status === 'closed' ? 'text-gray-400' : 'text-black'}`}>{application.title}</span>
+              {/*<img src={application.icon} alt={application.title} className="w-8 h-8 rounded-full" />*/} {/*//TODO company icons here*/}
+              <span className={`font-light ${application.status === 'closed' ? 'text-gray-400' : 'text-black'}`}>{application.role}</span>
             </div>
-            <div className="col-span-2 pl-3">{application.daysSubmitted}</div>
+            <div className="col-span-2 pl-3">{daysUntilClosed(application.dateClosed)}</div>
             <div className="col-span-3">
-              {application.status === 'open' ? (
-                <div className="flex items-center">
-                  <div className="w-20 bg-orange-200 rounded-full h-2 mr-2">
-                    <div className="bg-orange-400 h-2 rounded-full" style={{ width: `${application.reviewProgress}%` }}></div>
+              {application.jobStatus !== 'CLOSED' ? (
+                  <div className="flex flex-col items-start">
+                    <div className="w-2/3 bg-orange-200 rounded-full h-2 mb-2">
+                      <div className="bg-orange-400 h-2 rounded-full" style={{ width: `${application.percentage}%` }}></div>
+                    </div>
+                    <span className="text-sm">{statusMapping[application.appStatus]}</span>
                   </div>
-                  <span>{application.reviewProgress}%</span>
-                </div>
               ) : (
-                <span className="text-gray-400">Closed</span>
+                  <span className="text-gray-400">Closed</span>
               )}
             </div>
             <div className="col-span-2 text-center ">{application.competition}</div>

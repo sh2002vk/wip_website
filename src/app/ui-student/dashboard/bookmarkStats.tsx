@@ -4,34 +4,47 @@ const BookmarkedStats = ({user}) => {
 
     const [bookmarkAmount, setBookmarkAmount] = useState();
     const [quota, setQuota] = useState();
-    const fetchBookmarkAmount = async () => {
+    const fetchBookmarkAmount = async (user) => {
+        if (!user) return;
+
         try {
-            const response = await fetch(`http://localhost:4000/account/student/getBookmarkAmount?studentID=1`) // 1 should be replaced by ${user.uid}
-            const associatedBookmarks = await response.json();
+            const response = await fetch(`http://localhost:4000/account/student/getBookmarkAmount?studentID=${user.uid}`);
             if (!response.ok) {
-                console.log("Error in response")
+                console.log("Error in response");
+                return;
             }
+            const associatedBookmarks = await response.json();
+            console.log("quota", associatedBookmarks.length);
             setBookmarkAmount(associatedBookmarks.length);
         } catch (error) {
-            console.log("error in fetching bookmark amount", error);
+            console.log("Error in fetching bookmark amount", error);
         }
     }
-    const fetchQuota = async () => {
+
+    const fetchQuota = async (user) => {
+        if (!user) return;
+
         try {
-            const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=1`) //1 replaced with ${user.uid}
-            const quota = await response.json();
+            const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=${user.uid}`);
             if (!response.ok) {
-                console.log("Error in response")
+                console.log("Error in response");
+                return;
             }
-            setQuota(quota.quota);
+            const quotaData = await response.json();
+            console.log("quota", quotaData.quota);
+            setQuota(quotaData.quota);
         } catch (error) {
-            console.log("error in fetching quota amount");
+            console.log("Error in fetching quota amount", error);
         }
     }
+
     useEffect(() => {
-        fetchBookmarkAmount();
-        fetchQuota();
-    }, [])
+        if (user) {
+            fetchBookmarkAmount(user);
+            fetchQuota(user);
+        }
+    }, [user]);
+
   return (
     <div className=" h-full p-1 font-light">
       <div className="text-lg text-gray-600">You have been bookmarked</div>
