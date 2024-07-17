@@ -13,7 +13,7 @@ type ProfileType = {
   email: string;
   location: string;
   institution: string;
-  degree: string;
+  // degree: string;
   specialization: string;
   lookingFor: { value: string; label: string }[];
   availability: string;
@@ -31,14 +31,14 @@ const roles = [
   { value: 'Product Manager', label: 'Product Manager' }
 ];
 
-export default function Profile() {
+export default function Profile(user) {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileType>({
     name: '',
     email: '',
     location: '',
     institution: '',
-    degree: '',
+    // degree: '',
     specialization: '',
     lookingFor: [],
     availability: '',
@@ -83,6 +83,9 @@ export default function Profile() {
 
   const handleSave = () => {
     setIsEditing(false);
+    console.log(profile);
+
+    updateProfile(profile);
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>, field: keyof ProfileType) => {
@@ -105,6 +108,130 @@ export default function Profile() {
       lookingFor: selectedOptions,
     }));
   };
+
+  {/*Replace with actual api endpoint once launched */}
+  React.useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/profile/student/getFullProfile?studentID=${user.user.uid}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+
+          let student = data.data;
+          const interests = student.Interest.map(interest => ({
+            value: interest,
+            label: interest
+          }));
+          const workExp = student.WorkExperience.map(exp => ({
+            ...exp,
+            title: exp.position
+          }));
+
+          setProfile({
+            name: `${student.FirstName} ${student.LastName}`,
+            email: student.EmailID,
+            location: student.Location,
+            institution: student.School,
+            // degree: student.Experience,
+            specialization: student.AcademicMajor,
+            lookingFor: interests,
+            availability: `${student.Duration}`,
+            about: student.PersonalStatement,
+            skills: student.Skills.join(', '),
+            experiences: workExp,
+            photo: '',
+          });
+
+          // console.log(data.data);
+
+        } else {
+          console.error('Failed to fetch profile:', data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+    fetchProfile();
+  }, [user.user.uid]);
+
+
+  const getAvailableFields = (profile) => {
+    // Mapping from frontend keys to backend keys
+    const keyMapping = {
+      name: ['FirstName', 'LastName'], // name should be split into FirstName and LastName
+      email: 'EmailID',
+      location: 'Location',
+      institution: 'School',
+      specialization: 'AcademicMajor',
+      lookingFor: 'Interest', // This needs to be handled differently since it's an array of objects
+      availability: 'Duration',
+      about: 'PersonalStatement',
+      skills: 'Skills', // This needs to be handled differently since it's a comma-separated string
+      experiences: 'WorkExperience', // This needs to be handled differently since it has to map title to position
+      photo: 'Photo', // Assuming there's a photo attribute
+    };
+  
+    let filteredProfile = {};
+  
+    for (let key in keyMapping) {
+      if (profile[key]) {
+        if (Array.isArray(keyMapping[key])) {
+          // Handle case where one key maps to multiple backend keys
+          filteredProfile[keyMapping[key][0]] = profile[key].split(' ')[0];
+          filteredProfile[keyMapping[key][1]] = profile[key].split(' ')[1];
+        } else if (key === 'lookingFor') {
+          filteredProfile[keyMapping[key]] = profile[key].map(item => item.value); // Convert to array of strings
+        } else if (key === 'skills') {
+          filteredProfile[keyMapping[key]] = profile[key].split(', ').map(skill => skill.trim()); // Convert to array of strings
+        } else if (key === 'experiences') {
+          filteredProfile[keyMapping[key]] = profile[key].map(exp => ({
+            ...exp,
+            position: exp.title // Convert title to position
+          }));
+        } else {
+          filteredProfile[keyMapping[key]] = profile[key];
+        }
+      }
+    }
+  
+    return filteredProfile;
+  };
+  
+
+  const updateProfile = async (updatedProfile) => {
+    const filteredProfile = getAvailableFields(updatedProfile);
+
+    try {
+      const response = await fetch('http://localhost:4000/account/student/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          studentID: user.user.uid,
+          updatedData: filteredProfile
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Profile updated successfully:', data);
+      } else {
+        console.error('Failed to update profile:', data.message);
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-full mx-auto bg-white p-2">
@@ -138,14 +265,14 @@ export default function Profile() {
                 placeholder="Name"
                 className="mt-4 text-gray-600 border-gray-300 rounded text-sm text-center"
               />
-              <input
+              {/* <input
                 type="email"
                 name="email"
                 value={profile.email}
                 onChange={handleChange}
                 placeholder="email@example.com"
                 className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
-              />
+              /> */}
               <input
                 type="text"
                 name="location"
@@ -162,14 +289,14 @@ export default function Profile() {
                 placeholder="Institution"
                 className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
               />
-              <input
+              {/* <input
                 type="text"
                 name="degree"
                 value={profile.degree}
                 onChange={handleChange}
                 placeholder="Degree"
                 className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
-              />
+              /> */}
               <input
                 type="text"
                 name="specialization"
@@ -185,7 +312,7 @@ export default function Profile() {
               <p className="mt-2 text-gray-600 ">{profile.email || 'email@example.com'}</p>
               <p className="mt-2 text-gray-600">{profile.location || 'City · Province · Country'}</p>
               <p className="mt-2 text-gray-600">{profile.institution || 'Institution'}</p>
-              <p className="mt-2 text-gray-600">{profile.degree || 'Degree'}</p>
+              {/* <p className="mt-2 text-gray-600">{profile.degree || 'Degree'}</p> */}
               <p className="mt-2 text-gray-600">{profile.specialization || 'Specialization'}</p>
             </>
           )}
@@ -230,7 +357,7 @@ export default function Profile() {
           ) : (
             <>
               <p><strong>Looking For:</strong> {profile.lookingFor.length > 0 ? profile.lookingFor.map(option => option.label).join(', ') : 'Select roles'}</p>
-              <p><strong>Availability:</strong> {profile.availability || 'Set your availability'}</p>
+              <p><strong>Availability:</strong> {profile.availability + " Months" || 'Set your availability'}</p>
             </>
           )}
         </div>
