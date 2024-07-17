@@ -33,7 +33,8 @@
     "pdfjs-dist": "^2.16.105",
     "react": "^18",
     "react-date-picker": "^11.0.0",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-select": "^5.8.0"
   },
   "devDependencies": {
     "@types/node": "^20",
