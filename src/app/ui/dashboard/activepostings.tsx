@@ -148,7 +148,7 @@ const ActivePostings = ({user}) => {
             </div>
 
             <div className="p-1 pt-0">
-                {data.map((item, index) => (
+                {Array.isArray(data) && data.map((item, index) => (
                     <div key={index} className="grid grid-cols-5 gap-4 items-center py-3 border-b">
                         <div className="text-left" style={{ width: '120px' }}>
                             <span className="text-medium font-medium">{item.job.Role}</span>
