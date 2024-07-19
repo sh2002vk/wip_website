@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import JobCard from './cards/jobCard';
 
-export default function Bookmarks({ onSelectJob, initialDrafts}) {
+export default function Bookmarks({ user, onSelectJob, initialDrafts}) {
   
   const [drafts, setDrafts] = useState(initialDrafts);
 
@@ -21,6 +21,87 @@ export default function Bookmarks({ onSelectJob, initialDrafts}) {
 
   const applicationsLeft = drafts.length;
 
+  const [applicationData, setApplicationData] = useState([]);
+  const [quota, setQuota] = useState();
+
+  const fetchCompanyName = async (companyID) => {
+    try {
+      const response = await fetch(`http://localhost:4000/profile/company/getFullProfile?companyID=${companyID}`);
+      const data = await response.json();
+      if (!data) {
+        console.log("Error: no company");
+        return;
+      } else {
+        return data.data.Name;
+      }
+    } catch (error) {
+      console.log("Error", error);
+      return;
+    }
+  }
+  const fetchJobData = async (jobID, applicationID) => {
+    try {
+      const response = await fetch(`http://localhost:4000/profile/job/getJob?jobID=${jobID}`);
+      const data = await response.json();
+      if (!data) {
+        console.log("No job found");
+        return null;
+      } else {
+        const companyName = await fetchCompanyName(data.CompanyID);
+        return {
+          id: applicationID,
+          Role: data.Role,
+          CompanyName: companyName
+        };
+      }
+    } catch (error) {
+      console.log("Error", error);
+      return null;
+    }
+  }
+
+  const fetchApplications = async (user) => {
+    if (!user) return;
+
+    try {
+      const response = await fetch(`http://localhost:4000/action/student/getApplications?studentID=${user.uid}`);
+      const data = await response.json();
+      if (!data) {
+        console.log("fetch Application failed");
+        return;
+      } else {
+        const dataList = await Promise.all(data.map(application =>
+            fetchJobData(application.JobID, application.ApplicationID)
+        ));
+        setApplicationData(dataList.filter(item => item !== null)); // filter out any null items
+      }
+    } catch (error) {
+      console.log("error getting application", error);
+    }
+  }
+
+  const fetchQuota = async (user) => {
+    if (!user) return;
+
+    try {
+      const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=${user.uid}`);
+      if (!response.ok) {
+        console.log("Error in response");
+        return;
+      }
+      const quotaData = await response.json();
+      console.log("quota", quotaData.quota);
+      setQuota(quotaData.quota);
+    } catch (error) {
+      console.log("Error in fetching quota amount", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchApplications(user);
+    fetchQuota(user);
+  }, [user])
+
   return (
     <div className="flex flex-col h-screen w-full mx-auto bg-white pl-4 py-4 space-y-4 border-r border-black">
       <div className='container mx-auto pr-4'>
@@ -31,20 +112,20 @@ export default function Bookmarks({ onSelectJob, initialDrafts}) {
         </div>
         
         <div className="flex flex-col space-y-2 my-2 h-[75vh] overflow-y-auto no-scrollbar pt-7">
-          {drafts.map((job) => (
+          {applicationData.map((application) => (
             <JobCard 
-              key={job.id}
-              company={job.company}
-              title={job.title}
-              onClick={() => onSelectJob(job)} 
-              onRemove={() => handleRemoveBookmark(job.id)} 
+              key={application.id}
+              company={application.CompanyName}
+              title={application.Role}
+              onClick={() => onSelectJob(application)}
+              // onRemove={() => handleRemoveBookmark(job.id)}
             />
           ))}
         </div>
         
         <div className="mt-4 flex justify-center">
           <p className="text-center text-md font-semibold">
-            You have <span className="text-orange-500">{drafts.length}</span> applications left
+            You have <span className="text-orange-500">{quota}</span> applications left
             {/*Add logic here to display how many applications are not completed */}
           </p>
         </div>
