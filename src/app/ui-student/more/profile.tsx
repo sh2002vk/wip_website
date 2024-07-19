@@ -47,8 +47,7 @@ export default function Profile(user) {
     experiences: [],
     photo: '',
   });
-
-  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [photoURL, setPhotoURL] = useState('');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -88,17 +87,34 @@ export default function Profile(user) {
     updateProfile(profile);
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>, field: keyof ProfileType) => {
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>, field: keyof ProfileType) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
+      const formData = new FormData();
+      formData.append('photo', file);
+  
+      try {
+        const response = await fetch('http://localhost:5000/upload-photo', {
+          method: 'POST',
+          body: formData,
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to upload photo');
+        }
+  
+        const data = await response.json();
+        console.log(data);
+
+        setPhotoURL(data.url);
         setProfile((prevProfile) => ({
           ...prevProfile,
-          [field]: reader.result as string,
+          photo: file.name,
         }));
-      };
-      reader.readAsDataURL(file);
+
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
     }
   };
 
@@ -134,22 +150,22 @@ export default function Profile(user) {
             title: exp.position
           }));
 
-          setProfile({
+          setProfile((prevProfile) => ({
+            ...prevProfile,
             name: `${student.FirstName} ${student.LastName}`,
             email: student.EmailID,
             location: student.Location,
             institution: student.School,
-            // degree: student.Experience,
             specialization: student.AcademicMajor,
             lookingFor: interests,
             availability: `${student.Duration}`,
             about: student.PersonalStatement,
             skills: student.Skills.join(', '),
             experiences: workExp,
-            photo: '',
-          });
+            photo: student.Photo || '', // Use existing photoURL or default to empty string
+          }));
 
-          // console.log(data.data);
+          console.log(data.data);
 
         } else {
           console.error('Failed to fetch profile:', data.message);
@@ -160,6 +176,30 @@ export default function Profile(user) {
     };
     fetchProfile();
   }, [user.user.uid]);
+
+
+  const fetchSignedURL = async (filename: string) => {
+    try {
+      const response = await fetch(`http://localhost:5000/generate-signed-url?filename=${filename}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch signed URL');
+      }
+      const data = await response.json();
+      return data.url;
+    } catch (error) {
+      console.error('Error fetching signed URL:', error);
+      return '';
+    }
+  };
+  React.useEffect(() => {
+    if (profile.photo) {
+      fetchSignedURL(profile.photo).then((url) => {
+        setPhotoURL(url);
+      });
+    }
+  }, [profile.photo]);
+
+
 
 
   const getAvailableFields = (profile) => {
@@ -239,8 +279,8 @@ export default function Profile(user) {
       <div className="flex flex-col items-center md:w-1/3">
         <div className="flex flex-col items-center">
           <div className="relative mt-10 mb-4">
-            {profile.photo ? (
-              <img src={profile.photo} alt="Profile" className="rounded-full h-40 w-40 object-cover" />
+            {photoURL ? (
+              <img src={photoURL} alt="Profile" className="rounded-full h-40 w-40 object-cover" />
             ) : (
               <div className="bg-gray-300 rounded-full h-40 w-40 flex items-center justify-center text-gray-600">
                 No Image
