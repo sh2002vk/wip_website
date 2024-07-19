@@ -6,11 +6,11 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 interface JobCardProps {
   company: string;
   title: string;
-  onRemove: () => void;
+  // onRemove: () => void;
   onClick: () => void;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ company, title, type, onRemove, onClick }) => {
+const JobCard: React.FC<JobCardProps> = ({ company, title, onClick }) => {
   return (
     <div className="bg-gray-100 hover:bg-gray-200 p-4 rounded-lg h-[9vh]" onClick={onClick}>
       <div className="flex justify-between">

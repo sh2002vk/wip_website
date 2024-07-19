@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import Bookmarks from '@/app/ui-student/manage/bookmarks';
 import JobDetails from '@/app/ui-student/manage/jobDetails';
-import SideBar from "@/app/ui/home/sidebar"; 
+import SideBar from "@/app/ui/home/sidebar";
+import {onAuthStateChanged} from "firebase/auth";
+import {auth} from "@/firebase";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -88,6 +90,19 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
 
   const [selectedJob, setSelectedJob] = useState(null);
   const [jobs, setJobs] = useState(testJobApplications);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleSelectJob = (job) => {
     setSelectedJob(job);
@@ -109,7 +124,8 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
   return (
     <div className="flex h-screen">
       <div className="w-full md:w-64 flex-none h-screen overflow-auto">
-        <Bookmarks 
+        <Bookmarks
+          user={user}
           onSelectJob={handleSelectJob} 
           initialDrafts={jobs} 
         />
