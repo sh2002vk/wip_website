@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ const VerificationLayout = ({ children, title }: LayoutProps) => {
 
 const Verification = () => {
   const [code, setCode] = useState(new Array(6).fill(""));
+  const router = useRouter();
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return false;
@@ -37,6 +39,7 @@ const Verification = () => {
     e.preventDefault();
     // Handle verification code submission logic here
     console.log(code.join(""));
+    router.push('/onboarding/password');
   };
 
   return (
@@ -78,3 +81,4 @@ const Verification = () => {
 };
 
 export default Verification;
+

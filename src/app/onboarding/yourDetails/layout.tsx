@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -28,6 +29,8 @@ const YourDetails = () => {
     major: ""
   });
 
+  const router = useRouter();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -40,6 +43,7 @@ const YourDetails = () => {
     e.preventDefault();
     // Handle form submission logic here
     console.log(formData);
+    router.push('/onboarding/verification');
   };
 
   return (

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -31,6 +32,7 @@ const Password = () => {
     symbol: false
   });
   const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     if (formData.password === formData.confirmPassword) {
@@ -66,6 +68,7 @@ const Password = () => {
     e.preventDefault();
     // Handle password submission logic here
     console.log(formData);
+    router.push('/onboarding/welcome');
   };
 
   return (
