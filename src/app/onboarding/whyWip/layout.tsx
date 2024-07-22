@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ const WhyWipLayout = ({ children, title }: LayoutProps) => {
 
 const WhyWip = () => {
   const [slideIndex, setSlideIndex] = useState(0);
+  const router = useRouter();
 
   const slides = [
     {
@@ -46,6 +48,10 @@ const WhyWip = () => {
 
   const prevSlide = () => {
     setSlideIndex((prevIndex) => (prevIndex - 1 + slides.length) % slides.length);
+  };
+
+  const handleSoundsGoodClick = () => {
+    router.push('/onboarding/yourDetails');
   };
 
   return (
@@ -75,7 +81,9 @@ const WhyWip = () => {
         </button>
       </div>
 
-      <button className="bg-orange-500 text-white rounded-full px-6 py-3">Sounds good</button>
+      <button className="bg-orange-500 text-white rounded-full px-6 py-3" onClick={handleSoundsGoodClick}>
+        Sounds good
+      </button>
     </WhyWipLayout>
   );
 };
