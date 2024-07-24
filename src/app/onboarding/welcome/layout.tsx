@@ -1,5 +1,6 @@
 'use client';
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
+import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -20,6 +21,7 @@ const WelcomeLayout = ({ children, title }: LayoutProps) => {
 };
 
 const Welcome = () => {
+
   return (
     <WelcomeLayout title="Congratulations!">
       <p className="text-xl font-light mb-8">

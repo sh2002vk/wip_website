@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
+import {OnboardingProvider} from "@/app/onboarding/OnboardingContext";
 
 const Sidebar = () => {
   const router = useRouter();
@@ -30,17 +31,17 @@ const Sidebar = () => {
       </div>
       <nav className="flex flex-col mt-10 space-y-7">
         {navItems.map((item) => (
-          <Link href={item.href} key={item.href} legacyBehavior>
-            <a
-              className={`${
-                currentRoute === item.href ? 'text-orange-500 font-semibold text-2xl' : 'text-gray-400 text-lg'
-              } relative pl-4 before:absolute before:top-0 before:left-0 before:bottom-0 ${
-                currentRoute === item.href ? 'before:w-1 before:bg-orange-500' : 'before:w-1 before:bg-gray-300'
-              }`}
-            >
-              {item.label}
-            </a>
-          </Link>
+            <Link href={item.href} key={item.href} legacyBehavior>
+              <a
+                className={`${
+                  currentRoute === item.href ? 'text-orange-500 font-semibold text-2xl' : 'text-gray-400 text-lg'
+                } relative pl-4 before:absolute before:top-0 before:left-0 before:bottom-0 ${
+                  currentRoute === item.href ? 'before:w-1 before:bg-orange-500' : 'before:w-1 before:bg-gray-300'
+                }`}
+              >
+                {item.label}
+              </a>
+            </Link>
         ))}
       </nav>
       <div className="mt-auto flex justify-between items-center text-gray-500 text-sm">
