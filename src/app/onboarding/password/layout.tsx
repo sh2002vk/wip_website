@@ -112,7 +112,6 @@ const Password = () => {
     // Call Firebase API to create student
     try {
       await createStudent(updatedUserDetails);
-      console.log("PASS", formData);
       router.push('/onboarding/welcome');
     } catch (error) {
       console.error("Error creating student:", error);

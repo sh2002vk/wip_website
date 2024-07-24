@@ -54,7 +54,6 @@ const YourDetails = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     handleDetailChange(); // Update context with form data
-    console.log(formData);
     router.push('/onboarding/verification');
   };
 
