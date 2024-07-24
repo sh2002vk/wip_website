@@ -2,6 +2,8 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { useRouter } from 'next/navigation';
 import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
+import {createUserWithEmailAndPassword} from "firebase/auth";
+import {auth} from "@/firebase";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -10,13 +12,16 @@ type LayoutProps = {
 
 const createStudent = async (userDetails) => {
   try {
+    const userCredential = await createUserWithEmailAndPassword(auth, userDetails.email, userDetails.password);
+    const user = userCredential.user;
+    const uid = user.uid;
     const response = await fetch('http://localhost:4000/account/student/create', {
       method: 'POST', // Specify the request method
       headers: {
         'Content-Type': 'application/json', // Specify the content type
       },
       body: JSON.stringify({
-        StudentID: "CreatedFromFireBaseAPICall", // Needs to pull studentID generated from firebase call
+        StudentID: uid,
         FirstName: userDetails.firstName,
         LastName: userDetails.lastName,
         EmailID: userDetails.email,
@@ -95,17 +100,23 @@ const Password = () => {
     setPasswordRequirements(requirements);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle password submission logic here
-    setUserDetails({
+
+    // Combine form data with user details to ensure the latest password is included
+    const updatedUserDetails = {
       ...userDetails,
       password: formData.password
-    })
-    // Call firebase api to create student
-    createStudent(userDetails);
-    console.log(formData);
-    router.push('/onboarding/welcome');
+    };
+
+    // Call Firebase API to create student
+    try {
+      await createStudent(updatedUserDetails);
+      console.log("PASS", formData);
+      router.push('/onboarding/welcome');
+    } catch (error) {
+      console.error("Error creating student:", error);
+    }
   };
 
   return (
