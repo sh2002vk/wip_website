@@ -1,6 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
+import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -8,6 +9,7 @@ type LayoutProps = {
 };
 
 const VerificationLayout = ({ children, title }: LayoutProps) => {
+
   return (
     <div className="flex h-screen">
       <div className="flex flex-col justify-center items-center bg-gray-100 w-full h-screen">
@@ -23,6 +25,7 @@ const VerificationLayout = ({ children, title }: LayoutProps) => {
 const Verification = () => {
   const [code, setCode] = useState(new Array(6).fill(""));
   const router = useRouter();
+  const { userDetails, setUserDetails } = useContext(OnboardingContext);
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return false;
@@ -38,6 +41,10 @@ const Verification = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle verification code submission logic here
+    setUserDetails({
+      ...userDetails,
+      verificationCode: code.join(""),
+    })
     console.log(code.join(""));
     router.push('/onboarding/password');
   };
@@ -45,7 +52,7 @@ const Verification = () => {
   return (
     <VerificationLayout title="Just making sure it’s you">
       <p className="text-lg font-light mb-8">
-        We have sent a verification code to emilyhaha@gmail.com
+        We have sent a verification code to {userDetails.email}
       </p>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex justify-between">

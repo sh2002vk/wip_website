@@ -1,13 +1,43 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { useRouter } from 'next/navigation';
+import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
 
 type LayoutProps = {
   children: React.ReactNode;
   title?: string;
 };
 
+const createStudent = async (userDetails) => {
+  try {
+    const response = await fetch('http://localhost:4000/account/student/create', {
+      method: 'POST', // Specify the request method
+      headers: {
+        'Content-Type': 'application/json', // Specify the content type
+      },
+      body: JSON.stringify({
+        StudentID: "CreatedFromFireBaseAPICall", // Needs to pull studentID generated from firebase call
+        FirstName: userDetails.firstName,
+        LastName: userDetails.lastName,
+        EmailID: userDetails.email,
+        School: userDetails.school,
+        AcademicYear: userDetails.year,
+        AcademicMajor: userDetails.major,
+        Quota: 3
+      })
+    });
+    if (!response.ok) {
+      console.log("Error creating student");
+    }
+    const result = await response.json();
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const PasswordLayout = ({ children, title }: LayoutProps) => {
+
   return (
     <div className="flex h-screen">
       <div className="flex flex-col justify-center items-center bg-gray-100 w-full h-screen">
@@ -33,6 +63,7 @@ const Password = () => {
   });
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const router = useRouter();
+  const { userDetails, setUserDetails } = useContext(OnboardingContext);
 
   useEffect(() => {
     if (formData.password === formData.confirmPassword) {
@@ -67,6 +98,12 @@ const Password = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle password submission logic here
+    setUserDetails({
+      ...userDetails,
+      password: formData.password
+    })
+    // Call firebase api to create student
+    createStudent(userDetails);
     console.log(formData);
     router.push('/onboarding/welcome');
   };

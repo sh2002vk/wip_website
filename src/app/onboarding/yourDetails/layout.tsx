@@ -1,6 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
+import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -21,27 +22,38 @@ const YourDetailsLayout = ({ children, title }: LayoutProps) => {
 };
 
 const YourDetails = () => {
+  const { userDetails, setUserDetails } = useContext(OnboardingContext);
   const [formData, setFormData] = useState({
-    lastName: "",
-    firstName: "",
-    email: "",
-    school: "",
-    major: ""
+    lastName: '',
+    firstName: '',
+    email: '',
+    school: '',
+    major: '',
+    year: '',
   });
+
+  useEffect(() => {
+    // Initialize formData with userDetails
+    setFormData(userDetails);
+  }, [userDetails]);
 
   const router = useRouter();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [name]: value,
-    });
+    }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission logic here
+  const handleDetailChange = () => {
+    setUserDetails(formData);
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleDetailChange(); // Update context with form data
     console.log(formData);
     router.push('/onboarding/verification');
   };
@@ -105,21 +117,36 @@ const YourDetails = () => {
             required
           />
         </div>
-        <div>
-          <label className="block text-left mb-1" htmlFor="major">Major<span className="text-red-500">*</span></label>
-          <input
-            type="text"
-            id="major"
-            name="major"
-            value={formData.major}
-            onChange={handleChange}
-            placeholder="Enter your major"
-            className="w-full p-3 pl-5 border-none rounded-3xl"
-            required
-          />
+        <div className="flex justify-between">
+          <div className="w-1/2 pr-2">
+            <label className="block text-left mb-1" htmlFor="major">Major<span className="text-red-500">*</span></label>
+            <input
+              type="text"
+              id="major"
+              name="major"
+              value={formData.major}
+              onChange={handleChange}
+              placeholder="Enter your major"
+              className="w-full p-3 pl-5 border-none rounded-3xl"
+              required
+            />
+          </div>
+          <div className="w-1/2 pl-2">
+            <label className="block text-left mb-1" htmlFor="year">Year<span className="text-red-500">*</span></label>
+            <input
+                type="text"
+                id="year"
+                name="year"
+                value={formData.year}
+                onChange={handleChange}
+                placeholder="Enter your standing"
+                className="w-full p-3 pl-5 border-none rounded-3xl"
+                required
+            />
+          </div>
         </div>
         <div className="text-center mt-6">
-          <button type="submit" className="bg-orange-500 text-white rounded-full px-6 py-3">Sign up</button>
+          <button type="submit" className="bg-[#ff7002] text-white rounded-full px-6 py-3">Sign up</button>
         </div>
       </form>
     </YourDetailsLayout>

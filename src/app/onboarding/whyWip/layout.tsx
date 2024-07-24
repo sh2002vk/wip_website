@@ -81,7 +81,7 @@ const WhyWip = () => {
         </button>
       </div>
 
-      <button className="bg-orange-500 text-white rounded-full px-6 py-3" onClick={handleSoundsGoodClick}>
+      <button className="bg-[#ff7002] text-white rounded-full px-6 py-3" onClick={handleSoundsGoodClick}>
         Sounds good
       </button>
     </WhyWipLayout>
