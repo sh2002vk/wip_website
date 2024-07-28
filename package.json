@@ -22,7 +22,7 @@
     "@react-pdf-viewer/core": "^3.12.0",
     "axios": "^1.7.2",
     "classnames": "^2.5.1",
-    "dayjs": "^1.11.11",
+    "dayjs": "^1.11.12",
     "dotenv": "^16.4.5",
     "error": "^10.4.0",
     "eslint": "^8.57.0",
@@ -33,6 +33,7 @@
     "pdfjs-dist": "^2.16.105",
     "react": "^18",
     "react-date-picker": "^11.0.0",
+    "react-datepicker": "^7.3.0",
     "react-dom": "^18",
     "react-select": "^5.8.0"
   },
