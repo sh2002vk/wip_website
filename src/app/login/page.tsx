@@ -12,7 +12,7 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [role, setRole] = useState('student'); 
+  // const [role, setRole] = useState('student');
   const router = useRouter();
 
   useEffect(() => {
@@ -25,18 +25,42 @@ export default function Home() {
     return () => unsubscribe();
   }, [router]);
 
+  const startOnboarding = () => {
+    router.push('/onboarding/whyWip');
+  }
+
+  const determineAccountType = async (uid) => {
+    try {
+      const response = await fetch(`http://localhost:4000/profile/recruiter/getFullProfile?recruiterID=${uid}`);
+      const account = await response.json();
+      if (!response.ok) {
+        return 'student'; // Return role directly
+      }
+      return 'recruiter'; // Return role directly
+    } catch (error) {
+      console.log(error);
+      throw new Error('Failed to determine account type');
+    }
+  };
+
   const handleAuth = async (e) => {
     e.preventDefault();
     try {
+      let uid;
       if (isLogin) {
         // Handle Login
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        uid = user.uid;
       } else {
         // Handle Sign Up
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        uid = user.uid;
       }
+      const accountType = await determineAccountType(uid);
       console.log("Login success");
-      if (role === 'student') {
+      if (accountType === 'student') {
         router.push('/home-student'); // Redirect to student home
       } else {
         router.push('/home'); // Redirect to recruiter home
@@ -86,35 +110,36 @@ export default function Home() {
             </div>
           </div>
           {error && <p className="text-red-500 text-xs italic">{error}</p>}
-          <div className="mb-4 text-center">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
-              I am a
-            </label>
-            <div className="flex justify-center">
-              <label className="inline-flex items-center mr-4">
-                <input
-                  type="radio"
-                  className="form-radio"
-                  name="role"
-                  value="student"
-                  checked={role === 'student'}
-                  onChange={() => setRole('student')}
-                />
-                <span className="ml-2 font-light">Student</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  className="form-radio"
-                  name="role"
-                  value="recruiter"
-                  checked={role === 'recruiter'}
-                  onChange={() => setRole('recruiter')}
-                />
-                <span className="ml-2 font-light">Recruiter</span>
-              </label>
-            </div>
-          </div>
+          {/*Code for recruiter and student toggle*/}
+          {/*<div className="mb-4 text-center">*/}
+          {/*  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">*/}
+          {/*    I am a*/}
+          {/*  </label>*/}
+          {/*  <div className="flex justify-center">*/}
+          {/*    <label className="inline-flex items-center mr-4">*/}
+          {/*      <input*/}
+          {/*        type="radio"*/}
+          {/*        className="form-radio"*/}
+          {/*        name="role"*/}
+          {/*        value="student"*/}
+          {/*        checked={role === 'student'}*/}
+          {/*        onChange={() => setRole('student')}*/}
+          {/*      />*/}
+          {/*      <span className="ml-2 font-light">Student</span>*/}
+          {/*    </label>*/}
+          {/*    <label className="inline-flex items-center">*/}
+          {/*      <input*/}
+          {/*        type="radio"*/}
+          {/*        className="form-radio"*/}
+          {/*        name="role"*/}
+          {/*        value="recruiter"*/}
+          {/*        checked={role === 'recruiter'}*/}
+          {/*        onChange={() => setRole('recruiter')}*/}
+          {/*      />*/}
+          {/*      <span className="ml-2 font-light">Recruiter</span>*/}
+          {/*    </label>*/}
+          {/*  </div>*/}
+          {/*</div>*/}
           <div className="flex items-center justify-center mb-4">
             <button
               type="submit"
@@ -126,7 +151,7 @@ export default function Home() {
           <div className="flex justify-center">
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => startOnboarding()}
               className="font-bold text-sm text-blue-500 hover:text-blue-800"
             >
               {isLogin ? 'Need an account? Sign up' : 'Have an account? Log in'}
