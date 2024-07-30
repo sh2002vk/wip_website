@@ -52,7 +52,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
     setJobDetailsTerms(job.Terms);
     setJobDetailsWorkMode(job.Environment);
     setJobDetailsIndustry(job.Industry);
-    setDateClosed(dayjs(job.DateClosed));
+    setDateClosed(job.DateClosed ? dayjs(job.DateClosed) : null);
     setJobDescriptionContent(job.JobDescription);
     setJobQualificationContent(job.JobQualification);
     setJobCompany(companyName);
@@ -135,7 +135,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
       Role: jobTitle,
       Location: jobLocation,
       // Pay: 0, CHANGE LATER IF NEEDED
-      DateClosed: dayjs(dateClosed).toISOString(),
+      DateClosed: dateClosed ? dayjs(dateClosed).toISOString() : null,
       Environment: jobDetailsWorkMode,
       Duration: jobDetailsDuration,
       Terms: jobDetailsTerms,
@@ -201,11 +201,12 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
               <input
                 type="text"
                 value={jobTitle}
+                placeholder="Job Title"
                 onChange={(e) => setJobTitle(e.target.value)}
                 className="w-1/2 p-1 text-xl font-bold mb-2 border text-gray-600 border-gray-300 rounded"
               />
             ) : (
-              <h2 className="text-xl font-bold mb-2">{jobTitle}</h2>
+              <h2 className="text-xl font-bold mb-2">{jobTitle ? jobTitle : "New Role"}</h2>
             )}
             {isEditing ? (
               <div className="flex space-x-4">
@@ -226,25 +227,21 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
           </div>
           <div className="mt-2 mb-4">
             {isEditing ? (
-              <>
-                <input
-                  type="text"
-                  value={companyName}
-                  onChange={(e) => setJobCompany(e.target.value)}
-                  className="w-1/2 p-1 text-lg font-bold mb-2 border text-gray-400 border-gray-300 rounded"
-                />
+              <div className="flex justify-between">
+                <p className="text-lg font-bold w-1/2 p-1 mt-1">{companyName}</p>
                 <input
                   type="text"
                   value={jobLocation}
+                  placeholder="Location"
                   onChange={(e) => setJobLocation(e.target.value)}
                   className="w-1/2 p-1 text-lg mb-2 border text-gray-400 border-gray-300 rounded"
                 />
-              </>
+              </div>
             ) : (
               <>
                 <p className="text-lg font-bold">{companyName}</p>
                 {job.Status == "DRAFT" ? (
-                    <p className="text-lg">{jobLocation}</p>
+                    <p className="text-lg">{jobLocation ? jobLocation : "Location"}</p>
                 ) : (
                   <div className={"flex justify-between"}>
                     <p className="text-lg">{jobLocation}</p>
@@ -326,7 +323,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
                   <DatePicker
                       label="End date"
                       value={dateClosed}
-                      onChange={(newDate) => setDateClosed(newDate)}
+                      onChange={(newDate) => setDateClosed(dayjs(newDate).isValid() ? dayjs(newDate) : null)}
                       className="w-52"
                       sx={{ mt: 2, mb: 2 }}
                       views={["day", "month", "year"]}
