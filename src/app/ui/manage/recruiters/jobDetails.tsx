@@ -21,7 +21,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
 
   const [jobDetailsJobType, setJobDetailsJobType] = useState(job.Type);
   const [jobDetailsDuration, setJobDetailsDuration] = useState(job.Duration);
-  const [jobDetailsTerms, setJobDetailsTerms] = useState(job.Terms);
+  const [jobDetailsTerms, setJobDetailsTerms] = useState([]);
   const [jobDetailsWorkMode, setJobDetailsWorkMode] = useState(job.Environment);
   const [jobDetailsIndustry, setJobDetailsIndustry] = useState(job.Industry);
   const [dateClosed, setDateClosed] = useState<Dayjs | null>(null);
@@ -40,8 +40,32 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
     EnglishSample: job.RequiredDocuments?.EnglishSample || false,
   });
 
+  const optionMapping: { [key: string]: string } = {
+    "Internship": "INTERNSHIP",
+    "Contract": "CONTRACT",
+    "Other": "OTHER",
+    "4 months": "4",
+    "8 months": "8",
+    "12 months": "12",
+    "In-person": "INPERSON",
+    "Hybrid": "HYBRID",
+    "Remote": "REMOTE",
+    "Technology": "TECHNOLOGY",
+    "Business": "BUSINESS",
+  };
+
+  const reverseOptionMapping = Object.fromEntries(
+      Object.entries(optionMapping).map(([key, value]) => [value, key])
+  );
+
   useEffect(() => {
     updateJobDetails();
+  }, [job]);
+
+  useEffect(() => {
+    if (job && Array.isArray(job.Terms)) {
+      setJobDetailsTerms(job.Terms);
+    }
   }, [job]);
 
   const updateJobDetails = () => {
@@ -49,7 +73,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
     setJobLocation(job.Location);
     setJobDetailsJobType(job.Type);
     setJobDetailsDuration(job.Duration);
-    setJobDetailsTerms(job.Terms);
+    setJobDetailsTerms(Array.isArray(job.Terms) ? job.Terms : []);
     setJobDetailsWorkMode(job.Environment);
     setJobDetailsIndustry(job.Industry);
     setDateClosed(job.DateClosed ? dayjs(job.DateClosed) : null);
@@ -65,19 +89,19 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
 
   const handleOptionChange = (sectionName: string, newSelectedOptions: string | string[])  => {
     if (sectionName === 'Work Type') {
-      setJobDetailsJobType(newSelectedOptions);
+      setJobDetailsJobType(optionMapping[newSelectedOptions]);
     }
     if (sectionName === 'Duration') {
-      setJobDetailsDuration(newSelectedOptions);
+      setJobDetailsDuration(optionMapping[newSelectedOptions]);
     }
     if (sectionName === 'Terms') {
       setJobDetailsTerms(newSelectedOptions);
     }
     if (sectionName === 'Work Mode') {
-      setJobDetailsWorkMode(newSelectedOptions);
+      setJobDetailsWorkMode(optionMapping[newSelectedOptions]);
     }
     if (sectionName === 'Industry') {
-      setJobDetailsIndustry(newSelectedOptions);
+      setJobDetailsIndustry(optionMapping[newSelectedOptions]);
     }
   };
   const toggleEdit = async () => {
@@ -130,6 +154,10 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
 
   const handleUpdate = async () => {
     console.log("title being used to update is:" + jobTitle);
+    console.log("submitting job type", jobDetailsJobType);
+    console.log("submitting job duration", jobDetailsDuration);
+    console.log("submitting job Industry", jobDetailsIndustry);
+    console.log("submitting job mode", jobDetailsWorkMode);
     const updateData = {
       Type: jobDetailsJobType,
       Role: jobTitle,
@@ -277,13 +305,13 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
                   {
                     title: "Job Type",
                     options: ["Internship", "Contract", "Other"],
-                    selectedOptions: jobDetailsJobType,
+                    selectedOptions: reverseOptionMapping[jobDetailsJobType],
                     onOptionChange: (newSelectedOptions) => handleOptionChange('Work Type', newSelectedOptions)
                   },
                   {
                     title: "Duration",
                     options: ["4 months", "8 months", "12 months"],
-                    selectedOptions: jobDetailsDuration,
+                    selectedOptions: reverseOptionMapping[jobDetailsDuration],
                     onOptionChange: (newSelectedOptions) => handleOptionChange('Duration', newSelectedOptions)
                   },
                   {
@@ -296,13 +324,13 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
                   {
                     title: "Work Mode",
                     options: ["In-person", "Hybrid", "Remote"],
-                    selectedOptions: jobDetailsWorkMode,
+                    selectedOptions: reverseOptionMapping[jobDetailsWorkMode],
                     onOptionChange: (newSelectedOptions) => handleOptionChange('Work Mode', newSelectedOptions)
                   },
                   {
                     title: "Industry",
                     options: ["Technology", "Business"],
-                    selectedOptions: jobDetailsIndustry,
+                    selectedOptions: reverseOptionMapping[jobDetailsIndustry],
                     onOptionChange: (newSelectedOptions) => handleOptionChange('Industry', newSelectedOptions)
                   },
                 ]}
