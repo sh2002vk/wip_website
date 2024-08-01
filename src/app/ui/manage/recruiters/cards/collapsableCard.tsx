@@ -54,7 +54,7 @@ const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
     adjustTextAreaHeight();
   }, [editableContent]);
 
-  const handleOptionClick = (option: string, selectedOptions: string[] | string, onOptionChange: (newSelectedOption: string[] | string) => void, multiple: boolean = false) => {
+  const handleOptionClick = (option: string, selectedOptions: string[] | string, onOptionChange: (newSelectedOption: string[] | string) => void, multiple: boolean | undefined) => {
     if (multiple && Array.isArray(selectedOptions)) {
       const newSelectedOptions = selectedOptions.includes(option)
           ? selectedOptions.filter(opt => opt !== option)
@@ -97,7 +97,15 @@ const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
                               <button
                                   key={optionIndex}
                                   onClick={() => handleOptionClick(option, section.selectedOptions, section.onOptionChange, section.multiple)}
-                                  className={`px-4 py-1 mt-2 border ${Array.isArray(section.selectedOptions) ? section.selectedOptions.includes(option) : section.selectedOptions === option ? 'border-black font-bold' : 'border-gray-300 text-gray-300'} rounded transition duration-300`}
+                                  className={`px-4 py-1 mt-2 border rounded transition duration-300 ${
+                                      Array.isArray(section.selectedOptions)
+                                          ? section.selectedOptions.includes(option)
+                                              ? 'border-black font-bold'
+                                              : 'border-gray-300 text-gray-300'
+                                          : section.selectedOptions === option
+                                              ? 'border-black font-bold'
+                                              : 'border-gray-300 text-gray-300'
+                                  }`}
                               >
                                 {option}
                               </button>

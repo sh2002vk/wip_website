@@ -21,7 +21,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
 
   const [jobDetailsJobType, setJobDetailsJobType] = useState(job.Type);
   const [jobDetailsDuration, setJobDetailsDuration] = useState(job.Duration);
-  const [jobDetailsTerms, setJobDetailsTerms] = useState(job.Terms);
+  const [jobDetailsTerms, setJobDetailsTerms] = useState([]);
   const [jobDetailsWorkMode, setJobDetailsWorkMode] = useState(job.Environment);
   const [jobDetailsIndustry, setJobDetailsIndustry] = useState(job.Industry);
   const [dateClosed, setDateClosed] = useState<Dayjs | null>(null);
@@ -40,8 +40,32 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
     EnglishSample: job.RequiredDocuments?.EnglishSample || false,
   });
 
+  const optionMapping: { [key: string]: string } = {
+    "Internship": "INTERNSHIP",
+    "Contract": "CONTRACT",
+    "Other": "OTHER",
+    "4 months": "4",
+    "8 months": "8",
+    "12 months": "12",
+    "In-person": "INPERSON",
+    "Hybrid": "HYBRID",
+    "Remote": "REMOTE",
+    "Technology": "TECHNOLOGY",
+    "Business": "BUSINESS",
+  };
+
+  const reverseOptionMapping = Object.fromEntries(
+      Object.entries(optionMapping).map(([key, value]) => [value, key])
+  );
+
   useEffect(() => {
     updateJobDetails();
+  }, [job]);
+
+  useEffect(() => {
+    if (job && Array.isArray(job.Terms)) {
+      setJobDetailsTerms(job.Terms);
+    }
   }, [job]);
 
   const updateJobDetails = () => {
@@ -49,10 +73,10 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
     setJobLocation(job.Location);
     setJobDetailsJobType(job.Type);
     setJobDetailsDuration(job.Duration);
-    setJobDetailsTerms(job.Terms);
+    setJobDetailsTerms(Array.isArray(job.Terms) ? job.Terms : []);
     setJobDetailsWorkMode(job.Environment);
     setJobDetailsIndustry(job.Industry);
-    setDateClosed(dayjs(job.DateClosed));
+    setDateClosed(job.DateClosed ? dayjs(job.DateClosed) : null);
     setJobDescriptionContent(job.JobDescription);
     setJobQualificationContent(job.JobQualification);
     setJobCompany(companyName);
@@ -65,19 +89,19 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
 
   const handleOptionChange = (sectionName: string, newSelectedOptions: string | string[])  => {
     if (sectionName === 'Work Type') {
-      setJobDetailsJobType(newSelectedOptions);
+      setJobDetailsJobType(optionMapping[newSelectedOptions]);
     }
     if (sectionName === 'Duration') {
-      setJobDetailsDuration(newSelectedOptions);
+      setJobDetailsDuration(optionMapping[newSelectedOptions]);
     }
     if (sectionName === 'Terms') {
       setJobDetailsTerms(newSelectedOptions);
     }
     if (sectionName === 'Work Mode') {
-      setJobDetailsWorkMode(newSelectedOptions);
+      setJobDetailsWorkMode(optionMapping[newSelectedOptions]);
     }
     if (sectionName === 'Industry') {
-      setJobDetailsIndustry(newSelectedOptions);
+      setJobDetailsIndustry(optionMapping[newSelectedOptions]);
     }
   };
   const toggleEdit = async () => {
@@ -130,12 +154,16 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
 
   const handleUpdate = async () => {
     console.log("title being used to update is:" + jobTitle);
+    console.log("submitting job type", jobDetailsJobType);
+    console.log("submitting job duration", jobDetailsDuration);
+    console.log("submitting job Industry", jobDetailsIndustry);
+    console.log("submitting job mode", jobDetailsWorkMode);
     const updateData = {
       Type: jobDetailsJobType,
       Role: jobTitle,
       Location: jobLocation,
       // Pay: 0, CHANGE LATER IF NEEDED
-      DateClosed: dayjs(dateClosed).toISOString(),
+      DateClosed: dateClosed ? dayjs(dateClosed).toISOString() : null,
       Environment: jobDetailsWorkMode,
       Duration: jobDetailsDuration,
       Terms: jobDetailsTerms,
@@ -201,11 +229,12 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
               <input
                 type="text"
                 value={jobTitle}
+                placeholder="Job Title"
                 onChange={(e) => setJobTitle(e.target.value)}
                 className="w-1/2 p-1 text-xl font-bold mb-2 border text-gray-600 border-gray-300 rounded"
               />
             ) : (
-              <h2 className="text-xl font-bold mb-2">{jobTitle}</h2>
+              <h2 className="text-xl font-bold mb-2">{jobTitle ? jobTitle : "New Role"}</h2>
             )}
             {isEditing ? (
               <div className="flex space-x-4">
@@ -226,25 +255,21 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
           </div>
           <div className="mt-2 mb-4">
             {isEditing ? (
-              <>
-                <input
-                  type="text"
-                  value={companyName}
-                  onChange={(e) => setJobCompany(e.target.value)}
-                  className="w-1/2 p-1 text-lg font-bold mb-2 border text-gray-400 border-gray-300 rounded"
-                />
+              <div className="flex justify-between">
+                <p className="text-lg font-bold w-1/2 p-1 mt-1">{companyName}</p>
                 <input
                   type="text"
                   value={jobLocation}
+                  placeholder="Location"
                   onChange={(e) => setJobLocation(e.target.value)}
                   className="w-1/2 p-1 text-lg mb-2 border text-gray-400 border-gray-300 rounded"
                 />
-              </>
+              </div>
             ) : (
               <>
                 <p className="text-lg font-bold">{companyName}</p>
                 {job.Status == "DRAFT" ? (
-                    <p className="text-lg">{jobLocation}</p>
+                    <p className="text-lg">{jobLocation ? jobLocation : "Location"}</p>
                 ) : (
                   <div className={"flex justify-between"}>
                     <p className="text-lg">{jobLocation}</p>
@@ -280,13 +305,13 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
                   {
                     title: "Job Type",
                     options: ["Internship", "Contract", "Other"],
-                    selectedOptions: jobDetailsJobType,
+                    selectedOptions: reverseOptionMapping[jobDetailsJobType],
                     onOptionChange: (newSelectedOptions) => handleOptionChange('Work Type', newSelectedOptions)
                   },
                   {
                     title: "Duration",
                     options: ["4 months", "8 months", "12 months"],
-                    selectedOptions: jobDetailsDuration,
+                    selectedOptions: reverseOptionMapping[jobDetailsDuration],
                     onOptionChange: (newSelectedOptions) => handleOptionChange('Duration', newSelectedOptions)
                   },
                   {
@@ -299,13 +324,13 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
                   {
                     title: "Work Mode",
                     options: ["In-person", "Hybrid", "Remote"],
-                    selectedOptions: jobDetailsWorkMode,
+                    selectedOptions: reverseOptionMapping[jobDetailsWorkMode],
                     onOptionChange: (newSelectedOptions) => handleOptionChange('Work Mode', newSelectedOptions)
                   },
                   {
                     title: "Industry",
                     options: ["Technology", "Business"],
-                    selectedOptions: jobDetailsIndustry,
+                    selectedOptions: reverseOptionMapping[jobDetailsIndustry],
                     onOptionChange: (newSelectedOptions) => handleOptionChange('Industry', newSelectedOptions)
                   },
                 ]}
@@ -326,7 +351,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
                   <DatePicker
                       label="End date"
                       value={dateClosed}
-                      onChange={(newDate) => setDateClosed(newDate)}
+                      onChange={(newDate) => setDateClosed(dayjs(newDate).isValid() ? dayjs(newDate) : null)}
                       className="w-52"
                       sx={{ mt: 2, mb: 2 }}
                       views={["day", "month", "year"]}
