@@ -160,7 +160,7 @@ export default function Profile(user) {
             lookingFor: interests,
             availability: `${student.Duration}`,
             about: student.PersonalStatement,
-            skills: student.Skills.join(', '),
+            skills: student.Skills ? student.Skills.join(', ') : [],
             experiences: workExp,
             photo: student.Photo || '', // Use existing photoURL or default to empty string
           }));
@@ -219,17 +219,18 @@ export default function Profile(user) {
     };
   
     let filteredProfile = {};
-  
+
     for (let key in keyMapping) {
-      if (profile[key]) {
         if (Array.isArray(keyMapping[key])) {
           // Handle case where one key maps to multiple backend keys
-          filteredProfile[keyMapping[key][0]] = profile[key].split(' ')[0];
-          filteredProfile[keyMapping[key][1]] = profile[key].split(' ')[1];
+          filteredProfile[keyMapping[key][0]] = profile[key] ? profile[key].split(' ')[0] : '';
+          filteredProfile[keyMapping[key][1]] = profile[key] ? profile[key].split(' ')[1] : '';
+        } else if (key === 'availability') {
+          filteredProfile[keyMapping[key]] = profile[key] ? profile[key] : '4';
         } else if (key === 'lookingFor') {
-          filteredProfile[keyMapping[key]] = profile[key].map(item => item.value); // Convert to array of strings
+          filteredProfile[keyMapping[key]] = profile[key] ? profile[key].map(item => item.value) : []; // Convert to array of strings
         } else if (key === 'skills') {
-          filteredProfile[keyMapping[key]] = profile[key].split(', ').map(skill => skill.trim()); // Convert to array of strings
+          filteredProfile[keyMapping[key]] = profile[key] ? profile[key].split(', ').map(skill => skill.trim()) : [];
         } else if (key === 'experiences') {
           filteredProfile[keyMapping[key]] = profile[key].map(exp => ({
             ...exp,
@@ -238,7 +239,6 @@ export default function Profile(user) {
         } else {
           filteredProfile[keyMapping[key]] = profile[key];
         }
-      }
     }
   
     return filteredProfile;
