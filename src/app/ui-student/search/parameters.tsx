@@ -106,7 +106,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
         <div className="container mx-auto pr-4 h-full flex flex-col">
           <div className="my-5">
             <ToggleSwitch
-              leftToggle="Curated"
+              leftToggle="Global"
               rightToggle="Interested"
               activeToggle={activeToggle}
               setActiveToggle={setActiveToggle}
@@ -234,7 +234,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
           </div>
           <div className="rounded-lg text-xs font-light">
             <div className="flex flex-col space-y-2">
-              {["IT", "Software Engineering", "Finance"].map((industry) => (
+              {["Analytics", "Consulting", "Engineering"].map((industry) => (
                 <label key={industry} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -246,11 +246,11 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
               ))}
               {showMorePrograms &&
                 [
-                  "Analytics",
-                  "Consulting",
-                  "UI/UX",
+                  "Finance",
+                  "IT",
+                  "Software Engineering",
                   "Testing",
-                  "Engineering",
+                  "UI/UX",
                 ].map((program) => (
                   <label key={program} className="flex items-center space-x-2">
                     <input
