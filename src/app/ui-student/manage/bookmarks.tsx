@@ -7,19 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import JobCard from './cards/jobCard';
 
-export default function Bookmarks({ user, onSelectJob, initialDrafts}) {
-  
-  const [drafts, setDrafts] = useState(initialDrafts);
-
-  useEffect(() => {
-    setDrafts(initialDrafts);
-  }, [initialDrafts]);
-
-  const handleRemoveBookmark = (id) => {
-      setDrafts(drafts.filter(draft => draft.id !== id));
-  };
-
-  const applicationsLeft = drafts.length;
+export default function Bookmarks({ user, onSelectJob}) { 
 
   const [applicationData, setApplicationData] = useState([]);
   const [quota, setQuota] = useState();
@@ -49,7 +37,9 @@ export default function Bookmarks({ user, onSelectJob, initialDrafts}) {
       } else {
         const companyName = await fetchCompanyName(data.CompanyID);
         return {
-          id: applicationID,
+          applicationID: applicationID,
+          jobID: jobID,
+          companyID: data.CompanyID,
           Role: data.Role,
           CompanyName: companyName
         };
@@ -112,7 +102,8 @@ export default function Bookmarks({ user, onSelectJob, initialDrafts}) {
         </div>
         
         <div className="flex flex-col space-y-2 my-2 h-[75vh] overflow-y-auto no-scrollbar pt-7">
-          {applicationData.map((application) => (
+          {
+          applicationData.map((application) => (
             <JobCard 
               key={application.id}
               company={application.CompanyName}
