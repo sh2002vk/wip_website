@@ -50,9 +50,8 @@ const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-center space-x-2 p-7">
-                    <button className="px-4 py-2 bg-orange-500 text-white rounded">Show Interest</button>
-                    <button className="px-4 py-2 bg-orange-500 text-white rounded">Contact Recruiter</button>
+                <div className="flex space-x-2 p-7">
+                    <button className="px-4 py-2 bg-[#ff6f00] text-white rounded" style={{width:'150px', borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>Show Interest</button>
                 </div>
             </div>
 
