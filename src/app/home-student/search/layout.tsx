@@ -210,6 +210,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
             onClose={handleCloseDetail} 
             onBookmark={() => handleBookmarkClick(selectedJob)}
             isBookmarked={isBookmarked(selectedJob)}
+            user={user}
           />
         )}
       </div>

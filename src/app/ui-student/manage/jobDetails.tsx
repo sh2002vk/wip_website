@@ -6,12 +6,14 @@ import CollapsibleCard from './cards/collapsableCard';
 import "./style.css"
 import { app } from '@/firebase';
 
-export default function JobDetails({ applicationData, onClose, onJobDelete }) {
+export default function JobDetails({ user, applicationData, onClose, onJobDelete }) {
   const [job, setJob] = useState(null);
   const [application, setApplication] = useState(null);
   const [isEligible, setIsEligible] = useState(false); // New state for eligibility
+  const [quota, setQuota] = useState(0);
 
-  const [requiredDocuments, setRequiredDocuments] = useState({
+
+    const [requiredDocuments, setRequiredDocuments] = useState({
     resume: false,
     coverLetter: false,
     videoApplication: false,
@@ -47,6 +49,23 @@ export default function JobDetails({ applicationData, onClose, onJobDelete }) {
     }
   };
 
+    const fetchQuota = async (user) => {
+        if (!user) return;
+
+        try {
+            const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=${user.uid}`);
+            if (!response.ok) {
+                console.log("Error in response");
+                return;
+            }
+            const quotaData = await response.json();
+            console.log("quota", quotaData.quota);
+            setQuota(quotaData.quota);
+        } catch (error) {
+            console.log("Error in fetching quota amount", error);
+        }
+    }
+
   const fetchApplication = async (applicationID) => {
     if (!applicationID) return;
 
@@ -63,6 +82,37 @@ export default function JobDetails({ applicationData, onClose, onJobDelete }) {
       console.log("encountered error with application: ", error);
     }
   };
+
+    const increaseQuota = async (condition) => {
+        try {
+            await fetchQuota(user);
+            const newQuota = quota + (condition ? 1 : -1);
+
+            const response = await fetch('http://localhost:4000/account/student/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    studentID: user.uid,
+                    updatedData: {
+                        Quota: newQuota,
+                    },
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Quota updated successfully:', data);
+
+            return data;
+        } catch (error) {
+            console.error('Error updating quota:', error);
+        }
+    };
 
   const checkEligibility = async (applicationID, jobID) => {
     try {
@@ -87,6 +137,11 @@ export default function JobDetails({ applicationData, onClose, onJobDelete }) {
       checkEligibility(applicationData.applicationID, applicationData.jobID);
     }
   }, [applicationData]);
+
+  useEffect(() => {
+      console.log("Fetching quota");
+      fetchQuota(user);
+  }, [user])
 
   if (!job) {
     return <div>Loading...</div>;
@@ -174,8 +229,14 @@ export default function JobDetails({ applicationData, onClose, onJobDelete }) {
     if (application.Status === 'APPLIED') {
       // onJobDelete(application); 
       withdrawApplication(application);
+      increaseQuota(true);
     } else if (application.Status === 'DRAFT' && isEligible) {
-      submitApplication(application); 
+      if (quota > 0) {
+          submitApplication(application);
+          increaseQuota(false);
+      } else {
+        alert("No Application Quota Remaining");
+      }
     } else {
       console.log(`Current status is: ${application.Status}`);
     }

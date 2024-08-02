@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
+import dayjs from "dayjs";
 
-const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
+const JobProfileView = ({ user, job, onClose, onBookmark, isBookmarked }) => {
     const [bookmarked, setBookmarked] = useState(isBookmarked);
 
     useEffect(() => {
@@ -18,6 +19,31 @@ const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
 
     const getBorderColor = (condition) => condition ? 'orange' : 'gray';
 
+    const createApplication = async () => {
+        try {
+            const response = await fetch('http://localhost:4000/action/student/createApplication', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    JobID: job.JobID,
+                    StudentID: user.uid,
+                    RecruiterID: job.RecruiterID,
+                    ApplicationTime: new Date().toISOString(), // Ensure the date is in ISO format
+                    Status: "DRAFT"
+                }),
+            });
+            if (!response.ok) {
+                console.log("Some error")
+            }
+            const data = await response.json();
+            alert("Application Created")
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div className="flex flex-col md:flex-row rounded-lg w-full shadow-lg max-h-full overflow-y-auto">
             <div className="flex-none w-full h-full md:w-1/3 border-r flex flex-col justify-between">
@@ -25,7 +51,7 @@ const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
                     <h2 className="text-xl text-orange-400 font-bold mb-4">Application Information</h2>
                     <div className="mb-4">
                         <p className="text-base font-semibold">Application Deadline</p>
-                        <p className="text-lg font-light text-gray-700">{job.applicationDeadline}</p>
+                        <p className="text-lg font-light text-gray-700">{dayjs(job.DateClosed).format('MMMM DD, YYYY')}</p>
                     </div>
                     <div className="mb-4">
                         <p className="text-base font-semibold">Recruiter</p>
@@ -34,25 +60,28 @@ const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
                     <div>
                         <p className="text-base font-semibold mb-1">Required Documents</p>
                         <div className="mb-2">
-                            <label className="button-like-label" style={{ display: 'inline-block', width:'150px', marginTop: '0.5rem', fontSize: '1rem', fontWeight: 300, color: 'black', border: `2px solid ${getBorderColor(job.resume)}`, borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>
+                            <label className="button-like-label" style={{ display: 'inline-block', width:'150px', marginTop: '0.5rem', fontSize: '1rem', fontWeight: 300, color: 'black', border: `2px solid ${getBorderColor(job.RequiredDocuments.Resume)}`, borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>
                                 Resume
                             </label>
                         </div>
                         <div className="mb-2">
-                            <label className="button-like-label" style={{ display: 'inline-block', width:'150px', marginTop: '0.5rem', fontSize: '1rem', fontWeight: 300, color: 'black', border: `2px solid ${getBorderColor(job.coverLetter)}`, borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>
+                            <label className="button-like-label" style={{ display: 'inline-block', width:'150px', marginTop: '0.5rem', fontSize: '1rem', fontWeight: 300, color: 'black', border: `2px solid ${getBorderColor(job.RequiredDocuments.CoverLetter)}`, borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>
                                 Cover Letter
                             </label>
                         </div>
                         <div className="mb-2">
-                            <label className="button-like-label" style={{ display: 'inline-block', width:'150px', marginTop: '0.5rem', fontSize: '1rem', fontWeight: 300, color: 'black', border: `2px solid ${getBorderColor(job.transcript)}`, borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>
+                            <label className="button-like-label" style={{ display: 'inline-block', width:'150px', marginTop: '0.5rem', fontSize: '1rem', fontWeight: 300, color: 'black', border: `2px solid ${getBorderColor(job.RequiredDocuments.Transcript)}`, borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>
                                 Transcript
                             </label>
                         </div>
                     </div>
                 </div>
                 <div className="flex justify-center space-x-2 p-7">
-                    <button className="px-4 py-2 bg-orange-500 text-white rounded">Show Interest</button>
-                    <button className="px-4 py-2 bg-orange-500 text-white rounded">Contact Recruiter</button>
+                    <button
+                        className="px-4 py-2 bg-orange-500 text-white rounded"
+                        onClick={() => createApplication()}
+                    >Start Application</button>
+                    {/*<button className="px-4 py-2 bg-orange-500 text-white rounded">Contact Recruiter</button>*/}
                 </div>
             </div>
 
