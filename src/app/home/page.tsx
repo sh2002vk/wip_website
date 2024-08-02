@@ -1,3 +1,10 @@
-export default function Page(){
-    return <p>THIS IS WHERE ALL THE INFO WILL GO</p>
+'use client';
+import React from 'react';
+import DashboardLayout from './dashboard/layout';
+
+export default function Page() {
+  return (
+    <DashboardLayout title="Dashboard">
+    </DashboardLayout>
+  );
 }
