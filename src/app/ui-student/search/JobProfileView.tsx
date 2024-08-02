@@ -6,6 +6,7 @@ import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-ico
 
 const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
     const [bookmarked, setBookmarked] = useState(isBookmarked);
+    const [interestShown, setInterestShown] = useState(false);
 
     useEffect(() => {
         setBookmarked(isBookmarked);
@@ -16,12 +17,16 @@ const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
         onBookmark();
     };
 
-    const getBorderColor = (condition) => condition ? 'orange' : 'gray';
+    const handleShowInterestClick = () => {
+        setInterestShown(!interestShown);
+    };
+
+    const getBorderColor = (condition) => (condition ? 'orange' : 'gray');
 
     return (
         <div className="flex flex-col md:flex-row rounded-lg w-full shadow-lg max-h-full overflow-y-auto">
             <div className="flex-none w-full h-full md:w-1/3 border-r flex flex-col justify-between">
-                <div className='p-7'>
+                <div className="p-7">
                     <h2 className="text-xl text-orange-400 font-bold mb-4">Application Information</h2>
                     <div className="mb-4">
                         <p className="text-base font-semibold">Application Deadline</p>
@@ -34,24 +39,83 @@ const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
                     <div>
                         <p className="text-base font-semibold mb-1">Required Documents</p>
                         <div className="mb-2">
-                            <label className="button-like-label" style={{ display: 'inline-block', width:'150px', marginTop: '0.5rem', fontSize: '1rem', fontWeight: 300, color: 'black', border: `2px solid ${getBorderColor(job.resume)}`, borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>
+                            <label
+                                className="button-like-label"
+                                style={{
+                                    display: 'inline-block',
+                                    width: '150px',
+                                    marginTop: '0.5rem',
+                                    fontSize: '1rem',
+                                    fontWeight: 300,
+                                    color: 'black',
+                                    border: `2px solid ${getBorderColor(job.resume)}`,
+                                    borderRadius: '0.25rem',
+                                    cursor: 'pointer',
+                                    textAlign: 'center',
+                                }}
+                            >
                                 Resume
                             </label>
                         </div>
                         <div className="mb-2">
-                            <label className="button-like-label" style={{ display: 'inline-block', width:'150px', marginTop: '0.5rem', fontSize: '1rem', fontWeight: 300, color: 'black', border: `2px solid ${getBorderColor(job.coverLetter)}`, borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>
+                            <label
+                                className="button-like-label"
+                                style={{
+                                    display: 'inline-block',
+                                    width: '150px',
+                                    marginTop: '0.5rem',
+                                    fontSize: '1rem',
+                                    fontWeight: 300,
+                                    color: 'black',
+                                    border: `2px solid ${getBorderColor(job.coverLetter)}`,
+                                    borderRadius: '0.25rem',
+                                    cursor: 'pointer',
+                                    textAlign: 'center',
+                                }}
+                            >
                                 Cover Letter
                             </label>
                         </div>
                         <div className="mb-2">
-                            <label className="button-like-label" style={{ display: 'inline-block', width:'150px', marginTop: '0.5rem', fontSize: '1rem', fontWeight: 300, color: 'black', border: `2px solid ${getBorderColor(job.transcript)}`, borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>
+                            <label
+                                className="button-like-label"
+                                style={{
+                                    display: 'inline-block',
+                                    width: '150px',
+                                    marginTop: '0.5rem',
+                                    fontSize: '1rem',
+                                    fontWeight: 300,
+                                    color: 'black',
+                                    border: `2px solid ${getBorderColor(job.transcript)}`,
+                                    borderRadius: '0.25rem',
+                                    cursor: 'pointer',
+                                    textAlign: 'center',
+                                }}
+                            >
                                 Transcript
                             </label>
                         </div>
                     </div>
                 </div>
-                <div className="flex space-x-2 p-7">
-                    <button className="px-4 py-2 bg-[#ff6f00] text-white rounded" style={{width:'150px', borderRadius: '0.25rem', cursor: 'pointer', textAlign: 'center' }}>Show Interest</button>
+                <div className="flex flex-col space-y-2 p-7">
+                    {interestShown && (
+                        <div className="text-[#ff6f00] text-xs">
+                            You can find this job under manage.
+                        </div>
+                    )}
+                    <button
+                        onClick={handleShowInterestClick}
+                        className="px-4 py-2 text-white rounded"
+                        style={{
+                            width: '150px',
+                            borderRadius: '0.25rem',
+                            cursor: 'pointer',
+                            textAlign: 'center',
+                            backgroundColor: interestShown ? '#d35400' : '#ff6f00',
+                        }}
+                    >
+                        {interestShown ? 'Shown Interest' : 'Show Interest'}
+                    </button>
                 </div>
             </div>
 
@@ -68,16 +132,27 @@ const JobProfileView = ({ job, onClose, onBookmark, isBookmarked }) => {
                         </button>
                     </div>
                     <div>
-                        <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-3xl font-bold leading-none ml-4">
+                        <button
+                            onClick={onClose}
+                            className="text-gray-500 hover:text-gray-700 text-3xl font-bold leading-none ml-4"
+                        >
                             &times;
                         </button>
                     </div>
                 </div>
                 <div>
-                    <p className="text-base font-semibold mb-1">Duration: <span className='font-light'>{job.Duration}</span></p>
-                    <p className="text-base font-semibold mb-1">Work Mode: <span className='font-light'>{job.Environment}</span></p>
-                    <p className="text-base font-semibold mb-1">Pay: <span className='font-light'>{job.Pay}</span></p>
-                    <p className="text-base font-semibold mb-4">Citizenship Requirement: <span className='font-light'>{job.citizenshipRequirement}</span></p>
+                    <p className="text-base font-semibold mb-1">
+                        Duration: <span className="font-light">{job.Duration}</span>
+                    </p>
+                    <p className="text-base font-semibold mb-1">
+                        Work Mode: <span className="font-light">{job.Environment}</span>
+                    </p>
+                    <p className="text-base font-semibold mb-1">
+                        Pay: <span className="font-light">{job.Pay}</span>
+                    </p>
+                    <p className="text-base font-semibold mb-4">
+                        Citizenship Requirement: <span className="font-light">{job.citizenshipRequirement}</span>
+                    </p>
                     <h2 className="text-xl font-bold mb-2">Job Description</h2>
                     <p className="text-medium font-light mb-4">{job.JobDescription}</p>
                 </div>
