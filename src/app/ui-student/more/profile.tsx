@@ -9,7 +9,8 @@ type ExperienceType = {
 };
 
 type ProfileType = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   location: string;
   institution: string;
@@ -34,7 +35,8 @@ const roles = [
 export default function Profile(user) {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileType>({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     location: '',
     institution: '',
@@ -81,10 +83,14 @@ export default function Profile(user) {
   };
 
   const handleSave = () => {
-    setIsEditing(false);
     console.log(profile);
-
-    updateProfile(profile);
+    if (profile.firstName && profile.lastName && profile.email) {
+      setIsEditing(false);
+      updateProfile(profile);
+    } else {
+      // Handle the case where required fields are not filled
+      alert('Please fill out the required fields.');
+    }
   };
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>, field: keyof ProfileType) => {
@@ -152,7 +158,8 @@ export default function Profile(user) {
 
           setProfile((prevProfile) => ({
             ...prevProfile,
-            name: `${student.FirstName} ${student.LastName}`,
+            firstName: student.FirstName,
+            lastName: student.LastName,
             email: student.EmailID,
             location: student.Location,
             institution: student.School,
@@ -205,7 +212,8 @@ export default function Profile(user) {
   const getAvailableFields = (profile) => {
     // Mapping from frontend keys to backend keys
     const keyMapping = {
-      name: ['FirstName', 'LastName'], // name should be split into FirstName and LastName
+      firstName: 'FirstName',
+      lastName: 'LastName',
       email: 'EmailID',
       location: 'Location',
       institution: 'School',
@@ -221,12 +229,13 @@ export default function Profile(user) {
     let filteredProfile = {};
 
     for (let key in keyMapping) {
-        if (Array.isArray(keyMapping[key])) {
+        if (key === "firstName") {
           // Handle case where one key maps to multiple backend keys
-          filteredProfile[keyMapping[key][0]] = profile[key] ? profile[key].split(' ')[0] : '';
-          filteredProfile[keyMapping[key][1]] = profile[key] ? profile[key].split(' ')[1] : '';
+          filteredProfile[keyMapping[key]] = profile[key] ? profile[key] : '';
+        } else if (key === "lastName") {
+          filteredProfile[keyMapping[key]] = profile[key] ? profile[key] : '';
         } else if (key === 'availability') {
-          filteredProfile[keyMapping[key]] = profile[key] ? profile[key] : '4';
+          filteredProfile[keyMapping[key]] = profile[key] !== '' ? profile[key] : null;
         } else if (key === 'lookingFor') {
           filteredProfile[keyMapping[key]] = profile[key] ? profile[key].map(item => item.value) : []; // Convert to array of strings
         } else if (key === 'skills') {
@@ -299,11 +308,19 @@ export default function Profile(user) {
             <>
               <input
                 type="text"
-                name="name"
-                value={profile.name}
+                name="firstName"
+                value={profile.firstName}
                 onChange={handleChange}
-                placeholder="Name"
+                placeholder="First Name"
                 className="mt-4 text-gray-600 border-gray-300 rounded text-sm text-center"
+              />
+              <input
+                  type="text"
+                  name="lastName"
+                  value={profile.lastName}
+                  onChange={handleChange}
+                  placeholder="Last Name"
+                  className="mt-4 text-gray-600 border-gray-300 rounded text-sm text-center"
               />
               {/* <input
                 type="email"
@@ -348,7 +365,7 @@ export default function Profile(user) {
             </>
           ) : (
             <>
-              <h2 className="mt-4 text-xl font-bold">{profile.name || 'Name'}</h2>
+              <h2 className="mt-4 text-xl font-bold">{profile.firstName + " " + profile.lastName || 'Name'}</h2>
               <p className="mt-2 text-gray-600 ">{profile.email || 'email@example.com'}</p>
               <p className="mt-2 text-gray-600">{profile.location || 'City · Province · Country'}</p>
               <p className="mt-2 text-gray-600">{profile.institution || 'Institution'}</p>
@@ -397,7 +414,7 @@ export default function Profile(user) {
           ) : (
             <>
               <p><strong>Looking For:</strong> {profile.lookingFor.length > 0 ? profile.lookingFor.map(option => option.label).join(', ') : 'Select roles'}</p>
-              <p><strong>Availability:</strong> {profile.availability + " Months" || 'Set your availability'}</p>
+              <p><strong>Availability:</strong> {profile.availability ? profile.availability + " Months" : 'Set your availability'}</p>
             </>
           )}
         </div>

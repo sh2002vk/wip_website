@@ -51,7 +51,8 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
       </div>
       <div className="flex-1 p-4 overflow-x-auto overflow-y-auto no-scrollbar">
         {selectedJob && (
-          <JobDetails 
+          <JobDetails
+            user={user}
             applicationData={selectedJob}
             onClose={handleCloseJobDetails} 
             onJobDelete={handleJobDelete}
