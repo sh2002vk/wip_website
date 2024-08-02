@@ -106,7 +106,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
         <div className="container mx-auto pr-4 h-full flex flex-col">
           <div className="my-5">
             <ToggleSwitch
-              leftToggle="Curated"
+              leftToggle="Global"
               rightToggle="Interested"
               activeToggle={activeToggle}
               setActiveToggle={setActiveToggle}
