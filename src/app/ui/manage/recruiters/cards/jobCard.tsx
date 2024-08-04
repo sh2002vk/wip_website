@@ -15,7 +15,7 @@ const JobCard: React.FC<JobCardProps> = ({ company, title, type, onClick }) => {
         <p className="text-sm font-bold italic text-black">{company}</p>
       </div>
       <div className="mt-1 flex flex-wrap items-center">
-        <p className="text-sm flex-1">{title}</p>
+        <p className="text-sm flex-1">{title || "New Role"}</p>
         <p className="text-xxs p-1 rounded-md bg-gray-300 mt-2 sm:mt-1">{type}</p>
       </div>
     </div>

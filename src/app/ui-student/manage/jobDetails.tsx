@@ -222,9 +222,6 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
     }
 };
 
-
-  console.log('application from application data is: ', application.Status);
-
   const handleButtonClick = () => {
     if (application.Status === 'APPLIED') {
       // onJobDelete(application); 
