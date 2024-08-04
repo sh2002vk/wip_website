@@ -48,7 +48,7 @@ const Drafts = ({user}) => {
       <div className="p-4 pt-0">
         {data.map((item, index) => (
           <div key={index} className="flex items-center justify-between py-2 border-b">
-            <p className="text-md font-light">{item.JobTitle}</p>
+            <p className="text-md font-light">{item.JobTitle || "New Role"}</p>
             <div className="flex items-center">
               <div className="relative w-32 h-3 bg-orange-200 rounded-full">
                 <div

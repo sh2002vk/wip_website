@@ -11,6 +11,7 @@ export default function Bookmarks({ user, onSelectJob}) {
 
   const [applicationData, setApplicationData] = useState([]);
   const [quota, setQuota] = useState();
+  const [loading, setLoading] = useState(true); // State to manage loading
 
   const fetchCompanyName = async (companyID) => {
     try {
@@ -88,9 +89,19 @@ export default function Bookmarks({ user, onSelectJob}) {
   }
 
   useEffect(() => {
+    setLoading(true);
     fetchApplications(user);
     fetchQuota(user);
+    setLoading(false);
   }, [user])
+
+  if (loading) {
+    return (
+        <div className="loading-screen">
+          <p>Loading...</p>
+        </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen w-full mx-auto bg-white pl-4 py-4 space-y-4 border-r border-black">
