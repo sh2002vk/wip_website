@@ -7,10 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import JobCard from './cards/jobCard';
 
-export default function Bookmarks({ user, onSelectJob}) { 
+export default function Bookmarks({ user, sharedQuota, onSelectJob}) {
 
   const [applicationData, setApplicationData] = useState([]);
-  const [quota, setQuota] = useState();
   const [loading, setLoading] = useState(true); // State to manage loading
 
   const fetchCompanyName = async (companyID) => {
@@ -71,27 +70,27 @@ export default function Bookmarks({ user, onSelectJob}) {
     }
   }
 
-  const fetchQuota = async (user) => {
-    if (!user) return;
-
-    try {
-      const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=${user.uid}`);
-      if (!response.ok) {
-        console.log("Error in response");
-        return;
-      }
-      const quotaData = await response.json();
-      console.log("quota", quotaData.quota);
-      setQuota(quotaData.quota);
-    } catch (error) {
-      console.log("Error in fetching quota amount", error);
-    }
-  }
+  // const fetchQuota = async (user) => {
+  //   if (!user) return;
+  //
+  //   try {
+  //     const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=${user.uid}`);
+  //     if (!response.ok) {
+  //       console.log("Error in response");
+  //       return;
+  //     }
+  //     const quotaData = await response.json();
+  //     console.log("quota", quotaData.quota);
+  //     setQuota(quotaData.quota);
+  //   } catch (error) {
+  //     console.log("Error in fetching quota amount", error);
+  //   }
+  // }
 
   useEffect(() => {
     setLoading(true);
     fetchApplications(user);
-    fetchQuota(user);
+    // fetchQuota(user);
     setLoading(false);
   }, [user])
 
@@ -127,7 +126,7 @@ export default function Bookmarks({ user, onSelectJob}) {
         
         <div className="mt-4 flex justify-center">
           <p className="text-center text-md font-semibold">
-            You have <span className="text-orange-500">{quota}</span> applications left
+            You have <span className="text-orange-500">{sharedQuota}</span> applications left
             {/*Add logic here to display how many applications are not completed */}
           </p>
         </div>
