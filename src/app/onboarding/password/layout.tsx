@@ -28,7 +28,8 @@ const createStudent = async (userDetails) => {
         School: userDetails.school,
         AcademicYear: userDetails.year,
         AcademicMajor: userDetails.major,
-        Quota: 3
+        MaxQuota: 3,
+        Quota: 3,
       })
     });
     if (!response.ok) {
