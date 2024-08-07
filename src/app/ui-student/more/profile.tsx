@@ -209,11 +209,11 @@ export default function Profile(user) {
 
           let student = data.data;
           console.log("STUDENT", student)
-          const interests = student.Interest ? JSON.parse(student.Interest).map(interest => ({
+          const interests = student.Interest ? student.Interest.map(interest => ({
             value: interest,
             label: interest
           })) : [];
-          const workExp = student.WorkExperience ? JSON.parse(student.WorkExperience).map(exp => ({
+          const workExp = student.WorkExperience ? student.WorkExperience.map(exp => ({
             company: exp.company,
             title: exp.title,
             description: exp.description || '',
@@ -232,7 +232,7 @@ export default function Profile(user) {
             startAvailability: student.StartAvailability,
             availability: `${student.Duration}`,
             about: student.PersonalStatement,
-            skills: student.Skills ? JSON.parse(student.Skills).join(', ') : '',
+            skills: student.Skills ? student.Skills.join(', ') : '',
             experiences: workExp,
             photo: student.Photo || '', // Use existing photoURL or default to empty string
           }));
