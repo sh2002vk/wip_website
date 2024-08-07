@@ -4,6 +4,8 @@ import React, { useState, ChangeEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
 import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
 
+const API_URL = process.env.API_URL
+
 
 type ProfileType = {
   name: string;
@@ -80,7 +82,7 @@ export default function Profile(user) {
     const filteredProfile = getAvailableFields(updatedProfile);
 
     try {
-      const response = await fetch('http://localhost:4000/account/recruiter/update', {
+      const response = await fetch(`${API_URL}/account/recruiter/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +109,7 @@ export default function Profile(user) {
   React.useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/profile/recruiter/getFullProfile?recruiterID=${user.user.uid}`, {
+        const response = await fetch(`${API_URL}/profile/recruiter/getFullProfile?recruiterID=${user.user.uid}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -119,7 +121,7 @@ export default function Profile(user) {
         if (response.ok) {
 
           //If no problem fetching recruiter profile, fetch their job posting titles
-          const jobRolesResponse = await fetch(`http://localhost:4000/action/job/getJobRoles?recruiterID=${user.user.uid}`, {
+          const jobRolesResponse = await fetch(`${API_URL}/action/job/getJobRoles?recruiterID=${user.user.uid}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -129,7 +131,7 @@ export default function Profile(user) {
           let topJobRoles: string[] = [];
 
           if (jobRolesResponse.ok) {
-            console.log(jobRolesData);
+            // console.log(jobRolesData);
             topJobRoles = getTopJobRoles(jobRolesData);
           } else {
             console.error(jobRolesData.message);
@@ -169,15 +171,19 @@ export default function Profile(user) {
   }, [user.user.uid]);
 
   //Combined use for api call to job/getJobRoles, this function will count the top 4 most frequently appearing job titles the recruiter post
-  const getTopJobRoles = (jobRolesData) => {
-    const jobRoleCounts = jobRolesData.reduce((acc, role) => {
+  const getTopJobRoles = (jobRolesData: string[]): string[] => {
+    const jobRoleCounts = jobRolesData.reduce<Record<string, number>>((acc, role) => {
       acc[role] = (acc[role] || 0) + 1;
       return acc;
     }, {});
-
-    const sortedJobRoles = Object.entries(jobRoleCounts).sort((a, b) => b[1] - a[1]);
-    return sortedJobRoles.slice(0, 4).map(entry => entry[0]);
+  
+    const sortedJobRoles = Object.entries(jobRoleCounts).sort(
+      (a, b) => (b[1] as number) - (a[1] as number)
+    );
+  
+    return sortedJobRoles.slice(0, 4).map((entry) => entry[0]);
   };
+  
 
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -190,7 +196,7 @@ export default function Profile(user) {
 
   const handleSave = () => {
     setIsEditing(false);
-    console.log(profile);
+    // console.log(profile);
 
     updateProfile(profile);
   };
@@ -211,7 +217,7 @@ export default function Profile(user) {
 
   const handleOpenLinkedinProfile = () => {
     if(profile.linkedInProfile){
-      console.log(profile.linkedInProfile);
+      // console.log(profile.linkedInProfile);
       try {
         let url = new URL(profile.linkedInProfile);
         window.open(url, '_blank', 'noopener,noreferrer');

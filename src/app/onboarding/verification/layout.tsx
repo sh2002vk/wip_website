@@ -5,16 +5,16 @@ import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const VerificationLayout = ({ children, title }: LayoutProps) => {
+const VerificationLayout = ({ children }: LayoutProps) => {
 
   return (
     <div className="flex h-screen">
       <div className="flex flex-col justify-center items-center bg-gray-100 w-full h-screen">
         <div className="w-full p-2 max-w-md text-center">
-          <h1 className="text-4xl font-semibold mb-4">{title}</h1>
+          <h1 className="text-4xl font-semibold mb-4">Just making sure it’s you</h1>
           {children}
         </div>
       </div>
@@ -45,12 +45,12 @@ const Verification = () => {
       ...userDetails,
       verificationCode: code.join(""),
     })
-    console.log(code.join(""));
+    // console.log(code.join(""));
     router.push('/onboarding/password');
   };
 
   return (
-    <VerificationLayout title="Just making sure it’s you">
+    <VerificationLayout>
       <p className="text-lg font-light mb-8">
         We have sent a verification code to {userDetails.email}
       </p>
@@ -62,7 +62,7 @@ const Verification = () => {
                 key={index}
                 type="text"
                 name="code"
-                maxLength="1"
+                maxLength={1}
                 className="w-16 h-16 text-center border-none rounded"
                 value={data}
                 onChange={(e) => handleChange(e.target, index)}

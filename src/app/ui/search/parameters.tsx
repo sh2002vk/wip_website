@@ -50,34 +50,30 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
   const [location, setLocation] = useState("");
 
   const [activeToggle, setActiveToggle] = useState("Global");
-  const [preferences, setPreferences] = useState([]);
-  const [availabilities, setAvailabilities] = useState([]);
-  const [workingTypes, setWorkingTypes] = useState([]);
-  const [workingSessions, setWorkingSessions] = useState([]);
-  const [degreeLevels, setDegreeLevels] = useState([]);
+  const [preferences, setPreferences] = useState<string[]>([]);
+  const [availabilities, setAvailabilities] = useState<number[]>([]);
+  const [workingTypes, setWorkingTypes] = useState<string[]>([]);
+  const [workingSessions, setWorkingSessions] = useState<string[]>([]);
+  const [degreeLevels, setDegreeLevels] = useState<number[]>([]);
+  const [selectedPrograms, setSelectedPrograms] = useState<string[]>([]);
+
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
 
   const [showMorePrograms, setShowMorePrograms] = useState(false);
-  const [selectedPrograms, setSelectedPrograms] = useState([]);
 
   const handleShowResults = () => {
     const currentFilters = {
-      availabilities,
-      workingTypes,
-      preferences,
-      degreeLevels,
+      duration: availabilities[0] || 0, // Assuming the first item is the duration
+      preference: preferences[0] || "", // Assuming the first item is the preference
+      level: degreeLevels[0] || 0, // Assuming the first item is the level
       startDate,
       endDate,
       keyword,
       location,
-      minSalary,
-      maxSalary,
-      selectedPrograms,
-      workingSessions,
     };
     onSearch(currentFilters);
-  };
+  };  
 
   const handleMinSalaryChange = (event) => {
     setMinSalary(event.target.value);

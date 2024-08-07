@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
+const API_URL = process.env.API_URL
+
 const data = {
     closedPostings: 20,
     percentage: 20
@@ -9,7 +11,7 @@ const ClosedPostings = ({user}) => {
     const [closedPostings, setClosedPostings] = useState([]);
     const fetchClosedPostings = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/action/recruiter/getApplications?recruiterID=${user.uid}`)
+            const response = await fetch(`${API_URL}/action/recruiter/getApplications?recruiterID=${user.uid}`)
             const applications = await response.json();
             const completedApps = applications.filter(application => application.Status == 'COMPLETE');
             setClosedPostings(completedApps);

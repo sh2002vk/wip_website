@@ -1,6 +1,17 @@
 import React, {useEffect, useState} from 'react';
+const API_URL = process.env.API_URL
 
-const applications = ({user}) => {
+type ApplicationItem = {
+  role: string;
+  dateClosed: string;
+  percentage: number;
+  competition: number;
+  jobStatus: string;
+  appStatus: string;
+};
+
+
+const Applications = ({user}) => {
   const applicationData = [
     {
       icon: 'https://i.natgeofe.com/k/7ce14b7f-df35-4881-95ae-650bce0adf4d/mallard-male-standing_square.jpg', 
@@ -40,7 +51,7 @@ const applications = ({user}) => {
 
   const fetchJobCompetition = async (jobID) => {
     try {
-      const response = await fetch(`http://localhost:4000/action/student/getCompetition?jobID=${jobID}`);
+      const response = await fetch(`${API_URL}/action/student/getCompetition?jobID=${jobID}`);
       const competition = await response.json();
       if (!response.ok) {
         console.log("Error in fetching competition numbers");
@@ -55,43 +66,46 @@ const applications = ({user}) => {
     if (!user) return;
 
     try {
-      const rows = [];
-      const response = await fetch(`http://localhost:4000/action/student/getApplicationInsights?studentID=${user.uid}`);
+      const rows: ApplicationItem[] = [];
+      const response = await fetch(`${API_URL}/action/student/getApplicationInsights?studentID=${user.uid}`);
       const data = await response.json();
       const filteredData = data.filter(application => application.Status !== 'DRAFT');
       if (!response.ok) {
         console.log("Error in retrieving applications")
       }
       for (const application of filteredData) {
-        const item = {};
-        item.role = application.jobModel.Role;
-        item.dateClosed = application.jobModel.DateClosed;
-        item.percentage = getPercentage(application.Status);
+        const item: ApplicationItem = {
+          role: application.jobModel.Role,
+          dateClosed: application.jobModel.DateClosed,
+          percentage: getPercentage(application.Status),
+          competition: 0, // Default value, to be updated
+          jobStatus: application.jobModel.Status,
+          appStatus: application.Status,
+        };
         const jobID = application.jobModel.JobID;
         const competition = await fetchJobCompetition(jobID);
         item.competition = competition.competition;
-        item.jobStatus = application.jobModel.Status;
-        item.appStatus = application.Status;
         rows.push(item);
       }
       setApplicationInsights(rows);
-      console.log("ROWS", rows);
+      // console.log("ROWS", rows);
     } catch (error) {
       console.log("Error fetching applicationInsights")
     }
   }
 
-  const daysUntilClosed = (dateClosed) => {
-    const today = new Date();
-    const closedDate = new Date(dateClosed);
+  const daysUntilClosed = (dateClosed: string) => {
+    const today = new Date().getTime(); // Current time in milliseconds
+    const closedDate = new Date(dateClosed).getTime(); // Closed date in milliseconds
     const differenceInTime = closedDate - today;
     const differenceInDays = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
     return differenceInDays;
-  }
+  };
+  
 
   useEffect(() => {
-    fetchApplicationInsights(user);
-  }, [user])
+    fetchApplicationInsights();
+  }, [user, fetchApplicationInsights])
 
   const statusMapping = {
     "APPLIED": "Applied",
@@ -158,4 +172,4 @@ const applications = ({user}) => {
   );
 };
 
-export default applications;
+export default Applications;

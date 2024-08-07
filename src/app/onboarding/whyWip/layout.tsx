@@ -4,15 +4,15 @@ import { useRouter } from 'next/navigation';
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const WhyWipLayout = ({ children, title }: LayoutProps) => {
+const WhyWipLayout = ({ children }: LayoutProps) => {
   return (
     <div className="flex h-screen">
       <div className="flex flex-col justify-center items-center bg-gray-100 w-full h-screen">
         <div className="w-full p-5 max-w-3xl text-center">
-          <h2 className="text-4xl font-semibold mb-4">{title}</h2>
+          <h2 className="text-4xl font-semibold mb-4">Burnout from mass-applying?</h2>
           {children}
         </div>
       </div>
@@ -55,7 +55,7 @@ const WhyWip = () => {
   };
 
   return (
-    <WhyWipLayout title="Burnout from mass-applying?">
+    <WhyWipLayout>
       <p className="text-xl font-light mb-8">
         WorkInProgress makes sure you <span className="text-orange-500">stand out.</span>
       </p>

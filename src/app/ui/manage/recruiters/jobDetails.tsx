@@ -12,6 +12,8 @@ import dayjs, {Dayjs} from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 
+const API_URL = process.env.API_URL
+
 const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings}) => { //onJobUpdate
   const [isJobDetailsOpen, setIsJobDetailsOpen] = useState(false);
   const [isJobDescriptionOpen, setIsJobDescriptionOpen] = useState(false);
@@ -87,23 +89,40 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
     });
   }
 
-  const handleOptionChange = (sectionName: string, newSelectedOptions: string | string[])  => {
-    if (sectionName === 'Work Type') {
-      setJobDetailsJobType(optionMapping[newSelectedOptions]);
-    }
-    if (sectionName === 'Duration') {
-      setJobDetailsDuration(optionMapping[newSelectedOptions]);
-    }
-    if (sectionName === 'Terms') {
-      setJobDetailsTerms(newSelectedOptions);
-    }
-    if (sectionName === 'Work Mode') {
-      setJobDetailsWorkMode(optionMapping[newSelectedOptions]);
-    }
-    if (sectionName === 'Industry') {
-      setJobDetailsIndustry(optionMapping[newSelectedOptions]);
+  const handleOptionChange = (
+    sectionName: string,
+    newSelectedOptions: string | string[]
+  ) => {
+    // Convert newSelectedOptions to a string for single-option selections
+    const selectedOption = Array.isArray(newSelectedOptions)
+      ? newSelectedOptions[0] // Choose the first option or handle accordingly
+      : newSelectedOptions;
+  
+    // Map the selected option to its corresponding mapped value
+    const mappedOption = optionMapping[selectedOption];
+  
+    switch (sectionName) {
+      case "Work Type":
+        setJobDetailsJobType(mappedOption);
+        break;
+      case "Duration":
+        setJobDetailsDuration(mappedOption);
+        break;
+      case "Terms":
+        setJobDetailsTerms(newSelectedOptions as string[]); // For multiple selections
+        break;
+      case "Work Mode":
+        setJobDetailsWorkMode(mappedOption);
+        break;
+      case "Industry":
+        setJobDetailsIndustry(mappedOption);
+        break;
+      default:
+        console.warn("Unknown section name:", sectionName);
     }
   };
+  
+
   const toggleEdit = async () => {
     if (isEditing) {
       await handleUpdate();
@@ -132,7 +151,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/action/recruiter/deleteJobPosting`, {
+      const response = await fetch(`${API_URL}/action/recruiter/deleteJobPosting`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +164,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
         console.log("ERROR")
       }
       const data = await response.json();
-      console.log("successfully deleted:", data)
+      // console.log("successfully deleted:", data)
       onClose();
     } catch (error) {
       console.log("ERROR");
@@ -153,11 +172,11 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
   }
 
   const handleUpdate = async () => {
-    console.log("title being used to update is:" + jobTitle);
-    console.log("submitting job type", jobDetailsJobType);
-    console.log("submitting job duration", jobDetailsDuration);
-    console.log("submitting job Industry", jobDetailsIndustry);
-    console.log("submitting job mode", jobDetailsWorkMode);
+    // console.log("title being used to update is:" + jobTitle);
+    // console.log("submitting job type", jobDetailsJobType);
+    // console.log("submitting job duration", jobDetailsDuration);
+    // console.log("submitting job Industry", jobDetailsIndustry);
+    // console.log("submitting job mode", jobDetailsWorkMode);
     const updateData = {
       Type: jobDetailsJobType,
       Role: jobTitle,
@@ -178,7 +197,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
       },
     }
     try {
-      const response = await fetch(`http://localhost:4000/action/recruiter/updateJobPosting`, {
+      const response = await fetch(`${API_URL}/action/recruiter/updateJobPosting`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -193,7 +212,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
       } else {
         const updatedJob = await response.json();
         onJobUpdate(updatedJob); // Pass updated job back to parent
-        console.log("successfully updated: ", updatedJob);
+        // console.log("successfully updated: ", updatedJob);
       }
     } catch (error) {
       console.log(error);
@@ -202,7 +221,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
 
   const handleCompleteJob = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/action/recruiter/updateJobPosting`, {
+      const response = await fetch(`${API_URL}/action/recruiter/updateJobPosting`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

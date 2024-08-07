@@ -43,7 +43,7 @@ export const FiltersProvider: React.FC<FiltersProviderProps> = ({ children }) =>
   const [searchTrigger, setSearchTrigger] = useState<boolean>(false);
 
   const doSearch = () => {
-    console.log("Current Filters:", filters);
+    // console.log("Current Filters:", filters);
     // Toggle the searchTrigger to trigger a re-render in components using it
     setSearchTrigger(current => !current);
   };

@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+const API_URL = process.env.API_URL
 
 // const data = [
 //     {
@@ -88,22 +89,22 @@ const ActivePostings = ({user}) => {
 
     const fetchRowInformation = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/action/recruiter/getActivePostingInformation?recruiterID=${user.uid}`)
+            const response = await fetch(`${API_URL}/action/recruiter/getActivePostingInformation?recruiterID=${user.uid}`)
             const rows = await response.json();
-            console.log(rows);
+            // console.log(rows);
             setData(rows);
         } catch (error) {
             console.log(error);
         }
     }
 
-    const daysUntilClosed = (dateClosed) => {
-        const today = new Date();
-        const closedDate = new Date(dateClosed);
+    const daysUntilClosed = (dateClosed: string) => {
+        const today = new Date().getTime(); // Current time in milliseconds
+        const closedDate = new Date(dateClosed).getTime(); // Closed date in milliseconds
         const differenceInTime = closedDate - today;
         const differenceInDays = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
         return differenceInDays;
-    }
+    };    
 
     useEffect(() => {
         fetchRowInformation();
@@ -161,13 +162,13 @@ const ActivePostings = ({user}) => {
                                 {item.applications.length > 0 && (
                                     <div className="w-10 h-10 rounded-full overflow-hidden z-20 relative flex items-center justify-center bg-gray-300">
                                         {/*<img src={item.applicants.imageUrl} alt={item.role} className="w-full h-full object-cover" />*/}
-                                        <div className="text-lg font-bold text-gray-500">{item.applications[0].studentModel.FirstName.charAt(0)}</div>
+                                        <div className="text-lg font-bold text-gray-500">{item.applications[0].Student.FirstName.charAt(0)}</div>
                                     </div>
                                 )}
                                 {item.applications.length > 1 && (
                                     <div className="w-6 h-6 rounded-full overflow-hidden absolute bottom-0 left-8 z-10 flex items-center justify-center bg-gray-300">
                                         {/*<img src={item.applicants.imageUrl} alt={item.role} className="w-full h-full object-cover" />*/}
-                                        <div className="text-sm font-bold text-gray-500">{item.applications[1].studentModel.FirstName.charAt(0)}</div>
+                                        <div className="text-sm font-bold text-gray-500">{item.applications[1].Student.FirstName.charAt(0)}</div>
                                     </div>
                                 )}
                             </div>

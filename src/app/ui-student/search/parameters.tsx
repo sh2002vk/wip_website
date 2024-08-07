@@ -15,9 +15,9 @@ type ParametersProps = {
     endDate: Dayjs | null;
     keyword: string;
     location: string;
-    selectedPrograms: [];
+    selectedPrograms: string[];
   }) => void;
-  user: any;
+  // user: any;
 };
 
 const StyledDatePicker = styled(DatePicker)({
@@ -40,14 +40,14 @@ const StyledDatePicker = styled(DatePicker)({
   },
 });
 
-export default function Parameters({ onSearch, user }: ParametersProps) {
+export default function Parameters({ onSearch }: ParametersProps) {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
 
   const [activeToggle, setActiveToggle] = useState("Curated");
-  const [availabilities, setAvailabilities] = useState([]);
+  const [availabilities, setAvailabilities] = useState<number[]>([]); // Ensuring it's an array of numbers
   const [workingTypes, setWorkingTypes] = useState([]);
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
@@ -60,18 +60,16 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
 
   const handleShowResults = () => {
     const currentFilters = {
-      availabilities,
-      workingTypes,
+      availability: availabilities.length > 0 ? availabilities[0] : 0, // Extracting the first element
       startDate,
       endDate,
       keyword,
       location,
-      minSalary,
-      maxSalary,
-      selectedPrograms
+      selectedPrograms,
     };
     onSearch(currentFilters);
   };
+  
 
   const handleKeywordChange = (event) => {
     setKeyword(event.target.value);

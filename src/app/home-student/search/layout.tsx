@@ -5,16 +5,38 @@ import JobCard from '@/app/ui-student/search/JobCard';
 import JobProfileView from '@/app/ui-student/search/JobProfileView';
 import Bookmarks from '@/app/ui-student/search/bookmarks';
 
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { auth } from '../../../firebase';
+
+const API_URL = process.env.API_URL
+
+type AuthUser = User | null;
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const SearchLayout = ({ children, title }: LayoutProps) => {
-  const [user, setUser] = useState(null);
+type Filters = {
+  workingTypes?: WorkingType[];
+  availabilities?: Availability[];
+  location?: string;
+  selectedPrograms?: string[];
+};
+
+// Define a type for the whereClause
+type WhereClause = {
+  environment?: string[];
+  duration?: string[];
+  location?: string;
+  industry?: string[];
+};
+
+type WorkingType = "In-Person" | "Hybrid" | "Remote";
+type Availability = "4 Months" | "8 Months" | "1+ Year";
+
+const SearchLayout = ({ children }: LayoutProps) => {
+  const [user, setUser] = useState<AuthUser>(null);
   const [jobs, setJobs] = useState([]);
   const [showJobs, setShowJobs] = useState(false);
   const [showJobDetail, setShowJobDetail] = useState(false);
@@ -30,16 +52,16 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       } else {
         setUser(null);
       }
-      console.log("SEARCH", user);
+      // console.log("SEARCH", user);
     });
 
     return () => unsubscribe();
   }, []);
 
-  const fetchBookmarkedJobs = async (studentID) => {
+  const fetchBookmarkedJobs = async (studentID: string) => {
     try {
       // console.log('fetching bookmarks');
-      const response = await fetch(`http://localhost:4000/action/student/getBookmarkedJobs?studentID=${studentID}`, {
+      const response = await fetch(`${API_URL}/action/student/getBookmarkedJobs?studentID=${studentID}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -58,21 +80,21 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     }
   };
 
-  const handleSearch = async (filters) => {
+  const handleSearch = async (filters: Filters) => {
     // console.log("Filters to send to API: ", filters);
-    const availabilityMapping = {
+    const availabilityMapping: Record<Availability, string> = {
       "4 Months": "4",
       "8 Months": "8",
       "1+ Year": "12"
     };
 
-    const worktypeMapping = {
+    const worktypeMapping: Record<WorkingType, string> = {
       "In-Person": "INPERSON",
       "Hybrid": "HYBRID",
       "Remote": "REMOTE"
     }
 
-    let whereClause = {};
+    let whereClause: WhereClause = {};
 
     if (filters.workingTypes) {
       whereClause.environment = filters.workingTypes.map((type) => worktypeMapping[type]);
@@ -93,7 +115,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     // console.log('where clause: ', whereClause);
 
     try {
-      const response = await fetch('http://localhost:4000/action/student/getJobs', {
+      const response = await fetch(`${API_URL}/action/student/getJobs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,13 +136,13 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     }
   };
 
-  const handleCardClick = (job: Job) => {
+  const handleCardClick = (job: any) => {
     setShowJobDetail(true);
     setSelectedJob(job);
     setIsBookmarksExpanded(false); // Hide bookmarks tab when viewing a job profile
   };
 
-  const handleBookmarkClick = async (job: Job) => {
+  const handleBookmarkClick = async (job: any) => {
     let studentID = user.uid;
     let recruiterID = job.RecruiterID;
 
@@ -137,7 +159,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     try {
       if (isBookmarked) {
         // console.log('deleting bookmark for: ', recruiterID);
-        await fetch('http://localhost:4000/action/student/unbookmarkJob', {
+        await fetch(`${API_URL}/action/student/unbookmarkJob`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -147,7 +169,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
         setBookmarkedJobs((prev) => prev.filter((j) => j.JobID !== job.JobID));
       } else {
         // console.log('creating bookmark for:', recruiterID);
-        await fetch('http://localhost:4000/action/student/bookmarkJob', {
+        await fetch(`${API_URL}/action/student/bookmarkJob`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

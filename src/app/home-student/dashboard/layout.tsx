@@ -4,30 +4,48 @@ import BookmarkedStats from '@/app/ui-student/dashboard/bookmarkStats';
 import Applications from '@/app/ui-student/dashboard/applications';
 import Drafts from "@/app/ui-student/dashboard/drafts";
 import New from "@/app/ui-student/dashboard/whatsNew";
-import {onAuthStateChanged} from "firebase/auth";
+import {onAuthStateChanged, User} from "firebase/auth";
 import {auth} from "@/firebase";
+
+const API_URL = process.env.API_URL
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const DashboardLayout = ({ children, title }: LayoutProps) => {
-    const [user, setUser] = useState(null);
+type AuthUser = User | null;
+
+const DashboardLayout = ({ children }: LayoutProps) => {
+    const [user, setUser] = useState<AuthUser>(null);
     const [loading, setLoading] = useState(true);
+    const [firstName, setFirstName] = useState<string | null>(null);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user);
-            } else {
-                setUser(null);
-            }
-            setLoading(false); // Set loading to false after user state is updated
-        });
-
-        return () => unsubscribe();
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setUser(user);
+          fetchUserProfile(user.uid); // Fetch user profile data
+        } else {
+          setUser(null);
+          setLoading(false);
+        }
+      });
+  
+      return () => unsubscribe();
     }, []);
+
+    const fetchUserProfile = async (uid: string) => {
+      try {
+        const response = await fetch(`${API_URL}/profile/student/getFullProfile?studentID=${uid}`);
+        const student = await response.json();
+        setFirstName(student.data.FirstName);
+        setLoading(false); // Set loading to false after fetching data
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        setLoading(false); // Also set loading to false if there's an error
+      }
+    };
 
     if (loading) {
         return <p>Loading...</p>; // Show loading state while checking auth
@@ -42,7 +60,7 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
       <div className="flex-none mb-4">
         <h1 className="text-3xl text-black">
           {'Welcome back, '}
-          <span className="text-[#ff6f00]">Student {user.uid}</span>
+          <span className="text-[#ff6f00]">{firstName}</span>
           <span className="text-black">!</span>
         </h1>
         <h2 className='pt-3 text-2xl font-light'>Here are your insights at a glance</h2>

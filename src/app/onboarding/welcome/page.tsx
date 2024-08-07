@@ -2,7 +2,10 @@ import WelcomePage from './layout'
 
 export default function Welcome() {
   return (
-    <WelcomePage title="MESSAGE">
+    <WelcomePage>
+      {/* <div>
+        <h1>Dashboard Content</h1>
+      </div> */}
     </WelcomePage>
   );
 }

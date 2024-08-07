@@ -2,6 +2,7 @@
 
 import React, { useState, ChangeEvent, useRef } from 'react';
 import Select from 'react-select';
+const API_URL = process.env.API_URL
 
 type ExperienceType = {
   title: string;
@@ -135,7 +136,7 @@ export default function Profile(user) {
   React.useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/profile/student/getFullProfile?studentID=${user.user.uid}`, {
+        const response = await fetch(`${API_URL}/profile/student/getFullProfile?studentID=${user.user.uid}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -144,17 +145,21 @@ export default function Profile(user) {
 
         const data = await response.json();
 
-        if (response.ok) {
+        console.log("STUDENT INFO IS: ", data);
 
+        if (response.ok) {
+          console.log("here", data.data.WorkExperience);
           let student = data.data;
-          const interests = student.Interest.map(interest => ({
-            value: interest,
-            label: interest
-          }));
+          console.log('student is: ', student);
+          // const interests = student.Interest.map(interest => ({
+          //   value: interest,
+          //   label: interest
+          // }));
           const workExp = student.WorkExperience.map(exp => ({
             ...exp,
             title: exp.position
           }));
+          console.log("WORK EXPERIENCE IS: ", workExp);
 
           setProfile((prevProfile) => ({
             ...prevProfile,
@@ -164,7 +169,7 @@ export default function Profile(user) {
             location: student.Location,
             institution: student.School,
             specialization: student.AcademicMajor,
-            lookingFor: interests,
+            lookingFor: student.Interest,
             availability: `${student.Duration}`,
             about: student.PersonalStatement,
             skills: student.Skills ? student.Skills.join(', ') : [],
@@ -258,7 +263,7 @@ export default function Profile(user) {
     const filteredProfile = getAvailableFields(updatedProfile);
 
     try {
-      const response = await fetch('http://localhost:4000/account/student/update', {
+      const response = await fetch(`${API_URL}/account/student/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

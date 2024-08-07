@@ -5,6 +5,7 @@ import {faPencilAlt, faTimes, faCheck, faTrashCan} from '@fortawesome/free-solid
 import CollapsibleCard from './cards/collapsableCard';
 import "./style.css"
 import { app } from '@/firebase';
+const API_URL = process.env.API_URL
 
 export default function JobDetails({ user, applicationData, onClose, onJobDelete }) {
   const [job, setJob] = useState(null);
@@ -29,7 +30,7 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
 
     try {
       console.log('executing fetchJob');
-      const jobResponse = await fetch(`http://localhost:4000/profile/job/getJob?jobID=${jobID}`);
+      const jobResponse = await fetch(`${API_URL}/profile/job/getJob?jobID=${jobID}`);
       const jobData = await jobResponse.json();
       if (!jobData) {
         console.log("No job found");
@@ -53,7 +54,7 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
         if (!user) return;
 
         try {
-            const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=${user.uid}`);
+            const response = await fetch(`${API_URL}/account/student/getQuota?studentID=${user.uid}`);
             if (!response.ok) {
                 console.log("Error in response");
                 return;
@@ -71,7 +72,7 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
 
     try {
       console.log("EXECUTING fetchApplication");
-      const applicationResponse = await fetch(`http://localhost:4000/profile/application/getApplication?applicationID=${applicationID}`);
+      const applicationResponse = await fetch(`${API_URL}/profile/application/getApplication?applicationID=${applicationID}`);
       const applicationData = await applicationResponse.json();
       if (!applicationData) {
         console.log("No application found");
@@ -88,7 +89,7 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
             await fetchQuota(user);
             const newQuota = quota + (condition ? 1 : -1);
 
-            const response = await fetch('http://localhost:4000/account/student/update', {
+            const response = await fetch(`${API_URL}/account/student/update`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -116,7 +117,7 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
 
   const checkEligibility = async (applicationID, jobID) => {
     try {
-      const response = await fetch(`http://localhost:4000/action/student/checkEligibility?ApplicationID=${applicationID}&JobID=${jobID}`);
+      const response = await fetch(`${API_URL}/action/student/checkEligibility?ApplicationID=${applicationID}&JobID=${jobID}`);
       const data = await response.json();
       console.log('application isEligible?: ', data.isEligible);
       setIsEligible(data.isEligible); // Assuming the API returns { isEligible: boolean }
@@ -159,12 +160,12 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
     formData.append('documentType', documentType);
     formData.append('documentName', fileName);
 
-    for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-    }
+    // for (let [key, value] of formData.entries()) {
+    //     // console.log(`${key}: ${value}`);
+    // }
 
     try {
-        const response = await fetch('http://localhost:4000/action/files/uploadFiles', {
+        const response = await fetch(`${API_URL}/action/files/uploadFiles`, {
             method: 'POST',
             body: formData
         });
@@ -196,7 +197,7 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
         console.log('updated data is: ', updatedData)
 
         // Make an API call to update the application in the database
-        const updateResponse = await fetch('http://localhost:4000/action/student/updateApplication', {
+        const updateResponse = await fetch(`${API_URL}/action/student/updateApplication`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -223,7 +224,7 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
 };
 
 
-  console.log('application from application data is: ', application.Status);
+  console.log('application from application data is: ', application);
 
   const handleButtonClick = () => {
     if (application.Status === 'APPLIED') {
@@ -250,7 +251,7 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
         Status: 'DRAFT'
       };
   
-      const response = await fetch('http://localhost:4000/action/student/updateApplication', {
+      const response = await fetch(`${API_URL}/action/student/updateApplication`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -287,7 +288,7 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
         Status: 'APPLIED'
       };
   
-      const response = await fetch('http://localhost:4000/action/student/updateApplication', {
+      const response = await fetch(`${API_URL}/action/student/updateApplication`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -318,9 +319,14 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
   
 
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+  
 
   return (
     <div key={job.JobID} className="p-4 bg-white overflow-y-auto no-scrollbar">

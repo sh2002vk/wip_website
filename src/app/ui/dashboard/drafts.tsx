@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+const API_URL = process.env.API_URL
+
 const Drafts = ({user}) => {
 
   const [data, setData] = useState([]);
@@ -12,7 +14,7 @@ const Drafts = ({user}) => {
       }
 
       try {
-        const response = await fetch('http://localhost:4000/action/recruiter/getDraftStatus', {
+        const response = await fetch(`${API_URL}/action/recruiter/getDraftStatus`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -25,7 +27,7 @@ const Drafts = ({user}) => {
         }
 
         const result = await response.json();
-        console.log("got data: ", result.data);
+        // console.log("got data: ", result.data);
         setData(result.data);
       } catch (error) {
         console.error('Error fetching draft status:', error);

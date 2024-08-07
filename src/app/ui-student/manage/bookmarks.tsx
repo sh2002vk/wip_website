@@ -1,11 +1,13 @@
 'use client';
-import Link from 'next/link';
+// import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
-import ToggleSwitch from './cards/toggleSwitch';
+// import ToggleSwitch from './cards/toggleSwitch';
 import "./style.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import JobCard from './cards/jobCard';
+
+const API_URL = process.env.API_URL
 
 export default function Bookmarks({ user, onSelectJob}) { 
 
@@ -14,7 +16,7 @@ export default function Bookmarks({ user, onSelectJob}) {
 
   const fetchCompanyName = async (companyID) => {
     try {
-      const response = await fetch(`http://localhost:4000/profile/company/getFullProfile?companyID=${companyID}`);
+      const response = await fetch(`${API_URL}/profile/company/getFullProfile?companyID=${companyID}`);
       const data = await response.json();
       if (!data) {
         console.log("Error: no company");
@@ -29,7 +31,7 @@ export default function Bookmarks({ user, onSelectJob}) {
   }
   const fetchJobData = async (jobID, applicationID) => {
     try {
-      const response = await fetch(`http://localhost:4000/profile/job/getJob?jobID=${jobID}`);
+      const response = await fetch(`${API_URL}/profile/job/getJob?jobID=${jobID}`);
       const data = await response.json();
       if (!data) {
         console.log("No job found");
@@ -54,7 +56,7 @@ export default function Bookmarks({ user, onSelectJob}) {
     if (!user) return;
 
     try {
-      const response = await fetch(`http://localhost:4000/action/student/getApplications?studentID=${user.uid}`);
+      const response = await fetch(`${API_URL}/action/student/getApplications?studentID=${user.uid}`);
       const data = await response.json();
       if (!data) {
         console.log("fetch Application failed");
@@ -74,7 +76,7 @@ export default function Bookmarks({ user, onSelectJob}) {
     if (!user) return;
 
     try {
-      const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=${user.uid}`);
+      const response = await fetch(`${API_URL}/account/student/getQuota?studentID=${user.uid}`);
       if (!response.ok) {
         console.log("Error in response");
         return;

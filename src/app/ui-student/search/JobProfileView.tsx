@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 import dayjs from "dayjs";
+const API_URL = process.env.API_URL
 
 const JobProfileView = ({ user, job, onClose, onBookmark, isBookmarked }) => {
     const [bookmarked, setBookmarked] = useState(isBookmarked);
@@ -29,7 +30,7 @@ const JobProfileView = ({ user, job, onClose, onBookmark, isBookmarked }) => {
 
     const createApplication = async () => {
         try {
-            const response = await fetch('http://localhost:4000/action/student/createApplication', {
+            const response = await fetch(`${API_URL}/action/student/createApplication`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
