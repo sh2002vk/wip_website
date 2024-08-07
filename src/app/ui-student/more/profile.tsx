@@ -209,11 +209,11 @@ export default function Profile(user) {
 
           let student = data.data;
           console.log("STUDENT", student)
-          const interests = student.Interest ? student.Interest.map(interest => ({
+          const interests = student.Interest ? JSON.parse(student.Interest).map(interest => ({
             value: interest,
             label: interest
           })) : [];
-          const workExp = student.WorkExperience ? student.WorkExperience.map(exp => ({
+          const workExp = student.WorkExperience ? JSON.parse(student.WorkExperience).map(exp => ({
             company: exp.company,
             title: exp.title,
             description: exp.description || '',
@@ -232,7 +232,7 @@ export default function Profile(user) {
             startAvailability: student.StartAvailability,
             availability: `${student.Duration}`,
             about: student.PersonalStatement,
-            skills: student.Skills ? student.Skills.join(', ') : '',
+            skills: student.Skills ? JSON.parse(student.Skills).join(', ') : '',
             experiences: workExp,
             photo: student.Photo || '', // Use existing photoURL or default to empty string
           }));
@@ -615,7 +615,7 @@ export default function Profile(user) {
               {profile.experiences.length > 0 ? (
                 profile.experiences.map((experience, index) => (
                   <div key={index} className="experience-item mb-4 pl-4 border-l-4 border-gray-300">
-                    <h4 className="text-md font-bold">{experience.title || "HI"} - {experience.company}</h4>
+                    <h4 className="text-md font-bold">{experience.title} - {experience.company}</h4>
                     <p>{experience.description}</p>
                   </div>
                 ))
