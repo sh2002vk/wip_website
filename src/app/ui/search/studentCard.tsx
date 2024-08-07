@@ -54,8 +54,8 @@ export default function StudentCard({ FirstName, LastName, School, AcademicMajor
                 <div className="py-1">
                     <h3 className="text-base font-semibold">Previous Experience</h3>
                     <ul className="text-sm text-gray-600">
-                        {WorkExperience.map((job, index) => (
-                            <li key={index}>{job.position} - {job.company}</li>
+                        {JSON.parse(WorkExperience).map((job, index) => (
+                            <li key={index}>{job.title} - {job.company}</li>
                         ))}
                     </ul>
                 </div>
