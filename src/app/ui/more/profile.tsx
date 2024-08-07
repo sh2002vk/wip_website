@@ -47,7 +47,9 @@ export default function Profile(user) {
     photo: '',
   });
 
-  
+  // Added to store the original profile data
+  const [originalProfile, setOriginalProfile] = useState<ProfileType>(profile);
+
   //Since there are some attributes missing in the backend, need to filter the profile and pass the correct variables to the backend
   const getAvailableFields = (profile) => {
     // Mapping from frontend keys to backend keys
@@ -97,6 +99,7 @@ export default function Profile(user) {
 
       if (response.ok) {
         console.log('Profile updated successfully:', data);
+        setOriginalProfile(updatedProfile); // Save the updated profile as the new original
       } else {
         console.error('Failed to update profile:', data.message);
       }
@@ -139,26 +142,27 @@ export default function Profile(user) {
 
 
           let recruiter = data.data;
-          setProfile({
+          const fetchedProfile = {
             name: `${recruiter.FirstName} ${recruiter.LastName}`,
             company: recruiter.CompanyName,
             position: recruiter.Roles,
             email: recruiter.EmailID,
             location: recruiter.Locations || '', //********Need to discuss about how to separate city, province and country
             hiringFor: topJobRoles || [], //********Need to discuss about how to separate different roles
-            // area: recruiter.Area || 'TODO', //Need to add this attribute to backend
+                        // area: recruiter.Area || 'TODO', //Need to add this attribute to backend
             // documents: recruiter.Documents || 'TODO', //Need to add this attribute to backend
             // bio: recruiter.Bio || 'Need to add this attribute to backend', //Need to add this attribute to backend
             contactEmail: recruiter.EmailID,
             phone: recruiter.PhoneNumber || '',
             linkedInProfile: recruiter.LinkedInProfile || '',
-            // culture: recruiter.Culture || 'Need to add this attribute to backend', //Need to add this attribute to backend
+                        // culture: recruiter.Culture || 'Need to add this attribute to backend', //Need to add this attribute to backend
             // learningOpportunities: recruiter.LearningOpportunities || 'Need to add this attribute to backend', //Need to add this attribute to backend
             // benefits: recruiter.Benefits || 'Need to add this attribute to backend', //Need to add this attribute to backend
             photo: '',
-          });
-          // console.log(data.data);
+          };
 
+          setProfile(fetchedProfile);
+          setOriginalProfile(fetchedProfile); // Store the fetched profile as the original
         } else {
           console.error('Failed to fetch profile:', data.message);
         }
@@ -198,7 +202,12 @@ export default function Profile(user) {
     setIsEditing(false);
     // console.log(profile);
 
-    updateProfile(profile);
+  updateProfile(profile);
+  };
+
+  const handleCancel = () => {
+    setProfile(originalProfile); // Revert to the original profile
+    setIsEditing(false);
   };
 
   const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -230,7 +239,7 @@ export default function Profile(user) {
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-full mx-auto bg-white p-2">
-
+      
       {/* Left Section */}
 
       <div className="flex flex-col items-center md:w-1/3">
@@ -260,7 +269,7 @@ export default function Profile(user) {
                 value={profile.name}
                 onChange={handleChange}
                 placeholder="Name"
-                className="mt-4 text-gray-600 border-gray-300 rounded text-sm text-center"
+                className="mt-4 text-black border-gray-300 rounded text-sm text-center"
               />
               <input
                 type="text"
@@ -268,7 +277,7 @@ export default function Profile(user) {
                 value={profile.company}
                 onChange={handleChange}
                 placeholder="Company"
-                className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
+                className="mt-2 text-black border-gray-300 rounded text-sm text-center"
               />
               <input
                 type="text"
@@ -276,16 +285,16 @@ export default function Profile(user) {
                 value={profile.position}
                 onChange={handleChange}
                 placeholder="Position Title(s)"
-                className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
+                className="mt-2 text-black border-gray-300 rounded text-sm text-center"
               />
-              <p className="mt-2 text-gray-600">{profile.email || 'email@example.com'}</p>
+              <p className="mt-2 text-black">{profile.email || 'email@example.com'}</p>
               <input
                 type="text"
                 name="location"
                 value={profile.location}
                 onChange={handleChange}
                 placeholder="City · Province · Country"
-                className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
+                className="mt-2 text-black border-gray-300 rounded text-sm text-center"
               />
             </>
           ) : (
@@ -298,9 +307,22 @@ export default function Profile(user) {
             </>
           )}
         </div>
-        <div className="flex justify-center mt-auto mb-8">
+        <div className="flex justify-center mt-auto mb-8 space-x-2">
           {isEditing ? (
-            <button onClick={handleSave} className="bg-[#ff6f00] text-white px-3 py-3 rounded-lg w-40 transition-colors hover:bg-blue-400">Save</button>
+            <>
+              <button 
+                onClick={handleSave} 
+                className="bg-[#ff6f00] text-white px-3 py-3 rounded-lg w-24 transition-colors hover:bg-blue-400"
+              >
+                Save
+              </button>
+              <button 
+                onClick={handleCancel} 
+                className="bg-gray-300 text-black px-3 py-3 rounded-lg w-24 transition-colors hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </>
           ) : (
             <button onClick={() => setIsEditing(true)} className="bg-[#ff6f00] text-white px-3 py-3 rounded-lg w-40 transition-colors hover:bg-blue-400">Edit Profile</button>
           )}
@@ -316,7 +338,7 @@ export default function Profile(user) {
                 <p>{role}</p>
               </div>
           ))}
-      </p>
+        </p>
 
         {/* <div className="mb-4 space-y-2">
           <h3 className="text-lg font-bold">Professional Bio</h3>
@@ -383,7 +405,7 @@ export default function Profile(user) {
             </>
           )}
         </div>
-        
+
         {/*
         <div className="mb-16 space-y-2">
           <h3 className="text-lg font-bold">Company Culture and Benefits</h3>

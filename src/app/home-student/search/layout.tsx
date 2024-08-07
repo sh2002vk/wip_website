@@ -49,6 +49,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
       if (user) {
         setUser(user);
         fetchBookmarkedJobs(user.uid);
+        handleSearch({});
       } else {
         setUser(null);
       }
@@ -128,7 +129,8 @@ const SearchLayout = ({ children }: LayoutProps) => {
       }
 
       const data = await response.json();
-      setJobs(data.data);
+      const listedJobs = data.data.filter((job) => job.Status !== "DRAFT");
+      setJobs(listedJobs);
       setShowJobs(true);
       setShowJobDetail(false);
     } catch (error) {

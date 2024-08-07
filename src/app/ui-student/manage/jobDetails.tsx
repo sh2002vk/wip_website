@@ -7,10 +7,11 @@ import "./style.css"
 import { app } from '@/firebase';
 const API_URL = process.env.API_URL
 
-export default function JobDetails({ user, applicationData, onClose, onJobDelete }) {
+export default function JobDetails({ user, applicationData, calculateQuota, sharedQuota, onClose, onJobDelete }) {
   const [job, setJob] = useState(null);
   const [application, setApplication] = useState(null);
   const [isEligible, setIsEligible] = useState(false); // New state for eligibility
+  const [loading, setLoading] = useState(true);
   const [quota, setQuota] = useState(0);
 
 
@@ -52,9 +53,9 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
 
     const fetchQuota = async (user) => {
         if (!user) return;
-
+    
         try {
-            const response = await fetch(`${API_URL}/account/student/getQuota?studentID=${user.uid}`);
+            const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=${user.uid}`);
             if (!response.ok) {
                 console.log("Error in response");
                 return;
@@ -128,8 +129,10 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
 
   useEffect(() => {
     if (applicationData) {
+        setLoading(true);
       fetchApplication(applicationData.applicationID);
       fetchJob(applicationData.jobID);
+      setLoading(false);
     }
   }, [applicationData]);
 
@@ -139,12 +142,12 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
     }
   }, [applicationData]);
 
-  useEffect(() => {
-      console.log("Fetching quota");
-      fetchQuota(user);
-  }, [user])
+  // useEffect(() => {
+  //     console.log("Fetching quota");
+  //     fetchQuota(user);
+  // }, [user])
 
-  if (!job) {
+  if (!application || !job || loading) {
     return <div>Loading...</div>;
   }
 
@@ -223,24 +226,22 @@ export default function JobDetails({ user, applicationData, onClose, onJobDelete
     }
 };
 
-
   console.log('application from application data is: ', application);
 
   const handleButtonClick = () => {
     if (application.Status === 'APPLIED') {
       // onJobDelete(application); 
       withdrawApplication(application);
-      increaseQuota(true);
     } else if (application.Status === 'DRAFT' && isEligible) {
-      if (quota > 0) {
+      if (sharedQuota > 0) {
           submitApplication(application);
-          increaseQuota(false);
       } else {
         alert("No Application Quota Remaining");
       }
     } else {
       console.log(`Current status is: ${application.Status}`);
     }
+    calculateQuota();
   };
 
   const withdrawApplication = async (application) => {

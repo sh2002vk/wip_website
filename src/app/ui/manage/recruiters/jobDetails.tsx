@@ -34,13 +34,14 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
   const [jobCompany, setJobCompany] = useState(companyName);
   const [jobLocation, setJobLocation] = useState(job.Location);
   const [jobStatus, setJobStatus] = useState(job.Status);
-  //ADD PAY?
+
   const [requiredDocuments, setRequiredDocuments] = useState({
     Resume: job.RequiredDocuments?.Resume || false,
     CoverLetter: job.RequiredDocuments?.CoverLetter || false,
-    // VideoApplication: job.RequiredDocuments?.videoApplication || false,
     EnglishSample: job.RequiredDocuments?.EnglishSample || false,
   });
+
+  const [showConfirmation, setShowConfirmation] = useState(false); // State for confirmation popup
 
   const optionMapping: { [key: string]: string } = {
     "Internship": "INTERNSHIP",
@@ -57,7 +58,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
   };
 
   const reverseOptionMapping = Object.fromEntries(
-      Object.entries(optionMapping).map(([key, value]) => [value, key])
+    Object.entries(optionMapping).map(([key, value]) => [value, key])
   );
 
   useEffect(() => {
@@ -162,12 +163,16 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
       })
       if (!response.ok) {
         console.log("ERROR")
+      } else {
+        const data = await response.json();
+        console.log("successfully deleted:", data)
+        onClose(); // Close the job details view after deletion
       }
       const data = await response.json();
       // console.log("successfully deleted:", data)
       onClose();
     } catch (error) {
-      console.log("ERROR");
+      console.log("ERROR:", error);
     }
   }
 
@@ -263,12 +268,34 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
             ) : (
               <div className="flex space-x-4">
                 {(job.Status === "DRAFT" || !isDashboardView) ? (
-                    <>
-                      <FontAwesomeIcon icon={faTrashCan} size="xl" onClick={handleDelete}/>
-                      <FontAwesomeIcon icon={faPencilAlt} size="xl" onClick={toggleEdit} />
-                      {job.Status == "DRAFT" && <FontAwesomeIcon icon={faCheck} size="xl" onClick={handleCompleteJob}/>}
-                    </>
-                    ) : (<></>)}
+                  <>
+                    {showConfirmation ? (
+                      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white border border-gray-300 p-4 rounded shadow-md w-1/3">
+                          <p className="mb-4">Are you sure you want to delete this job posting?</p>
+                          <div className="flex justify-end">
+                            <button
+                              onClick={handleDelete}
+                              className="bg-[#ff6f00] text-white py-1 px-3 rounded mr-2 hover:bg-red-600"
+                            >
+                              Yes
+                            </button>
+                            <button
+                              onClick={() => setShowConfirmation(false)}
+                              className="bg-gray-300 text-black py-1 px-3 rounded hover:bg-gray-400"
+                            >
+                              No
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <FontAwesomeIcon icon={faTrashCan} size="xl" onClick={() => setShowConfirmation(true)} />
+                    )}
+                    <FontAwesomeIcon icon={faPencilAlt} size="xl" onClick={toggleEdit} />
+                    {job.Status === "DRAFT" && <FontAwesomeIcon icon={faCheck} size="xl" onClick={handleCompleteJob}/>}
+                  </>
+                ) : (<></>)}
               </div>
             )}
           </div>
@@ -287,28 +314,28 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
             ) : (
               <>
                 <p className="text-lg font-bold">{companyName}</p>
-                {job.Status == "DRAFT" ? (
-                    <p className="text-lg">{jobLocation ? jobLocation : "Location"}</p>
+                {job.Status === "DRAFT" ? (
+                  <p className="text-lg">{jobLocation ? jobLocation : "Location"}</p>
                 ) : (
-                  <div className={"flex justify-between"}>
+                  <div className="flex justify-between">
                     <p className="text-lg">{jobLocation}</p>
                     {isDashboardView ? (
-                        <p
-                          className="text-lg text-orange-500 underline cursor-pointer"
-                          onClick={toggleView}
-                        >
-                           Switch to job details
-                        </p>
-                        ) : (
-                        <p
-                         className="text-lg text-orange-500 underline cursor-pointer"
-                         onClick={toggleView}
-                         >
-                           Switch to job dashboard
-                         </p>
-                        )}
+                      <p
+                        className="text-lg text-orange-500 underline cursor-pointer"
+                        onClick={toggleView}
+                      >
+                        Switch to job details
+                      </p>
+                    ) : (
+                      <p
+                        className="text-lg text-orange-500 underline cursor-pointer"
+                        onClick={toggleView}
+                      >
+                        Switch to job dashboard
+                      </p>
+                    )}
                   </div>
-               )}
+                )}
               </>
             )}
           </div>
@@ -367,19 +394,19 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
                 onContentChange={setJobQualificationContent}
               />
               {isEditing ? (
-                  <DatePicker
-                      label="End date"
-                      value={dateClosed}
-                      onChange={(newDate) => setDateClosed(dayjs(newDate).isValid() ? dayjs(newDate) : null)}
-                      className="w-52"
-                      sx={{ mt: 2, mb: 2 }}
-                      views={["day", "month", "year"]}
-                      format="DD MMMM, YYYY"
-                  />
+                <DatePicker
+                  label="End date"
+                  value={dateClosed}
+                  onChange={(newDate) => setDateClosed(dayjs(newDate).isValid() ? dayjs(newDate) : null)}
+                  className="w-52"
+                  sx={{ mt: 2, mb: 2 }}
+                  views={["day", "month", "year"]}
+                  format="DD MMMM, YYYY"
+                />
               ) : (
-                  <div className="mt-4">
-                    {dayjs(dateClosed).isValid() && <span className="mt-4">Job Deadline: {dayjs(dateClosed).format('MMMM DD, YYYY')}</span>}
-                  </div>
+                <div className="mt-4">
+                  {dayjs(dateClosed).isValid() && <span className="mt-4">Job Deadline: {dayjs(dateClosed).format('MMMM DD, YYYY')}</span>}
+                </div>
               )}
             </div>
 
@@ -388,112 +415,58 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
               <h2 className="text-xl text-orange-500 font-bold mb-2">Optional Components</h2>
               <div className="flex justify-between w-full">
                 {isEditing ? (
-                    <>
-                      <h2 className="text-lg font-bold">Resume</h2>
-                      <JobOptionToggle
-                          isSelected={requiredDocuments?.Resume}
-                          onToggle={() => handleToggleRequiredDocument("Resume")}
-                      />
-                    </>
+                  <>
+                    <h2 className="text-lg font-bold">Resume</h2>
+                    <JobOptionToggle
+                      isSelected={requiredDocuments?.Resume}
+                      onToggle={() => handleToggleRequiredDocument("Resume")}
+                    />
+                  </>
                 ) : (
-                    <>
-                      <h2 className={`${requiredDocuments?.Resume ?? false ?
-                          "text-lg font-bold" :
-                          "text-gray-300 text-lg font-bold"}`}
-                      >Resume</h2>
-                    </>
+                  <>
+                    <h2 className={`${requiredDocuments?.Resume ?? false ?
+                      "text-lg font-bold" :
+                      "text-gray-300 text-lg font-bold"}`}
+                    >Resume</h2>
+                  </>
                 )}
               </div>
               <div className="flex justify-between w-full">
                 {isEditing ? (
-                    <>
-                      <h2 className="text-lg font-bold">Cover Letter</h2>
-                      <JobOptionToggle
-                          isSelected={requiredDocuments?.CoverLetter}
-                          onToggle={() => handleToggleRequiredDocument("CoverLetter")}
-                      />
-                    </>
+                  <>
+                    <h2 className="text-lg font-bold">Cover Letter</h2>
+                    <JobOptionToggle
+                      isSelected={requiredDocuments?.CoverLetter}
+                      onToggle={() => handleToggleRequiredDocument("CoverLetter")}
+                    />
+                  </>
                 ) : (
-                    <>
-                      <h2 className={`${requiredDocuments?.CoverLetter ?? false ?
-                          "text-lg font-bold" :
-                          "text-gray-300 text-lg font-bold"}`}
-                      >Cover Letter</h2>
-                    </>
-                  )}
-              </div>
-              {/*<div className="flex justify-between w-full">*/}
-              {/*  {isEditing ? (*/}
-              {/*      <>*/}
-              {/*        <h2 className="text-lg font-bold">Video Application</h2>*/}
-                      {/*<JobOptionToggle*/}
-                      {/*    isSelected={job.RequiredDocuments.videoApplication}*/}
-                      {/*    onToggle={() => handleToggleRequiredDocument("videoApplication")}*/}
-                      {/*/>*/}
-              {/*      </>*/}
-              {/*  ) : (*/}
-              {/*      <>*/}
-              {/*        <h2 className={`${job.RequiredDocuments?.videoApplication ?? false ?*/}
-              {/*            "text-lg font-bold" :*/}
-              {/*            "text-gray-300 text-lg font-bold"}`}*/}
-              {/*        >Video Application</h2>*/}
-              {/*      </>*/}
-              {/*  )}*/}
-              {/*</div>*/}
-              {/*<div className="flex justify-between w-full">*/}
-              {/*  {isEditing ? (*/}
-              {/*      <>*/}
-              {/*        <h2 className="text-lg font-bold">Cognitive Test</h2>*/}
-              {/*        <JobOptionToggle*/}
-              {/*            isSelected={requiredDocuments.cognitiveTest}*/}
-              {/*            onToggle={() => handleToggleRequiredDocument("cognitiveTest")}*/}
-              {/*        />*/}
-              {/*      </>*/}
-              {/*  ) : (*/}
-              {/*      <>*/}
-              {/*        <h2 className={`${requiredDocuments.cognitiveTest ?*/}
-              {/*            "text-lg font-bold" :*/}
-              {/*            "text-gray-300 text-lg font-bold"}`}*/}
-              {/*        >Cognitive Test</h2>*/}
-              {/*      </>*/}
-              {/*  )}*/}
-              {/*</div>*/}
-              <div className="flex justify-between w-full">
-                {isEditing ? (
-                    <>
-                      <h2 className="text-lg font-bold">English Sample</h2>
-                      <JobOptionToggle
-                          isSelected={requiredDocuments?.EnglishSample}
-                          onToggle={() => handleToggleRequiredDocument("EnglishSample")}
-                      />
-                    </>
-                ) : (
-                    <>
-                      <h2 className={`${requiredDocuments?.EnglishSample ?? false ?
-                          "text-lg font-bold" :
-                          "text-gray-300 text-lg font-bold"}`}
-                      >English Sample</h2>
-                    </>
+                  <>
+                    <h2 className={`${requiredDocuments?.CoverLetter ?? false ?
+                      "text-lg font-bold" :
+                      "text-gray-300 text-lg font-bold"}`}
+                    >Cover Letter</h2>
+                  </>
                 )}
               </div>
-              {/*<div className="flex justify-between w-full">*/}
-              {/*  {isEditing ? (*/}
-              {/*      <>*/}
-              {/*        <h2 className="text-lg font-bold">Online Assessment</h2>*/}
-              {/*        <JobOptionToggle*/}
-              {/*            isSelected={requiredDocuments.onlineAssessment}*/}
-              {/*            onToggle={() => handleToggleRequiredDocument("onlineAssessment")}*/}
-              {/*        />*/}
-              {/*      </>*/}
-              {/*  ) : (*/}
-              {/*      <>*/}
-              {/*        <h2 className={`${requiredDocuments.onlineAssessment ?*/}
-              {/*            "text-lg font-bold" :*/}
-              {/*            "text-gray-300 text-lg font-bold"}`}*/}
-              {/*        >Online Assessment</h2>*/}
-              {/*      </>*/}
-              {/*  )}*/}
-              {/*</div>*/}
+              <div className="flex justify-between w-full">
+                {isEditing ? (
+                  <>
+                    <h2 className="text-lg font-bold">English Sample</h2>
+                    <JobOptionToggle
+                      isSelected={requiredDocuments?.EnglishSample}
+                      onToggle={() => handleToggleRequiredDocument("EnglishSample")}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <h2 className={`${requiredDocuments?.EnglishSample ?? false ?
+                      "text-lg font-bold" :
+                      "text-gray-300 text-lg font-bold"}`}
+                    >English Sample</h2>
+                  </>
+                )}
+              </div>
             </div>
           </>
         ):(

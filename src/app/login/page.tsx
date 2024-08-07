@@ -18,9 +18,14 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async(user) => {
       if (user) {
-        router.push('/home/dashboard'); // Redirect to dashboard if already logged in
+        const account = await determineAccountType(user.uid);
+        if (account == "recruiter") {
+          router.push('/home/dashboard');
+        } else {
+          router.push('/home-student/dashboard');
+        }
       }
     });
 
