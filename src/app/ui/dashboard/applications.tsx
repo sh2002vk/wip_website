@@ -58,14 +58,14 @@ const applications = ({user}) => {
         {applicantList.map((applicant, index) => (
           <div key={index} className="flex items-center justify-between py-3 border-b">
             <div className="flex items-center">
-              <div className="bg-gray-300 rounded-full h-10 w-10 flex items-center justify-center text-lg font-bold text-gray-500">{applicant.studentModel.FirstName.charAt(0)}</div>
+              <div className="bg-gray-300 rounded-full h-10 w-10 flex items-center justify-center text-lg font-bold text-gray-500">{applicant.Student.FirstName.charAt(0)}</div>
               <div className="ml-4">
-                <p className="text-md font-medium">{applicant.studentModel.FirstName}</p>
-                <p className="text-sm text-gray-500">{applicant.studentModel.School}</p>
+                <p className="text-md font-medium">{applicant.Student.FirstName}</p>
+                <p className="text-sm text-gray-500">{applicant.Student.School}</p>
               </div>
             </div>
             <div className="flex items-center">
-              <span className="bg-gray-200 text-sm font-light py-1 px-2 rounded-full">{applicant.jobModel.Role}</span>
+              <span className="bg-gray-200 text-sm font-light py-1 px-2 rounded-full">{applicant.Job.Role}</span>
               <span className="ml-4 text-gray-400 text-sm">{applicant.ApplicationTime}</span>
             </div>
           </div>

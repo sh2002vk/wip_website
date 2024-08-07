@@ -161,13 +161,13 @@ const ActivePostings = ({user}) => {
                                 {item.applications.length > 0 && (
                                     <div className="w-10 h-10 rounded-full overflow-hidden z-20 relative flex items-center justify-center bg-gray-300">
                                         {/*<img src={item.applicants.imageUrl} alt={item.role} className="w-full h-full object-cover" />*/}
-                                        <div className="text-lg font-bold text-gray-500">{item.applications[0].studentModel.FirstName.charAt(0)}</div>
+                                        <div className="text-lg font-bold text-gray-500">{item.applications[0].Student.FirstName.charAt(0)}</div>
                                     </div>
                                 )}
                                 {item.applications.length > 1 && (
                                     <div className="w-6 h-6 rounded-full overflow-hidden absolute bottom-0 left-8 z-10 flex items-center justify-center bg-gray-300">
                                         {/*<img src={item.applicants.imageUrl} alt={item.role} className="w-full h-full object-cover" />*/}
-                                        <div className="text-sm font-bold text-gray-500">{item.applications[1].studentModel.FirstName.charAt(0)}</div>
+                                        <div className="text-sm font-bold text-gray-500">{item.applications[1].Student.FirstName.charAt(0)}</div>
                                     </div>
                                 )}
                             </div>
