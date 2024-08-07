@@ -27,6 +27,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       if (user) {
         setUser(user);
         fetchBookmarkedJobs(user.uid);
+        handleSearch({});
       } else {
         setUser(null);
       }
@@ -72,7 +73,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       "Remote": "REMOTE"
     }
 
-    let whereClause = {};
+    const whereClause = {};
 
     if (filters.workingTypes) {
       whereClause.environment = filters.workingTypes.map((type) => worktypeMapping[type]);
@@ -106,7 +107,8 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       }
 
       const data = await response.json();
-      setJobs(data.data);
+      const listedJobs = data.data.filter((job) => job.Status !== "DRAFT");
+      setJobs(listedJobs);
       setShowJobs(true);
       setShowJobDetail(false);
     } catch (error) {
@@ -210,6 +212,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
             onClose={handleCloseDetail} 
             onBookmark={() => handleBookmarkClick(selectedJob)}
             isBookmarked={isBookmarked(selectedJob)}
+            user={user}
           />
         )}
       </div>

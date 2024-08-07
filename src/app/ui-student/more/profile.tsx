@@ -1,22 +1,25 @@
 'use client';
 
-import React, { useState, ChangeEvent, useRef } from 'react';
+import React, {useState, ChangeEvent, useRef, useEffect} from 'react';
 import Select from 'react-select';
 
 type ExperienceType = {
+  company: string;
   title: string;
-  description: string;
+  description: string | null;
 };
 
 type ProfileType = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  location: string;
+  location: string | null;
   institution: string;
   // degree: string;
   specialization: string;
   lookingFor: { value: string; label: string }[];
-  availability: string;
+  startAvailability: string | null;
+  availability: string | null;
   about: string;
   skills: string;
   experiences: ExperienceType[];
@@ -25,22 +28,59 @@ type ProfileType = {
 
 const roles = [
   { value: 'Software Engineer', label: 'Software Engineer' },
+  { value: 'Frontend Engineer', label: 'Frontend Engineer' },
   { value: 'Business Analyst', label: 'Business Analyst' },
+  { value: 'Product Manager', label: 'Product Manager' },
   { value: 'Project Manager', label: 'Project Manager' },
   { value: 'Data Scientist', label: 'Data Scientist' },
-  { value: 'Product Manager', label: 'Product Manager' }
+  { value: 'Consultant', label: 'Consultant' },
+  { value: 'Financial Analyst', label: 'Financial Analyst' }
 ];
+
+const locations = [
+  { value: 'Vancouver, BC', label: 'Vancouver, BC' },
+  { value: 'Surrey, BC', label: 'Surrey, BC' },
+  { value: 'Coquitlam, BC', label: 'Coquitlam, BC' },
+  { value: 'North Vancouver, BC', label: 'North Vancouver, BC' },
+  { value: 'Delta, BC', label: 'Delta, BC' },
+  { value: 'West Vancouver, BC', label: 'West Vancouver, BC' },
+  { value: 'Richmond, BC', label: 'Richmond, BC' },
+  { value: 'Calgary, AB', label: 'Calgary, AB' },
+  { value: 'Seattle, WA', label: 'Seattle, WA' },
+  { value: 'Toronto, ON', label: 'Toronto, ON' },
+]
+
+const terms = [
+    "F24",
+    "W25",
+    "S25",
+    "F25"
+]
+
+const duration = [
+  "4 Months",
+  "8 Months",
+  "12+ Months"
+]
+const durationMap: { [key: string]: string } = {
+  "4 Months": "4",
+  "8 Months": "8",
+  "12+ Months": "12"
+}
 
 export default function Profile(user) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [profile, setProfile] = useState<ProfileType>({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     location: '',
     institution: '',
     // degree: '',    
     specialization: '',
     lookingFor: [],
+    startAvailability: '',
     availability: '',
     about: '',
     skills: '',
@@ -71,7 +111,7 @@ export default function Profile(user) {
   const handleAddExperience = () => {
     setProfile((prevProfile) => ({
       ...prevProfile,
-      experiences: [...prevProfile.experiences, { title: '', description: '' }],
+      experiences: [...prevProfile.experiences, { title: '', description: '' , company: ''}],
     }));
   };
 
@@ -83,10 +123,14 @@ export default function Profile(user) {
   };
 
   const handleSave = () => {
-    setIsEditing(false);
     console.log(profile);
-
-    updateProfile(profile);
+    if (profile.firstName && profile.lastName && profile.email && profile.experiences.every(exp => exp.company && exp.title)) {
+      setIsEditing(false);
+      updateProfile(profile);
+    } else {
+      // Handle the case where required fields are not filled
+      alert('Please fill out the required fields.');
+    }
   };
 
   const handleCancel = () => {
@@ -132,8 +176,31 @@ export default function Profile(user) {
     }));
   };
 
+  const handleLocationChange = (selectedOptions: any) => {
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      location: selectedOptions?.value || null,
+    }));
+  };
+
+  const [selectedTerm, setSelectedTerm] = useState(null);
+  const [selectedDuration, setSelectedDuration] = useState(null);
+
+  const handleOptionChange = (key, option) => {
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      [key]: option,
+    }));
+
+    if (key === 'startAvailability') {
+      setSelectedTerm(option);
+    } else if (key === 'availability') {
+      setSelectedDuration(option);
+    }
+  };
+
   {/*Replace with actual api endpoint once launched */}
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await fetch(`http://localhost:4000/profile/student/getFullProfile?studentID=${user.user.uid}`, {
@@ -148,14 +215,17 @@ export default function Profile(user) {
         if (response.ok) {
 
           let student = data.data;
-          const interests = student.Interest.map(interest => ({
+          console.log("STUDENT", student)
+          const interests = student.Interest ? student.Interest.map(interest => ({
             value: interest,
             label: interest
-          }));
-          const workExp = student.WorkExperience.map(exp => ({
-            ...exp,
-            title: exp.position
-          }));
+          })) : [];
+          const workExp = student.WorkExperience ? student.WorkExperience.map(exp => ({
+            company: exp.company,
+            title: exp.title,
+            description: exp.description || '',
+          })) : [];
+          console.log("WORKEXP", workExp);
 
           const fetchedProfile = {
             name: `${student.FirstName} ${student.LastName}`,
@@ -164,9 +234,10 @@ export default function Profile(user) {
             institution: student.School,
             specialization: student.AcademicMajor,
             lookingFor: interests,
+            startAvailability: student.StartAvailability,
             availability: `${student.Duration}`,
             about: student.PersonalStatement,
-            skills: student.Skills ? student.Skills.join(', ') : [],
+            skills: student.Skills ? student.Skills.join(', ') : '',
             experiences: workExp,
             photo: student.Photo || '', // Use existing photoURL or default to empty string
           };
@@ -182,7 +253,9 @@ export default function Profile(user) {
         console.error('Error fetching profile:', error);
       }
     };
+    setLoading(true);
     fetchProfile();
+    setLoading(false);
   }, [user.user.uid]);
   
   
@@ -207,18 +280,21 @@ export default function Profile(user) {
     }
   }, [profile.photo]);
 
-
-
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
 
   const getAvailableFields = (profile) => {
     // Mapping from frontend keys to backend keys
     const keyMapping = {
-      name: ['FirstName', 'LastName'], // name should be split into FirstName and LastName
+      firstName: 'FirstName',
+      lastName: 'LastName',
       email: 'EmailID',
       location: 'Location',
       institution: 'School',
       specialization: 'AcademicMajor',
       lookingFor: 'Interest', // This needs to be handled differently since it's an array of objects
+      startAvailability: 'StartAvailability',
       availability: 'Duration',
       about: 'PersonalStatement',
       skills: 'Skills', // This needs to be handled differently since it's a comma-separated string
@@ -281,6 +357,21 @@ export default function Profile(user) {
     }
   };
 
+  const [touchedFields, setTouchedFields] = useState({ firstName: false, lastName: false });
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    setTouchedFields((prevTouched) => ({
+      ...prevTouched,
+      [name]: true,
+    }));
+  };
+
+  const getInputClassName = (name) => {
+    return `mt-4 text-gray-600 rounded text-sm text-center ${
+        touchedFields[name] && !profile[name] ? 'border-red-500' : 'border-gray-300'
+    }`;
+  };
+
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-full mx-auto bg-white p-2">
@@ -308,8 +399,8 @@ export default function Profile(user) {
             <>
               <input
                 type="text"
-                name="name"
-                value={profile.name}
+                name="firstName"
+                value={profile.firstName}
                 onChange={handleChange}
                 placeholder="Name"
                 className="mt-4 text-black border-gray-300 rounded text-sm text-center"
@@ -357,7 +448,7 @@ export default function Profile(user) {
             </>
           ) : (
             <>
-              <h2 className="mt-4 text-xl font-bold">{profile.name || 'Name'}</h2>
+              <h2 className="mt-4 text-xl font-bold">{profile.firstName + " " + profile.lastName || 'Name'}</h2>
               <p className="mt-2 text-gray-600 ">{profile.email || 'email@example.com'}</p>
               <p className="mt-2 text-gray-600">{profile.location || 'City · Province · Country'}</p>
               <p className="mt-2 text-gray-600">{profile.institution || 'Institution'}</p>
@@ -395,20 +486,42 @@ export default function Profile(user) {
               </div>
               <div className="flex items-center mb-2">
                 <p className="mr-2 w-32">Availability:</p>
-                <input
-                  type="text"
-                  name="availability"
-                  value={profile.availability}
-                  onChange={handleChange}
-                  placeholder="Summer 2024"
-                  className="border-gray-300 rounded text-sm flex-grow"
-                />
+                {duration.map((option, optionIndex) => (
+                    <button
+                        key={optionIndex}
+                        onClick={() => handleOptionChange("availability", durationMap[option])}
+                        className={`px-4 py-1 mt-2 mr-2 border rounded transition duration-300 ${
+                            selectedDuration === durationMap[option]
+                                ? 'border-black font-bold'
+                                : 'border-gray-300 text-gray-300'
+                        }`}
+                    >
+                      {option}
+                    </button>
+                ))}
+              </div>
+              <div className="flex items-center mb-2">
+                <p className="mr-2 w-32">Start Term:</p>
+                {terms.map((option, optionIndex) => (
+                    <button
+                        key={optionIndex}
+                        onClick={() => handleOptionChange("startAvailability", option)}
+                        className={`px-4 py-1 mt-2 mr-2 border rounded transition duration-300 ${
+                            selectedTerm === option
+                                ? 'border-black font-bold'
+                                : 'border-gray-300 text-gray-300'
+                        }`}
+                    >
+                      {option}
+                    </button>
+                ))}
               </div>
             </>
           ) : (
             <>
               <p><strong>Looking For:</strong> {profile.lookingFor.length > 0 ? profile.lookingFor.map(option => option.label).join(', ') : 'Select roles'}</p>
-              <p><strong>Availability:</strong> {profile.availability + " Months" || 'Set your availability'}</p>
+              <p><strong>Availability:</strong> {profile.availability ? profile.availability + " Months" : 'Set your availability'}</p>
+              <p><strong>Starting Term:</strong> {profile.startAvailability ? profile.startAvailability : 'Set your starting term'}</p>
             </>
           )}
         </div>
@@ -458,7 +571,18 @@ export default function Profile(user) {
                     x
                   </button>
                   <div className="flex items-center ml-6 mb-2">
-                    <p className="mr-2 w-32">Title:</p>
+                    <p className="mr-2 w-32">Company: <span className="text-red-500">*</span></p>
+                    <input
+                        type="text"
+                        name="company"
+                        value={experience.company}
+                        onChange={(e) => handleExperienceChange(index, e)}
+                        placeholder="Employer"
+                        className="border-gray-200 rounded text-sm flex-grow"
+                    />
+                  </div>
+                  <div className="flex items-center ml-6 mb-2">
+                    <p className="mr-2 w-32">Title: <span className="text-red-500">*</span></p>
                     <input
                       type="text"
                       name="title"
@@ -472,7 +596,7 @@ export default function Profile(user) {
                     <p className="mr-2 w-32">Description:</p>
                     <textarea
                       name="description"
-                      value={experience.description}
+                      value={experience.description || ''}
                       onChange={(e) => handleExperienceChange(index, e)}
                       placeholder="Describe your experience"
                       className="border-gray-200 rounded text-sm flex-grow"
@@ -488,8 +612,8 @@ export default function Profile(user) {
             <>
               {profile.experiences.length > 0 ? (
                 profile.experiences.map((experience, index) => (
-                  <div key={index} className="mb-4">
-                    <h4 className="text-md font-bold">{experience.title}</h4>
+                  <div key={index} className="experience-item mb-4 pl-4 border-l-4 border-gray-300">
+                    <h4 className="text-md font-bold">{experience.title || "HI"} - {experience.company}</h4>
                     <p>{experience.description}</p>
                   </div>
                 ))
