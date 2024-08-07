@@ -123,16 +123,11 @@ export default function Profile(user) {
   };
 
   const handleSave = () => {
+    setIsEditing(false);
     console.log(profile);
-    if (profile.firstName && profile.lastName && profile.email && profile.experiences.every(exp => exp.company && exp.title)) {
-      setIsEditing(false);
-      updateProfile(profile);
-    } else {
-      // Handle the case where required fields are not filled
-      alert('Please fill out the required fields.');
-    }
-  };
 
+    updateProfile(profile);
+  };
   const handleCancel = () => {
     setProfile(originalProfile);
     setIsEditing(false);
