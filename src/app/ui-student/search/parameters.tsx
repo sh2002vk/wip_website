@@ -10,14 +10,15 @@ import { styled } from "@mui/material/styles";
 
 type ParametersProps = {
   onSearch: (filters: {
-    availability: number;
+    duration: number[];
+    preference: string[];
     startDate: Dayjs | null;
     endDate: Dayjs | null;
     keyword: string;
     location: string;
-    selectedPrograms: [];
+    selectedPrograms: string[];
   }) => void;
-  user: any;
+  // user: any;
 };
 
 const StyledDatePicker = styled(DatePicker)({
@@ -40,14 +41,14 @@ const StyledDatePicker = styled(DatePicker)({
   },
 });
 
-export default function Parameters({ onSearch, user }: ParametersProps) {
+export default function Parameters({ onSearch }: ParametersProps) {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
 
   const [activeToggle, setActiveToggle] = useState("Curated");
-  const [availabilities, setAvailabilities] = useState([]);
+  const [availabilities, setAvailabilities] = useState<number[]>([]); // Ensuring it's an array of numbers
   const [workingTypes, setWorkingTypes] = useState([]);
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
@@ -60,18 +61,18 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
 
   const handleShowResults = () => {
     const currentFilters = {
-      availabilities,
-      workingTypes,
+      duration: availabilities,
+      preference: workingTypes,
       startDate,
       endDate,
       keyword,
       location,
-      minSalary,
-      maxSalary,
-      selectedPrograms
+      selectedPrograms,
     };
+    // console.log('filter i got directly: ', currentFilters);
     onSearch(currentFilters);
   };
+  
 
   const handleKeywordChange = (event) => {
     setKeyword(event.target.value);
@@ -83,6 +84,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
 
   const handleClearFilters = () => {
     setAvailabilities([]);
+    setWorkingTypes([]);
     setStartDate(dayjs());
     setEndDate(dayjs());
     setKeyword("");

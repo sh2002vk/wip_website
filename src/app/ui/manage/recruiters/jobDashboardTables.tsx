@@ -2,9 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import StudentProfileView from "@/app/ui/search/studentProfileView";
 
+const API_URL = process.env.API_URL;
+
 interface Application {
     Status: string;
-    StudentID: number;
+    StudentID: number; // Ensure this matches Student
+    ApplicationTime?: Date;
+    ApplicationID?: number;
 }
 
 interface Shortlist {
@@ -12,7 +16,7 @@ interface Shortlist {
 }
 
 interface Student {
-    StudentID: number;
+    StudentID: number; // Ensure this matches Application
     FirstName: string;
     LastName: string;
     School: string;
@@ -21,15 +25,22 @@ interface Student {
     GPA: number;
 }
 
-interface jobDashboardTableProps {
-    isActionNeeded?: boolean,
-    isInvited?: boolean,
-    isContacting?: boolean,
-    onCardClick: (student: any, isApplication: boolean) => void,
+// Combine Student and Application interfaces with a specific handling for StudentID
+interface StudentWithApplication extends Student {
+    Status?: string;
+    ApplicationTime?: Date;
+    ApplicationID?: number;
+}
+
+interface JobDashboardTableProps {
+    isActionNeeded?: boolean;
+    isInvited?: boolean;
+    isContacting?: boolean;
+    onCardClick: (student: any, isApplication: boolean) => void;
     data: Shortlist[] | Application[];
 }
 
-const JobDashboardTables: React.FC<jobDashboardTableProps> = ({data, isActionNeeded, isInvited, isContacting, onCardClick}) => {
+const JobDashboardTables: React.FC<JobDashboardTableProps> = ({data, isActionNeeded, isInvited, isContacting, onCardClick}) => {
     const applicantData = [
         {
             StudentID: 1,
@@ -126,19 +137,6 @@ const JobDashboardTables: React.FC<jobDashboardTableProps> = ({data, isActionNee
         }
     ];
 
-    // const contactingStudents = applicantData.filter(applicant =>
-    //     shortlistData.some(shortlist => shortlist.StudentID === applicant.StudentID)
-    // ); //Contacting list should be the && of Job shortlist and job applicant studentIDs
-    //
-    // let dataToShow: any[] = [];
-    // if (isActionNeeded) {
-    //     dataToShow = applicantData;
-    // } else if (isInvited) {
-    //     dataToShow = shortlistData;
-    // } else if (isContacting) {
-    //     dataToShow = contactingStudents;
-    // }
-
     const sortedData = (data as Application[]).sort((a, b) => {
         if (a.Status === 'APPLIED' && b.Status !== 'APPLIED') {
             return -1;
@@ -149,13 +147,13 @@ const JobDashboardTables: React.FC<jobDashboardTableProps> = ({data, isActionNee
         return 0;
     });
 
-    const [tableItems, setTableItems] = useState([]);
+    const [tableItems, setTableItems] = useState<StudentWithApplication[]>([]);
     useEffect(() => {
         const getTileInformation = async () => {
             try {
-                const items: (Student & { Status?: string, ApplicationTime?: Date , ApplicationID? : number })[] = [];
+                const items: StudentWithApplication[] = [];
                 for (const a of data) {
-                    const response = await fetch(`http://localhost:4000/profile/student/getFullProfile?studentID=${a.StudentID}`);
+                    const response = await fetch(`${API_URL}/profile/student/getFullProfile?studentID=${a.StudentID}`);
                     const profile = await response.json();
                     items.push({
                         ...profile.data,
@@ -191,7 +189,7 @@ const JobDashboardTables: React.FC<jobDashboardTableProps> = ({data, isActionNee
                     )}
                 </div>
                 <div className="p-4 pt-0">
-                    {tableItems.map((item: Student, index) => (
+                    {tableItems.map((item, index) => (
                         <div key={index} className="flex justify-between py-3 border-b"
                              onClick={() => onCardClick(item, !isInvited)} // !isInvited tells the parent component that this is not an application
                         >
@@ -203,9 +201,9 @@ const JobDashboardTables: React.FC<jobDashboardTableProps> = ({data, isActionNee
                                 </div>
                             </div>
                             <div className="flex justify-between items-center">
-                                {(item.Status == "APPLIED" && isActionNeeded) && <span className="bg-gray-200 text-sm font-light py-1 px-2 rounded-full">UNREVIEWED</span>}
-                                {(isContacting) && <span className="bg-gray-200 text-sm font-light py-1 px-2 rounded-full">{item.EmailID}</span>}
-                                <span className="ml-4 text-gray-400 text-sm">{item.ApplicationTime}</span>
+                                {(item.Status === "APPLIED" && isActionNeeded) && <span className="bg-gray-200 text-sm font-light py-1 px-2 rounded-full">UNREVIEWED</span>}
+                                {(isContacting) && <span className="bg-gray-200 text-sm font-light py-1 px-2 rounded-full">{item.Email}</span>}
+                                <span className="ml-4 text-gray-400 text-sm">{item.ApplicationTime?.toString()}</span>
                             </div>
                         </div>
                     ))}

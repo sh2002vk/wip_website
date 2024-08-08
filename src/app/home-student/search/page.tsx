@@ -6,7 +6,7 @@ import SearchLayout from './layout'
 
 export default function SearchPage() {
   return (
-    <SearchLayout title="SEARCH">
+    <SearchLayout>
         <p>SEARCH INFO</p>
     </SearchLayout>
   );

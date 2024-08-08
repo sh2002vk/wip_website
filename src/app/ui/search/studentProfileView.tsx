@@ -9,8 +9,26 @@ import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { app } from "@/firebase";
 
+const API_URL = process.env.API_URL
+
 const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isApplication, refreshData}) => {
     const [bookmarked, setBookmarked] = useState(isBookmarked);
+    const [WorkExperienceJson, setWorkExperienceJson] = useState([]);
+
+    useEffect(() => {
+        try {
+          const parsedData = JSON.parse(student.WorkExperience);
+          if (Array.isArray(parsedData)) {
+            setWorkExperienceJson(parsedData);
+          } else {
+            console.error('Parsed data is not an array');
+          }
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+        }
+      }, [student.WorkExperience]);
+
+    // console.log("STUDENT IS: ", student);
 
     const sampleApplications = [
         { JobID: 1, StudentID: 1, RecruiterID: 1, ApplicationTime: new Date(), Status: 'APPLIED', Resume: "SampleResumeLink" },
@@ -28,30 +46,44 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
     };
 
     const [showDocumentDetail, setShowDocumentDetail] = useState(false);
-    const [applicationInformation, setApplicationInformation] = useState([]);
+    const [applicationInformation, setApplicationInformation] = useState({
+        SubmittedDocuments: {
+          Resume: '',
+          CoverLetter: '',
+          EnglishSample: '',
+        },
+      });      
     const [shownDocument, setShownDocument] = useState<string | null>(null);
     const [fileUrl, setFileUrl] = useState<string | null>(null);
 
     useEffect(() => {
         const getApplicationInformation = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/profile/application/getApplication?applicationID=${student.ApplicationID}`);
-                const applicationInformation = await response.json();
-                console.log(applicationInformation);
-                setApplicationInformation(applicationInformation);
-            } catch (error) {
-                console.log(error);
-            }
+          try {
+            const response = await fetch(`${API_URL}/profile/application/getApplication?applicationID=${student.ApplicationID}`);
+            const data = await response.json();
+      
+            // Ensure that the response data matches your expected structure
+            setApplicationInformation({
+              SubmittedDocuments: data.SubmittedDocuments || {
+                Resume: '',
+                CoverLetter: '',
+                EnglishSample: '',
+              },
+            });
+          } catch (error) {
+            console.log(error);
+          }
         };
-
+      
         if (isApplication && student.ApplicationID) {
-            getApplicationInformation();
+          getApplicationInformation();
         }
-    }, [isApplication, student.ApplicationID]);
+      }, [isApplication, student.ApplicationID]);
+      
 
     const fetchGCPFile = async (document) => {
         try {
-            const response = await fetch(`http://localhost:4000/action/recruiter/getGCPFiles`, {
+            const response = await fetch(`${API_URL}/action/recruiter/getGCPFiles`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -73,7 +105,7 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
 
     const setStatus = async (status) => {
         try {
-            const response = await fetch(`http://localhost:4000/action/student/updateApplication`, {
+            const response = await fetch(`${API_URL}/action/student/updateApplication`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -180,7 +212,7 @@ const StudentProfileView = ({ student, onClose, onBookmark, isBookmarked, isAppl
                         )}
                         <div className="mt-4">
                             <h2 className="text-base font-bold">About</h2>
-                            <p className="text-medium font-light" style={{ textIndent: '2em' }}>This is where the candidate will insert a concise introduction about themselves, where they will share some information about things they would like recruiters to know about them. We need to set a word limit to this section. Ideally this section will not be too long, but I've also included a scroll bar at the right just in case.</p>
+                            <p className="text-medium font-light" style={{ textIndent: '2em' }}>This is where the candidate will insert a concise introduction about themselves, where they will share some information about things they would like recruiters to know about them. We need to set a word limit to this section. Ideally this section will not be too long, but I&apos;ve also included a scroll bar at the right just in case.</p>
                         </div>
                         <div className="mt-4">
                             <h2 className="text-base font-bold">Skill sets</h2>

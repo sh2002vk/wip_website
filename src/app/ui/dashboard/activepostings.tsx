@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+const API_URL = process.env.API_URL
 
 // const data = [
 //     {
@@ -88,22 +89,22 @@ const ActivePostings = ({user}) => {
 
     const fetchRowInformation = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/action/recruiter/getActivePostingInformation?recruiterID=${user.uid}`)
+            const response = await fetch(`${API_URL}/action/recruiter/getActivePostingInformation?recruiterID=${user.uid}`)
             const rows = await response.json();
-            console.log(rows);
+            // console.log(rows);
             setData(rows);
         } catch (error) {
             console.log(error);
         }
     }
 
-    const daysUntilClosed = (dateClosed) => {
-        const today = new Date();
-        const closedDate = new Date(dateClosed);
+    const daysUntilClosed = (dateClosed: string) => {
+        const today = new Date().getTime(); // Current time in milliseconds
+        const closedDate = new Date(dateClosed).getTime(); // Closed date in milliseconds
         const differenceInTime = closedDate - today;
         const differenceInDays = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
         return differenceInDays;
-    }
+    };    
 
     useEffect(() => {
         fetchRowInformation();

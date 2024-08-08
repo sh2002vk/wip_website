@@ -7,6 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import JobCard from './cards/jobCard';
 
+const API_URL = process.env.API_URL
+
+
 export default function Bookmarks({ user, companyName, companyID, onSelectJob, onGetJobPostings, drafts, completed }) {
 
   useEffect(() => {
@@ -15,7 +18,7 @@ export default function Bookmarks({ user, companyName, companyID, onSelectJob, o
 
   const fetchNewPosting = async() => {
     try {
-      const response = await fetch('http://localhost:4000/action/recruiter/createJobPosting', {
+      const response = await fetch(`${API_URL}/action/recruiter/createJobPosting`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

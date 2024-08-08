@@ -7,10 +7,10 @@ import Profiles from '@/app/ui/message/profiles';
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const MessageLayout = ({ children, title }: LayoutProps) => {
+const MessageLayout = ({ children }: LayoutProps) => {
   return (
     <div className="flex h-screen">
       <div className="w-full md:w-64 flex-none h-screen overflow-auto ">

@@ -4,18 +4,19 @@ import React, { useState } from 'react';
 import Options from '@/app/ui-student/more/options';
 import Profile from '@/app/ui-student/more/profile';
 
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { auth } from '../../../firebase'; // Ensure the correct import path
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const MoreLayout = ({ children, title }: LayoutProps) => {
+type AuthUser = User | null;
 
-  const [user, setUser] = useState(null);
+const MoreLayout = ({ children }: LayoutProps) => {
 
+  const [user, setUser] = useState<AuthUser>(null);
   const [view, setView] = useState('o'); 
 
   React.useEffect(() => {
@@ -30,7 +31,7 @@ const MoreLayout = ({ children, title }: LayoutProps) => {
     return () => unsubscribe();
   }, []);
 
-  const renderView = (userObj) => {
+  const renderView = (userObj: any) => {
     switch (view) {
       case 'Profile':
         return <Profile user={userObj}/>;
