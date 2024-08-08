@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -17,6 +17,7 @@ type ParametersProps = {
     keyword: string;
     location: string;
     selectedPrograms: string[];
+    interested: Boolean;
   }) => void;
   // user: any;
 };
@@ -42,6 +43,9 @@ const StyledDatePicker = styled(DatePicker)({
 });
 
 export default function Parameters({ onSearch }: ParametersProps) {
+
+  const [interested, setInterested] = useState(false);
+
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
   const [keyword, setKeyword] = useState("");
@@ -56,6 +60,14 @@ export default function Parameters({ onSearch }: ParametersProps) {
   const [showMorePrograms, setShowMorePrograms] = useState(false);
   const [selectedPrograms, setSelectedPrograms] = useState([]);
 
+  useEffect(() => {
+    if(activeToggle === 'Global') {
+      setInterested(false);
+    } else if (activeToggle === 'Interested') {
+      setInterested(true);
+    }
+  }, [activeToggle]);
+
   // Sample location history data
   const locationHistory = ["Vancouver", "Toronto"];
 
@@ -68,6 +80,7 @@ export default function Parameters({ onSearch }: ParametersProps) {
       keyword,
       location,
       selectedPrograms,
+      interested,
     };
     // console.log('filter i got directly: ', currentFilters);
     onSearch(currentFilters);
@@ -92,6 +105,7 @@ export default function Parameters({ onSearch }: ParametersProps) {
     setMaxSalary("");
     setMinSalary("");
     setSelectedPrograms([]);
+    setInterested(false);
   };
 
   const handleProgramChange = (program) => {

@@ -33,6 +33,8 @@ type WhereClause = {
   industry?: string[];
   keyword?: string;
   startDate?: Date;
+  interested?: Boolean;
+  studentID?: string;
 };
 
 type WorkingType = "In-Person" | "Hybrid" | "Remote";
@@ -107,6 +109,8 @@ const SearchLayout = ({ children }: LayoutProps) => {
       industry?: string;
       keyword?: string;
       startDate?: Date;
+      interested?: Boolean;
+      studentID?: string;
     } = {};
 
     if (filters.preference) {
@@ -133,6 +137,15 @@ const SearchLayout = ({ children }: LayoutProps) => {
       whereClause.startDate = filters.startDate;
     }
 
+    if (filters.interested === true || filters.interested === false) {
+      whereClause.interested = filters.interested;
+    }
+
+    if(user) {
+      if(user.uid) {
+        whereClause.studentID = user.uid;
+      }
+    }
     // console.log('where clause sent to backend: ', whereClause);
 
     try {
