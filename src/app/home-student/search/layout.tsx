@@ -31,6 +31,8 @@ type WhereClause = {
   duration?: string[];
   location?: string;
   industry?: string[];
+  keyword?: string;
+  startDate?: Date;
 };
 
 type WorkingType = "In-Person" | "Hybrid" | "Remote";
@@ -103,6 +105,8 @@ const SearchLayout = ({ children }: LayoutProps) => {
       duration?: string[];
       location?: string;
       industry?: string;
+      keyword?: string;
+      startDate?: Date;
     } = {};
 
     if (filters.preference) {
