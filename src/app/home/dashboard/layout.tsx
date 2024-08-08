@@ -10,6 +10,7 @@ import ActivePostings from "@/app/ui/dashboard/activepostings";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from '../../../firebase'; // Ensure the correct import path
 
+import { useRouter } from 'next/navigation';
 const API_URL = process.env.API_URL
 
 type LayoutProps = {
@@ -21,6 +22,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
   const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [firstName, setFirstName] = useState<string | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -30,6 +32,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
         } else {
           setUser(null);
           setLoading(false);
+          router.push('./login');
         }
       });
   

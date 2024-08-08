@@ -6,6 +6,7 @@ import Drafts from "@/app/ui-student/dashboard/drafts";
 import New from "@/app/ui-student/dashboard/whatsNew";
 import {onAuthStateChanged, User} from "firebase/auth";
 import {auth} from "@/firebase";
+import { useRouter } from 'next/navigation';
 
 const API_URL = process.env.API_URL
 
@@ -20,20 +21,23 @@ const DashboardLayout = ({ children }: LayoutProps) => {
     const [user, setUser] = useState<AuthUser>(null);
     const [loading, setLoading] = useState(true);
     const [firstName, setFirstName] = useState<string | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setUser(user);
-          fetchUserProfile(user.uid); // Fetch user profile data
-        } else {
-          setUser(null);
-          setLoading(false);
-        }
-      });
-  
-      return () => unsubscribe();
-    }, []);
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUser(user);
+                fetchUserProfile(user.uid); // Fetch user profile data
+            } else {
+                setUser(null);
+                setLoading(false);
+                router.push('/login'); // Redirect to student home
+            }
+            setLoading(false); // Set loading to false after user state is updated
+        });
+
+        return () => unsubscribe();
+      }, []);
 
     const fetchUserProfile = async (uid: string) => {
       try {

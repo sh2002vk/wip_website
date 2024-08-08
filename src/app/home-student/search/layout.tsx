@@ -8,6 +8,7 @@ import Bookmarks from '@/app/ui-student/search/bookmarks';
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { auth } from '../../../firebase';
 
+import { useRouter } from 'next/navigation';
 const API_URL = process.env.API_URL
 
 type AuthUser = User | null;
@@ -43,6 +44,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [bookmarkedJobs, setBookmarkedJobs] = useState([]);
   const [isBookmarksExpanded, setIsBookmarksExpanded] = useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -52,6 +54,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
         handleSearch({});
       } else {
         setUser(null);
+        router.push('/login'); // Redirect to student home
       }
       // console.log("SEARCH", user);
     });
@@ -116,6 +119,14 @@ const SearchLayout = ({ children }: LayoutProps) => {
 
     if (filters.selectedPrograms) {
       whereClause.industry = filters.selectedPrograms;
+    }
+
+    if (filters.keyword) {
+      whereClause.keyword = filters.keyword;
+    }
+
+    if (filters.startDate) {
+      whereClause.startDate = filters.startDate;
     }
 
     // console.log('where clause sent to backend: ', whereClause);

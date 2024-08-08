@@ -7,6 +7,8 @@ import Profile from '@/app/ui/more/profile';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from '../../../firebase'; // Ensure the correct import path
 
+import { useRouter } from 'next/navigation';
+
 type LayoutProps = {
   children: React.ReactNode;
   // title?: string;
@@ -15,6 +17,7 @@ type LayoutProps = {
 const MoreLayout = ({ children }: LayoutProps) => {
 
   const [user, setUser] = useState(null);
+  const router = useRouter();
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -22,6 +25,7 @@ const MoreLayout = ({ children }: LayoutProps) => {
         setUser(user);
       } else {
         setUser(null);
+        router.push('/login'); // Redirect to student home
       }
     });
 

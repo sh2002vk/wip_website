@@ -7,6 +7,7 @@ import SideBar from "@/app/ui/home/sidebar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from '../../../firebase'; // Ensure the correct import path
 
+import { useRouter } from 'next/navigation';
 const API_URL = process.env.API_URL
 
 type LayoutProps = {
@@ -66,6 +67,7 @@ const ManageLayout = ({ children }: LayoutProps) => {
   const [error, setError] = useState(null);
   const [companyName, setCompanyName] = useState('');
   const [companyID, setCompanyID] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -73,6 +75,7 @@ const ManageLayout = ({ children }: LayoutProps) => {
         setUser(user);
       } else {
         setUser(null);
+        router.push('/login'); // Redirect to student home
       }
     });
 

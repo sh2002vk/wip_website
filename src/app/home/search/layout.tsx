@@ -9,6 +9,7 @@ import "../no-scrollbar.css";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from '../../../firebase'; // Ensure the correct import path
 
+import { useRouter } from 'next/navigation';
 const API_URL = process.env.API_URL
 
 type LayoutProps = {
@@ -29,6 +30,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [bookmarkedStudents, setBookmarkedStudents] = useState([]);
   const [isBookmarksExpanded, setIsBookmarksExpanded] = useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -37,6 +39,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
         fetchBookmarkedStudents(user.uid);
       } else {
         setUser(null);
+        router.push('/login'); // Redirect to student home
       }
     });
 

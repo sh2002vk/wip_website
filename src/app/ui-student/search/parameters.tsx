@@ -102,6 +102,11 @@ export default function Parameters({ onSearch }: ParametersProps) {
     }
   };
 
+  const handleFormSubmit = (event) => {
+    event.preventDefault(); // Prevent the default form submission
+    handleShowResults(); // Trigger your search logic
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="flex flex-col h-screen w-full mx-auto bg-white pl-4 py-4 space-y-4 border-r border-black">
@@ -116,7 +121,10 @@ export default function Parameters({ onSearch }: ParametersProps) {
           </div>
 
           {/* Keyword Search */}
-          <form className="flex justify-center mb-8">
+          <div className="flex justify-left text-xs font-bold mb-2">
+            <p>Job Title</p>
+          </div>
+          <form className="flex justify-center mb-8" onSubmit={handleFormSubmit}>
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg
@@ -150,7 +158,7 @@ export default function Parameters({ onSearch }: ParametersProps) {
           <div className="flex justify-left text-xs font-bold mb-2">
             <p>Location</p>
           </div>
-          <form className="flex justify-center mb-3">
+          <form className="flex justify-center mb-3" onSubmit={handleFormSubmit}>
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg
