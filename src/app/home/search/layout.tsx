@@ -64,6 +64,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
   };
 
   const handleSearch = async (filters) => {
+
     const availabilityMapping: Record<Availability, string> = {
       "4 Months": "4",
       "8 Months": "8",
@@ -97,20 +98,20 @@ const SearchLayout = ({ children }: LayoutProps) => {
       program?: string[];
     } = {};
 
-    if (filters.workingSessions) {
-      whereClause.season = filters.workingSessions.map((session: WorkingSession) => sessionMapping[session]);
+    if (filters.season) {
+      whereClause.season = filters.season.map((session: WorkingSession) => sessionMapping[session]);
     }
 
-    if (filters.workingTypes) {
-      whereClause.preference = filters.workingTypes.map((type: WorkType) => worktypeMapping[type]);
+    if (filters.preference) {
+      whereClause.preference = filters.preference.map((type: WorkType) => worktypeMapping[type]);
     }
 
-    if (filters.availabilities) {
-      whereClause.duration = filters.availabilities.map((availability: Availability) => availabilityMapping[availability]);
+    if (filters.duration) {
+      whereClause.duration = filters.duration.map((availability: Availability) => availabilityMapping[availability]);
     }
 
-    if (filters.degreeLevels) {
-      whereClause.level = filters.degreeLevels.map((level: DegreeLevel) => levelMapping[level]);
+    if (filters.level) {
+      whereClause.level = filters.level.map((level: DegreeLevel) => levelMapping[level]);
     }
 
     if (filters.location) {

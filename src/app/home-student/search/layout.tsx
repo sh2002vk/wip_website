@@ -81,8 +81,8 @@ const SearchLayout = ({ children }: LayoutProps) => {
     }
   };
 
-  const handleSearch = async (filters: Filters) => {
-    // console.log("Filters to send to API: ", filters);
+  const handleSearch = async (filters) => {
+    // console.log("filters i got: ", filters);
     const availabilityMapping: Record<Availability, string> = {
       "4 Months": "4",
       "8 Months": "8",
@@ -95,14 +95,19 @@ const SearchLayout = ({ children }: LayoutProps) => {
       "Remote": "REMOTE"
     }
 
-    let whereClause: WhereClause = {};
+    let whereClause: {
+      environment?: string[];
+      duration?: string[];
+      location?: string;
+      industry?: string;
+    } = {};
 
-    if (filters.workingTypes) {
-      whereClause.environment = filters.workingTypes.map((type) => worktypeMapping[type]);
+    if (filters.preference) {
+      whereClause.environment = filters.preference.map((type) => worktypeMapping[type]);
     }
 
-    if (filters.availabilities) {
-      whereClause.duration = filters.availabilities.map((availability) => availabilityMapping[availability]);
+    if (filters.duration) {
+      whereClause.duration = filters.duration.map((availability) => availabilityMapping[availability]);
     }
 
     if (filters.location) {
@@ -113,7 +118,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
       whereClause.industry = filters.selectedPrograms;
     }
 
-    // console.log('where clause: ', whereClause);
+    // console.log('where clause sent to backend: ', whereClause);
 
     try {
       const response = await fetch(`${API_URL}/action/student/getJobs`, {

@@ -12,9 +12,10 @@ import { styled } from "@mui/material/styles";
 
 type ParametersProps = {
   onSearch: (filters: {
-    duration: number;
-    preference: string;
-    level: number;
+    duration: number[];
+    preference: string[];
+    season: string[];
+    level: number[];
     startDate: Dayjs | null;
     endDate: Dayjs | null;
     keyword: string;
@@ -64,9 +65,10 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
 
   const handleShowResults = () => {
     const currentFilters = {
-      duration: availabilities[0] || 0, // Assuming the first item is the duration
-      preference: preferences[0] || "", // Assuming the first item is the preference
-      level: degreeLevels[0] || 0, // Assuming the first item is the level
+      duration: availabilities, // Assuming the first item is the duration
+      preference: workingTypes, // Assuming the first item is the preference
+      level: degreeLevels, // Assuming the first item is the level
+      season: workingSessions,
       startDate,
       endDate,
       keyword,
@@ -97,6 +99,8 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
     setDegreeLevels([]);
     setStartDate(dayjs());
     setEndDate(dayjs());
+    setWorkingSessions([]);
+    setWorkingTypes([]);
     setKeyword("");
     setLocation("");
     setMaxSalary("");
@@ -211,7 +215,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
 
 {/* -------------------------Working Type Availability------------------------------- */}
 
-<div className="bg-gray-200 rounded-xs mb-2">
+          <div className="bg-gray-200 rounded-xs mb-2">
             <TripleToggle
               leftToggle="Local"
               rightToggle="Hybrid"

@@ -10,7 +10,8 @@ import { styled } from "@mui/material/styles";
 
 type ParametersProps = {
   onSearch: (filters: {
-    availability: number;
+    duration: number[];
+    preference: string[];
     startDate: Dayjs | null;
     endDate: Dayjs | null;
     keyword: string;
@@ -60,13 +61,15 @@ export default function Parameters({ onSearch }: ParametersProps) {
 
   const handleShowResults = () => {
     const currentFilters = {
-      availability: availabilities.length > 0 ? availabilities[0] : 0, // Extracting the first element
+      duration: availabilities,
+      preference: workingTypes,
       startDate,
       endDate,
       keyword,
       location,
       selectedPrograms,
     };
+    // console.log('filter i got directly: ', currentFilters);
     onSearch(currentFilters);
   };
   
@@ -81,6 +84,7 @@ export default function Parameters({ onSearch }: ParametersProps) {
 
   const handleClearFilters = () => {
     setAvailabilities([]);
+    setWorkingTypes([]);
     setStartDate(dayjs());
     setEndDate(dayjs());
     setKeyword("");

@@ -69,25 +69,25 @@ const Drafts = ({ user }) => {
       }
       for (const application of filteredData) {
         const item: DraftItem = {
-          role: application.jobModel.Role,
-          dateClosed: application.jobModel.DateClosed,
+          role: application.Job.Role,
+          dateClosed: application.Job.DateClosed,
           percentage: 0, // Default value, to be updated
           competition: 0, // Default value, to be updated
         };
-        const requiredDocLength = application.jobModel.RequiredDocuments
-          ? Object.keys(application.jobModel.RequiredDocuments).length
+        const requiredDocLength = application.Job.RequiredDocuments
+          ? Object.keys(application.Jo.RequiredDocuments).length
           : 0;
         const submittedDocLength = application.SubmittedDocuments
           ? Object.keys(application.SubmittedDocuments).length
           : 0;
         item.percentage = requiredDocLength > 0 ? (submittedDocLength / requiredDocLength) * 100 : 0;
-        const jobID = application.jobModel.JobID;
+        const jobID = application.Job.JobID;
         const competition = await fetchJobCompetition(jobID);
         item.competition = competition.competition;
         rows.push(item);
       }
       setDraftInsights(rows);
-      console.log('ROWS', rows);
+      // console.log('ROWS', rows);
     } catch (error) {
       console.log('Error fetching applicationInsights', error);
     }

@@ -75,14 +75,14 @@ const Applications = ({user}) => {
       }
       for (const application of filteredData) {
         const item: ApplicationItem = {
-          role: application.jobModel.Role,
-          dateClosed: application.jobModel.DateClosed,
+          role: application.Job.Role,
+          dateClosed: application.Job.DateClosed,
           percentage: getPercentage(application.Status),
           competition: 0, // Default value, to be updated
-          jobStatus: application.jobModel.Status,
+          jobStatus: application.Job.Status,
           appStatus: application.Status,
         };
-        const jobID = application.jobModel.JobID;
+        const jobID = application.Job.JobID;
         const competition = await fetchJobCompetition(jobID);
         item.competition = competition.competition;
         rows.push(item);

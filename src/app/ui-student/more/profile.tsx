@@ -79,6 +79,7 @@ export default function Profile(user) {
     email: '',
     location: '',
     institution: '',
+    // degree: '',
     specialization: '',
     lookingFor: [],
     startAvailability: '',
@@ -88,7 +89,6 @@ export default function Profile(user) {
     experiences: [],
     photo: '',
   });
-  const [originalProfile, setOriginalProfile] = useState<ProfileType>(profile);
   const [photoURL, setPhotoURL] = useState('');
   const [touchedFields, setTouchedFields] = useState({ firstName: false, lastName: false });
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
@@ -127,14 +127,14 @@ export default function Profile(user) {
   };
 
   const handleSave = () => {
-    setIsEditing(false);
     console.log(profile);
-
-    updateProfile(profile);
-  };
-  const handleCancel = () => {
-    setProfile(originalProfile);
-    setIsEditing(false);
+    if (profile.firstName && profile.lastName && profile.email && profile.experiences.every(exp => exp.company && exp.title)) {
+      setIsEditing(false);
+      updateProfile(profile);
+    } else {
+      // Handle the case where required fields are not filled
+      alert('Please fill out the required fields.');
+    }
   };
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>, field: keyof ProfileType) => {
@@ -142,17 +142,17 @@ export default function Profile(user) {
     if (file) {
       const formData = new FormData();
       formData.append('photo', file);
-  
+
       try {
         const response = await fetch('http://localhost:5000/upload-photo', {
           method: 'POST',
           body: formData,
         });
-  
+
         if (!response.ok) {
           throw new Error('Failed to upload photo');
         }
-  
+
         const data = await response.json();
         console.log(data);
 
@@ -228,8 +228,10 @@ export default function Profile(user) {
           })) : [];
           console.log("WORKEXP", workExp);
 
-          const fetchedProfile = {
-            name: `${student.FirstName} ${student.LastName}`,
+          setProfile((prevProfile) => ({
+            ...prevProfile,
+            firstName: student.FirstName,
+            lastName: student.LastName,
             email: student.EmailID,
             location: student.Location,
             institution: student.School,
@@ -241,11 +243,13 @@ export default function Profile(user) {
             skills: student.Skills ? student.Skills.join(', ') : '',
             experiences: workExp,
             photo: student.Photo || '', // Use existing photoURL or default to empty string
-          };
+          }));
 
-          setProfile(fetchedProfile);
-          setOriginalProfile(fetchedProfile); // Store the fetched profile as the original
-          console.log(data.data);
+          setSelectedTerm(student.StartAvailability);
+          setSelectedDuration(student.Duration);
+          console.log("updated work exp to", student.WorkExperience);
+
+          console.log("FETHCED", data.data);
 
         } else {
           console.error('Failed to fetch profile:', data.message);
@@ -258,8 +262,8 @@ export default function Profile(user) {
     fetchProfile();
     setLoading(false);
   }, [user.user.uid]);
-  
-  
+
+
   const fetchSignedURL = async (filename: string) => {
     try {
       const response = await fetch(`http://localhost:5000/generate-signed-url?filename=${filename}`);
@@ -302,33 +306,33 @@ export default function Profile(user) {
       experiences: 'WorkExperience', // This needs to be handled differently since it has to map title to position
       photo: 'Photo', // Assuming there's a photo attribute
     };
-  
+
     let filteredProfile = {};
 
     for (let key in keyMapping) {
-      if (Array.isArray(keyMapping[key])) {
-        // Handle case where one key maps to multiple backend keys
-        filteredProfile[keyMapping[key][0]] = profile[key] ? profile[key].split(' ')[0] : '';
-        filteredProfile[keyMapping[key][1]] = profile[key] ? profile[key].split(' ')[1] : '';
-      } else if (key === 'availability') {
-        filteredProfile[keyMapping[key]] = profile[key] ? profile[key] : '4';
-      } else if (key === 'lookingFor') {
-        filteredProfile[keyMapping[key]] = profile[key] ? profile[key].map(item => item.value) : []; // Convert to array of strings
-      } else if (key === 'skills') {
-        filteredProfile[keyMapping[key]] = profile[key] ? profile[key].split(', ').map(skill => skill.trim()) : [];
-      } else if (key === 'experiences') {
-        filteredProfile[keyMapping[key]] = profile[key].map(exp => ({
-          ...exp,
-          position: exp.title // Convert title to position
-        }));
-      } else {
-        filteredProfile[keyMapping[key]] = profile[key];
-      }
+        if (key === "firstName") {
+          // Handle case where one key maps to multiple backend keys
+          filteredProfile[keyMapping[key]] = profile[key] ? profile[key] : '';
+        } else if (key === "lastName") {
+          filteredProfile[keyMapping[key]] = profile[key] ? profile[key] : '';
+        } else if (key === 'availability') {
+          filteredProfile[keyMapping[key]] = profile[key] !== '' ? profile[key] : null;
+        } else if (key === 'lookingFor') {
+          filteredProfile[keyMapping[key]] = profile[key] ? profile[key].map(item => item.value) : []; // Convert to array of strings
+        } else if (key === 'skills') {
+          filteredProfile[keyMapping[key]] = profile[key] ? profile[key].split(',').map(skill => skill.trim()) : [];
+        } else if (key === 'experiences') {
+          filteredProfile[keyMapping[key]] = profile[key].map(exp => ({
+            ...exp
+          }));
+        } else {
+          filteredProfile[keyMapping[key]] = profile[key];
+        }
     }
-  
+
     return filteredProfile;
   };
-  
+
 
   const updateProfile = async (updatedProfile) => {
     const filteredProfile = getAvailableFields(updatedProfile);
@@ -349,7 +353,6 @@ export default function Profile(user) {
 
       if (response.ok) {
         console.log('Profile updated successfully:', data);
-        setOriginalProfile(updatedProfile);
       } else {
         console.error('Failed to update profile:', data.message);
       }
@@ -403,8 +406,18 @@ export default function Profile(user) {
                 name="firstName"
                 value={profile.firstName}
                 onChange={handleChange}
-                placeholder="Name"
-                className="mt-4 text-black border-gray-300 rounded text-sm text-center"
+                onBlur={handleBlur}
+                placeholder="First Name"
+                className={getInputClassName('firstName')}
+              />
+              <input
+                  type="text"
+                  name="lastName"
+                  value={profile.lastName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="First Name"
+                  className={getInputClassName('lastName')}
               />
               {/* <input
                 type="email"
@@ -414,13 +427,14 @@ export default function Profile(user) {
                 placeholder="email@example.com"
                 className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
               /> */}
-              <input
-                type="text"
-                name="location"
-                value={profile.location}
-                onChange={handleChange}
-                placeholder="City · Province · Country"
-                className="mt-2 text-black border-gray-300 rounded text-sm text-center"
+              <Select
+                  name="location"
+                  value={locations.find(loc => loc.label === profile.location)}
+                  options={locations}
+                  onChange={handleLocationChange}
+                  className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center w-full"
+                  placeholder="City · Province · Country"
+                  isClearable
               />
               <input
                 type="text"
@@ -428,7 +442,7 @@ export default function Profile(user) {
                 value={profile.institution}
                 onChange={handleChange}
                 placeholder="Institution"
-                className="mt-2 text-black border-gray-300 rounded text-sm text-center"
+                className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
               />
               {/* <input
                 type="text"
@@ -444,7 +458,7 @@ export default function Profile(user) {
                 value={profile.specialization}
                 onChange={handleChange}
                 placeholder="Specialization"
-                className="mt-2 text-black border-gray-300 rounded text-sm text-center"
+                className="mt-2 text-gray-600 border-gray-300 rounded text-sm text-center"
               />
             </>
           ) : (
@@ -453,16 +467,14 @@ export default function Profile(user) {
               <p className="mt-2 text-gray-600 ">{profile.email || 'email@example.com'}</p>
               <p className="mt-2 text-gray-600">{profile.location || 'City · Province · Country'}</p>
               <p className="mt-2 text-gray-600">{profile.institution || 'Institution'}</p>
+              {/* <p className="mt-2 text-gray-600">{profile.degree || 'Degree'}</p> */}
               <p className="mt-2 text-gray-600">{profile.specialization || 'Specialization'}</p>
             </>
           )}
         </div>
-        <div className="flex justify-center mt-auto mb-8 space-x-2">
+        <div className="flex justify-center mt-auto mb-8">
           {isEditing ? (
-            <>
-              <button onClick={handleSave} className="bg-[#ff6f00] text-white px-3 py-3 rounded-lg w-24 transition-colors hover:bg-blue-400">Save</button>
-              <button onClick={handleCancel} className="bg-gray-300 text-black px-3 py-3 rounded-lg w-24 transition-colors hover:bg-gray-400">Cancel</button>
-            </>
+            <button onClick={handleSave} className="bg-[#ff6f00] text-white px-3 py-3 rounded-lg w-40 transition-colors hover:bg-blue-400">Save</button>
           ) : (
             <button onClick={() => setIsEditing(true)} className="bg-[#ff6f00] text-white px-3 py-3 rounded-lg w-40 transition-colors hover:bg-blue-400">Edit Profile</button>
           )}
@@ -547,13 +559,13 @@ export default function Profile(user) {
           <h3 className="font-bold">Skill Set</h3>
           {isEditing ? (
             <textarea
-              name="skills"
-              value={profile.skills}
-              onChange={handleChange}
-              placeholder="List your skills"
-              className="w-full border-gray-300 rounded text-sm max-w-full"
-              style={{ maxWidth: '100%' }}
-            />
+            name="skills"
+            value={profile.skills}
+            onChange={handleChange}
+            placeholder="Comma-seperate your skills"
+            className="w-full border-gray-300 rounded text-sm max-w-full"
+            style={{ maxWidth: '100%' }}
+          />
           ) : (
             <p>{profile.skills || 'List your skills'}</p>
           )}
