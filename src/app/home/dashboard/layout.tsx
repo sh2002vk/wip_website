@@ -10,6 +10,7 @@ import ActivePostings from "@/app/ui/dashboard/activepostings";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from '../../../firebase'; // Ensure the correct import path
 
+import { useRouter } from 'next/navigation';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ type LayoutProps = {
 
 const DashboardLayout = ({ children, title }: LayoutProps) => {
   const [user, setUser] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -25,6 +27,7 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
         setUser(user);
       } else {
         setUser(null);
+        router.push('/login'); // Redirect to student home
       }
     });
 

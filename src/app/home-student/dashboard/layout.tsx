@@ -6,6 +6,7 @@ import Drafts from "@/app/ui-student/dashboard/drafts";
 import New from "@/app/ui-student/dashboard/whatsNew";
 import {onAuthStateChanged} from "firebase/auth";
 import {auth} from "@/firebase";
+import { useRouter } from 'next/navigation';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ type LayoutProps = {
 const DashboardLayout = ({ children, title }: LayoutProps) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -22,6 +24,7 @@ const DashboardLayout = ({ children, title }: LayoutProps) => {
                 setUser(user);
             } else {
                 setUser(null);
+                router.push('/login'); // Redirect to student home
             }
             setLoading(false); // Set loading to false after user state is updated
         });

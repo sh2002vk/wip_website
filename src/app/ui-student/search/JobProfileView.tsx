@@ -131,13 +131,15 @@ const JobProfileView = ({ user, job, onClose, onBookmark, isBookmarked }) => {
                 </div>
                 <div>
                     <p className="text-base font-semibold mb-1">
-                        Duration: <span className="font-light">{job.Duration}</span>
+                        Duration: <span className="font-light">{job.Duration} {job.Duration ? "months" : "unspecified"}</span>
                     </p>
                     <p className="text-base font-semibold mb-1">
                         Work Mode: <span className="font-light">{job.Environment}</span>
                     </p>
                     <p className="text-base font-semibold mb-1">
-                        Pay: <span className="font-light">{job.Pay}</span>
+                        Pay: <span className="font-light">
+                            {job.Pay ? `${job.Pay.toLocaleString()} CAD` : "unspecified"}
+                        </span>
                     </p>
                     <p className="text-base font-semibold mb-4">
                         Citizenship Requirement: <span className="font-light">{job.citizenshipRequirement}</span>

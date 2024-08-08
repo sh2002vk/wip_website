@@ -8,6 +8,8 @@ import Bookmarks from '@/app/ui-student/search/bookmarks';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from '../../../firebase';
 
+import { useRouter } from 'next/navigation';
+
 type LayoutProps = {
   children: React.ReactNode;
   title?: string;
@@ -21,6 +23,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [bookmarkedJobs, setBookmarkedJobs] = useState([]);
   const [isBookmarksExpanded, setIsBookmarksExpanded] = useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -30,6 +33,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
         handleSearch({});
       } else {
         setUser(null);
+        router.push('/login'); // Redirect to student home
       }
       console.log("SEARCH", user);
     });
@@ -61,6 +65,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
 
   const handleSearch = async (filters) => {
     // console.log("Filters to send to API: ", filters);
+
     const availabilityMapping = {
       "4 Months": "4",
       "8 Months": "8",
@@ -91,7 +96,15 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
       whereClause.industry = filters.selectedPrograms;
     }
 
-    // console.log('where clause: ', whereClause);
+    if (filters.keyword) {
+      whereClause.keyword = filters.keyword;
+    }
+
+    if (filters.startDate) {
+      whereClause.startDate = filters.startDate;
+    }
+
+    console.log('where clause: ', whereClause);
 
     try {
       const response = await fetch('http://localhost:4000/action/student/getJobs', {

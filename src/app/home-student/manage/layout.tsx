@@ -5,6 +5,8 @@ import JobDetails from '@/app/ui-student/manage/jobDetails';
 import SideBar from "@/app/ui/home/sidebar";
 import {onAuthStateChanged} from "firebase/auth";
 import {auth} from "@/firebase";
+import { useRouter } from 'next/navigation';
+
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -16,6 +18,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [user, setUser] = useState(null);
   const [quota, setQuota] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -23,6 +26,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
         setUser(user);
       } else {
         setUser(null);
+        router.push('/login'); // Redirect to student home
       }
     });
 
