@@ -258,7 +258,13 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
                 className="w-1/2 p-1 text-xl font-bold mb-2 border text-gray-600 border-gray-300 rounded"
               />
             ) : (
-              <h2 className="text-xl font-bold mb-2">{jobTitle ? jobTitle : "New Role"}</h2>
+              <h2
+              className="text-xl font-bold mb-2 whitespace-normal break-words"
+              style={{ maxWidth: '80%' }}
+            >
+              {jobTitle ? jobTitle : "New Role"}
+            </h2>
+            
             )}
             {isEditing ? (
               <div className="flex space-x-4">
@@ -308,14 +314,22 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
                   value={jobLocation}
                   placeholder="Location"
                   onChange={(e) => setJobLocation(e.target.value)}
-                  className="w-1/2 p-1 text-lg mb-2 border text-gray-400 border-gray-300 rounded"
+                  maxLength={70} 
+                  className="w-1/2 p-1 text-lg mb-2 border text-gray-400 border-gray-300 rounded whitespace-normal break-words"
+                  style={{ maxWidth: '100%' }}
                 />
               </div>
             ) : (
               <>
                 <p className="text-lg font-bold">{companyName}</p>
                 {job.Status === "DRAFT" ? (
-                  <p className="text-lg">{jobLocation ? jobLocation : "Location"}</p>
+                  <p
+                  className="text-lg whitespace-normal break-words"
+                  style={{ maxWidth: '100%' }}
+                >
+                  {jobLocation ? jobLocation : "Location"}
+                </p>
+                
                 ) : (
                   <div className="flex justify-between">
                     <p className="text-lg">{jobLocation}</p>

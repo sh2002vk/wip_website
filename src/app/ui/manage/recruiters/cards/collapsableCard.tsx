@@ -16,12 +16,12 @@ interface CollapsibleCardProps {
   }[];
 }
 const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
-                                                           title,
-                                                           content,
-                                                           editable,
-                                                           onContentChange,
-                                                           sections
-                                                         }) => {
+  title,
+  content,
+  editable,
+  onContentChange,
+  sections,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [editableContent, setEditableContent] = useState(content);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -54,11 +54,16 @@ const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
     adjustTextAreaHeight();
   }, [editableContent]);
 
-  const handleOptionClick = (option: string, selectedOptions: string[] | string, onOptionChange: (newSelectedOption: string[] | string) => void, multiple: boolean | undefined) => {
+  const handleOptionClick = (
+    option: string,
+    selectedOptions: string[] | string,
+    onOptionChange: (newSelectedOption: string[] | string) => void,
+    multiple: boolean | undefined
+  ) => {
     if (multiple && Array.isArray(selectedOptions)) {
       const newSelectedOptions = selectedOptions.includes(option)
-          ? selectedOptions.filter(opt => opt !== option)
-          : [...selectedOptions, option];
+        ? selectedOptions.filter(opt => opt !== option)
+        : [...selectedOptions, option];
 
       onOptionChange(newSelectedOptions);
     } else {
@@ -67,68 +72,71 @@ const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
   };
 
   return (
-      <div className="bg-white mb-4 flex justify-between">
-        <div className="w-2/12 flex items-start cursor-pointer text-gray-400" onClick={toggleOpen}>
-          <div className="flex items-center">
-            <FontAwesomeIcon
-                icon={faCaretRight}
-                className={`mr-2 transition-transform duration-300 ${isOpen ? 'rotate-90' : ''}`}
-            />
-            <p className="text-lg text-black overflow-x-hidden">{title}</p>
-          </div>
-        </div>
-        <div className={`w-10/12 transition-max-height duration-1000 overflow-hidden ${isOpen ? 'max-h-dvh' : 'max-h-0'}`}>
-          <div className="mt-2 border-l border-gray-800 pl-4">
-            {editable && !sections &&
-                <textarea
-                    ref={textAreaRef}
-                    className="w-full p-2 border border-gray-300 rounded resize-none"
-                    value={editableContent}
-                    onChange={handleContentChange}
-                    style={{ overflow: 'hidden' }}
-                />}
-            {editable ? (
-                <>
-                  {sections && sections.map((section, sectionIndex) => (
-                      <div key={sectionIndex} className="mt-4">
-                        <h4 className="font-bold">{section.title}</h4>
-                        <div className="flex space-x-2">
-                          {section.options.map((option, optionIndex) => (
-                              <button
-                                  key={optionIndex}
-                                  onClick={() => handleOptionClick(option, section.selectedOptions, section.onOptionChange, section.multiple)}
-                                  className={`px-4 py-1 mt-2 border rounded transition duration-300 ${
-                                      Array.isArray(section.selectedOptions)
-                                          ? section.selectedOptions.includes(option)
-                                              ? 'border-black font-bold'
-                                              : 'border-gray-300 text-gray-300'
-                                          : section.selectedOptions === option
-                                              ? 'border-black font-bold'
-                                              : 'border-gray-300 text-gray-300'
-                                  }`}
-                              >
-                                {option}
-                              </button>
-                          ))}
-                        </div>
-                      </div>
-                  ))}
-                </>
-            ) : (
-                <>
-                  <p>{editableContent}</p>
-                  {sections && sections.map((section, sectionIndex) => (
-                      <div key={sectionIndex}>
-                        <ul className="list-disc pl-5 font-light">
-                          <li>{section.title}: {Array.isArray(section.selectedOptions) ? section.selectedOptions.join(', ') : section.selectedOptions}</li>
-                        </ul>
-                      </div>
-                  ))}
-                </>
-            )}
-          </div>
+    <div className="bg-white mb-4 flex justify-between">
+      <div className="w-2/12 flex items-start cursor-pointer text-gray-400" onClick={toggleOpen}>
+        <div className="flex items-center">
+          <FontAwesomeIcon
+            icon={faCaretRight}
+            className={`mr-2 transition-transform duration-300 ${isOpen ? 'rotate-90' : ''}`}
+          />
+          <p className="text-lg text-black overflow-x-hidden">{title}</p>
         </div>
       </div>
+      <div className={`w-10/12 transition-max-height duration-1000 overflow-hidden ${isOpen ? 'max-h-dvh' : 'max-h-0'}`}>
+        <div className="mt-2 border-l border-gray-800 pl-4">
+          {editable && !sections && (
+            <textarea
+              ref={textAreaRef}
+              className="w-full p-2 border border-gray-300 rounded resize-none"
+              value={editableContent}
+              onChange={handleContentChange}
+              style={{ overflow: 'hidden' }}
+            />
+          )}
+          {editable ? (
+            <>
+              {sections && sections.map((section, sectionIndex) => (
+                <div key={sectionIndex} className="mt-4">
+                  <h4 className="font-bold">{section.title}</h4>
+                  <div className="flex space-x-2">
+                    {section.options.map((option, optionIndex) => (
+                      <button
+                        key={optionIndex}
+                        onClick={() => handleOptionClick(option, section.selectedOptions, section.onOptionChange, section.multiple)}
+                        className={`px-4 py-1 mt-2 border rounded transition duration-300 ${
+                          Array.isArray(section.selectedOptions)
+                            ? section.selectedOptions.includes(option)
+                              ? 'border-black font-bold'
+                              : 'border-gray-300 text-gray-300'
+                            : section.selectedOptions === option
+                              ? 'border-black font-bold'
+                              : 'border-gray-300 text-gray-300'
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              <p className="whitespace-normal break-words" style={{ maxWidth: '100%' }}>
+                {editableContent}
+              </p>
+              {sections && sections.map((section, sectionIndex) => (
+                <div key={sectionIndex}>
+                  <ul className="list-disc pl-5 font-light">
+                    <li>{section.title}: {Array.isArray(section.selectedOptions) ? section.selectedOptions.join(', ') : section.selectedOptions}</li>
+                  </ul>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
