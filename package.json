@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development next dev",
+    "dev": "cross-env NODE_ENV=development next dev",
     "prod": "NODE_ENV=production next start",
     "build": "next build",
     "start": "next start",
@@ -44,6 +44,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.19",
+    "cross-env": "^7.0.3",
     "eslint-config-next": "^14.2.4",
     "postcss": "^8",
     "tailwindcss": "^3.4.3",
