@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+const API_URL = process.env.API_URL
 
 const BookmarkedStats = ({user}) => {
 
@@ -8,13 +9,13 @@ const BookmarkedStats = ({user}) => {
         if (!user) return;
 
         try {
-            const response = await fetch(`http://localhost:4000/account/student/getBookmarkAmount?studentID=${user.uid}`);
+            const response = await fetch(`${API_URL}/account/student/getBookmarkAmount?studentID=${user.uid}`);
             if (!response.ok) {
                 console.log("Error in response");
                 return;
             }
             const associatedBookmarks = await response.json();
-            console.log("quota", associatedBookmarks.length);
+            // console.log("quota", associatedBookmarks.length);
             setBookmarkAmount(associatedBookmarks.length);
         } catch (error) {
             console.log("Error in fetching bookmark amount", error);
@@ -25,13 +26,13 @@ const BookmarkedStats = ({user}) => {
         if (!user) return;
 
         try {
-            const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=${user.uid}`);
+            const response = await fetch(`${API_URL}/account/student/getQuota?studentID=${user.uid}`);
             if (!response.ok) {
                 console.log("Error in response");
                 return;
             }
             const quotaData = await response.json();
-            console.log("quota", quotaData.quota);
+            // console.log("quota", quotaData.quota);
             setQuota(quotaData.quota);
         } catch (error) {
             console.log("Error in fetching quota amount", error);

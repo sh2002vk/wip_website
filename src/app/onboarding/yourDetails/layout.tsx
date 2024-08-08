@@ -5,15 +5,15 @@ import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const YourDetailsLayout = ({ children, title }: LayoutProps) => {
+const YourDetailsLayout = ({ children }: LayoutProps) => {
   return (
     <div className="flex h-screen">
       <div className="flex flex-col justify-center items-center bg-gray-100 w-full h-screen">
         <div className="w-full p-5 max-w-2xl text-center">
-          <h1 className="text-4xl font-semibold mb-4">{title}</h1>
+          <h1 className="text-4xl font-semibold mb-4">Welcome!</h1>
           {children}
         </div>
       </div>
@@ -33,8 +33,20 @@ const YourDetails = () => {
   });
 
   useEffect(() => {
-    // Initialize formData with userDetails
-    setFormData(userDetails);
+    const defaultFormData = {
+      lastName: '',
+      firstName: '',
+      email: '',
+      school: '',
+      major: '',
+      year: '',
+    };
+  
+    // Merge userDetails with defaultFormData
+    setFormData({
+      ...defaultFormData,
+      ...userDetails,
+    });
   }, [userDetails]);
 
   const router = useRouter();
@@ -48,7 +60,10 @@ const YourDetails = () => {
   };
 
   const handleDetailChange = () => {
-    setUserDetails(formData);
+    setUserDetails({
+      ...userDetails, // Preserve existing userDetails properties
+      ...formData,    // Update with new formData values
+    });
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -58,7 +73,7 @@ const YourDetails = () => {
   };
 
   return (
-    <YourDetailsLayout title="Welcome!">
+    <YourDetailsLayout>
       <p className="text-xl font-light mb-8">
         First thing first, let us learn a bit about you
       </p>

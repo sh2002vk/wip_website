@@ -3,7 +3,7 @@ import MessageLayout from './layout'
 
 export default function MessagePage() {
   return (
-    <MessageLayout title="MESSAGE">
+    <MessageLayout>
       <p>Messages</p>
     </MessageLayout>
   );

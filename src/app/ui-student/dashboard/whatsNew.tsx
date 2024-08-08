@@ -40,7 +40,7 @@ const whatsNew = () => {
     <div className="h-full overflow-y-auto p-5">
       <div className="sticky top-0 bg-[#F5f5f5] z-10">
         <h1 className="text-xl font-light mb-2">
-          What's New <span className="bg-gray-200 text-sm font-medium py-1 px-2 rounded-full ml-2">{updates.length}</span>
+          What&apos;s New <span className="bg-gray-200 text-sm font-medium py-1 px-2 rounded-full ml-2">{updates.length}</span>
         </h1>
         <div className="grid grid-cols-12 text-gray-500 text-sm mb-2">
           <span className="col-span-1"></span>

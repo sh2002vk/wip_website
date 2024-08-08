@@ -4,7 +4,7 @@ import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const Bookmarks = ({ students, onStudentClick, isExpanded, toggleExpand, closeExpand }) => {
-  console.log('students gotten: ', students);
+  // console.log('students gotten: ', students);
   return (
     <div 
       className={`fixed top-0 right-0 h-full p-2 transition-all duration-300 ${isExpanded ? 'w-64 bg-white' : 'w-10 bg-white'}`}
@@ -23,7 +23,7 @@ const Bookmarks = ({ students, onStudentClick, isExpanded, toggleExpand, closeEx
             <h3 className="text-xl font-bold">Bookmarks</h3>
             <FontAwesomeIcon
               icon={faTimes}
-              size="md"
+              size="lg"
               className="cursor-pointer"
               onClick={closeExpand}
             />

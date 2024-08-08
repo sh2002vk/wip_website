@@ -3,8 +3,8 @@ import YourDetailsLayout from './layout'
 
 export default function DetailsPage() {
   return (
-    <YourDetailsLayout title="MESSAGE">
-      <p>Messages</p>
+    <YourDetailsLayout>
+      {/* <p>Messages</p> */}
     </YourDetailsLayout>
   );
 }

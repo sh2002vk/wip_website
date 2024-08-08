@@ -22,7 +22,7 @@ const Bookmarks = ({ jobs, onJobClick, isExpanded, toggleExpand, closeExpand }) 
             <h3 className="text-xl font-bold">Bookmarks</h3>
             <FontAwesomeIcon
               icon={faTimes}
-              size="md"
+              size="lg"
               className="cursor-pointer"
               onClick={closeExpand}
             />

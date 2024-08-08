@@ -5,9 +5,11 @@ import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
 import {createUserWithEmailAndPassword} from "firebase/auth";
 import {auth} from "@/firebase";
 
+const API_URL = process.env.API_URL
+
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
 const createStudent = async (userDetails) => {
@@ -15,7 +17,7 @@ const createStudent = async (userDetails) => {
     const userCredential = await createUserWithEmailAndPassword(auth, userDetails.email, userDetails.password);
     const user = userCredential.user;
     const uid = user.uid;
-    const response = await fetch('http://localhost:4000/account/student/create', {
+    const response = await fetch(`${API_URL}/account/student/create`, {
       method: 'POST', // Specify the request method
       headers: {
         'Content-Type': 'application/json', // Specify the content type
@@ -36,19 +38,19 @@ const createStudent = async (userDetails) => {
       console.log("Error creating student");
     }
     const result = await response.json();
-    console.log(result);
+    // console.log(result);
   } catch (error) {
     console.log(error);
   }
 }
 
-const PasswordLayout = ({ children, title }: LayoutProps) => {
+const PasswordLayout = ({ children }: LayoutProps) => {
 
   return (
     <div className="flex h-screen">
       <div className="flex flex-col justify-center items-center bg-gray-100 w-full h-screen">
         <div className="w-full p-2 max-w-2xl text-center rounded-lg">
-          <h1 className="text-4xl font-semibold mb-4">{title}</h1>
+          <h1 className="text-4xl font-semibold mb-4">Keeping your account secure</h1>
           {children}
         </div>
       </div>
@@ -120,7 +122,7 @@ const Password = () => {
   };
 
   return (
-    <PasswordLayout title="Keeping your account secure">
+    <PasswordLayout>
       <p className="text-lg font-light mb-8">
         Let’s set up your password
       </p>

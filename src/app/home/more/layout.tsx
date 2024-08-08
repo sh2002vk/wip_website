@@ -11,10 +11,10 @@ import { useRouter } from 'next/navigation';
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const MoreLayout = ({ children, title }: LayoutProps) => {
+const MoreLayout = ({ children }: LayoutProps) => {
 
   const [user, setUser] = useState(null);
   const router = useRouter();

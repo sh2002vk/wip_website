@@ -4,6 +4,8 @@ import "./style.css"
 import StudentProfileView from "@/app/ui/search/studentProfileView";
 import JobDashboardTables from "@/app/ui/manage/recruiters/jobDashboardTables";
 
+const API_URL = process.env.API_URL
+
 interface Application {
     Status: string;
     StudentID: number;
@@ -47,8 +49,8 @@ const JobDashboard = ({jobID}) => {
     const fetchApplicationsAndShortlist = async (jobID: string) => {
         try {
             const [applicationsResponse, shortlistResponse] = await Promise.all([
-                fetch(`http://localhost:4000/action/recruiter/getJobApplicants?jobID=${jobID}`),
-                fetch(`http://localhost:4000/action/recruiter/getShortlistedStudents?jobID=${jobID}`)
+                fetch(`${API_URL}/action/recruiter/getJobApplicants?jobID=${jobID}`),
+                fetch(`${API_URL}v/action/recruiter/getShortlistedStudents?jobID=${jobID}`)
             ]);
 
             const applications: Application[] = await applicationsResponse.json();
@@ -63,7 +65,7 @@ const JobDashboard = ({jobID}) => {
 
     const fetchApplicationInformation = async (applicationID: number): Promise<Application | undefined> => {
         try {
-            const response = await fetch(`http://localhost:4000/profile/application/getApplication?applicationID=${applicationID}`);
+            const response = await fetch(`${API_URL}/profile/application/getApplication?applicationID=${applicationID}`);
             const applicationInfo: Application = await response.json();
             return applicationInfo;
         } catch (error) {
@@ -72,12 +74,12 @@ const JobDashboard = ({jobID}) => {
     };
 
     useEffect(() => {
-        console.log("Fetching application and shortlist");
+        // console.log("Fetching application and shortlist");
         fetchApplicationsAndShortlist(jobID);
     }, [jobID]);
 
     useEffect(() => {
-        console.log("Fetching Application Information");
+        // console.log("Fetching Application Information");
         const fetchAllApplicationInformation = async () => {
             let applicationInfo: Application[] = [];
             for (const application of applications) {
@@ -96,7 +98,7 @@ const JobDashboard = ({jobID}) => {
     }, [applications]);
 
     useEffect(() => {
-        console.log("Sorting Tables");
+        // console.log("Sorting Tables");
         if (!isDataLoaded) return;  // Wait until data is fully loaded
         const sortTables = () => {
             let actionApps: Application[] = [];
@@ -106,8 +108,8 @@ const JobDashboard = ({jobID}) => {
             const shortlistSet = new Set(shortlist.map(item => item.StudentID));
             const applicationSet = new Set(applicationInformation.map(app => app.StudentID));
 
-            console.log("shortlistSet", shortlistSet);
-            console.log("applicationSet", applicationSet);
+            // console.log("shortlistSet", shortlistSet);
+            // console.log("applicationSet", applicationSet);
 
             applicationInformation.forEach(app => {
                 if ((app.Status === "REVIEWED" || app.Status === "APPLIED") && !shortlistSet.has(app.StudentID)) {
@@ -123,9 +125,9 @@ const JobDashboard = ({jobID}) => {
             setInvitedApplications(invitedApps);
             setContactingApplications(contactingApps);
 
-            console.log("ACTION", actionApps);
-            console.log("INVITED", invitedApps);
-            console.log("CONTACTING", contactingApps);
+            // console.log("ACTION", actionApps);
+            // console.log("INVITED", invitedApps);
+            // console.log("CONTACTING", contactingApps);
         };
 
         if (applicationInformation.length > 0 || shortlist.length > 0) {

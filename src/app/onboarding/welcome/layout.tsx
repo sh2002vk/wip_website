@@ -4,15 +4,15 @@ import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const WelcomeLayout = ({ children, title }: LayoutProps) => {
+const WelcomeLayout = ({ children }: LayoutProps) => {
   return (
     <div className="flex h-screen">
       <div className="flex flex-col justify-center items-center bg-gray-100 w-full h-screen">
         <div className="w-full p-5 max-w-2xl text-center">
-          <h1 className="text-4xl font-semibold mb-4">{title}</h1>
+          <h1 className="text-4xl font-semibold mb-4">Congratulations!</h1>
           {children}
         </div>
       </div>
@@ -23,7 +23,7 @@ const WelcomeLayout = ({ children, title }: LayoutProps) => {
 const Welcome = () => {
 
   return (
-    <WelcomeLayout title="Congratulations!">
+    <WelcomeLayout>
       <p className="text-xl font-light mb-8">
         To start off, what would you like to do first?
       </p>

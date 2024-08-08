@@ -1,7 +1,8 @@
 'use client';
-
 import React, {useState, ChangeEvent, useRef, useEffect} from 'react';
 import Select from 'react-select';
+
+const API_URL = process.env.API_URL
 
 type ExperienceType = {
   company: string;
@@ -69,6 +70,7 @@ const durationMap: { [key: string]: string } = {
 }
 
 export default function Profile(user) {
+  // Declare all hooks at the top level of the component
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [profile, setProfile] = useState<ProfileType>({
@@ -88,6 +90,10 @@ export default function Profile(user) {
     photo: '',
   });
   const [photoURL, setPhotoURL] = useState('');
+  const [touchedFields, setTouchedFields] = useState({ firstName: false, lastName: false });
+  const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
+  const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -176,8 +182,8 @@ export default function Profile(user) {
     }));
   };
 
-  const [selectedTerm, setSelectedTerm] = useState(null);
-  const [selectedDuration, setSelectedDuration] = useState(null);
+  // const [selectedTerm, setSelectedTerm] = useState(null);
+  // const [selectedDuration, setSelectedDuration] = useState(null);
 
   const handleOptionChange = (key, option) => {
     setProfile((prevProfile) => ({
@@ -196,7 +202,7 @@ export default function Profile(user) {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/profile/student/getFullProfile?studentID=${user.user.uid}`, {
+        const response = await fetch(`${API_URL}/profile/student/getFullProfile?studentID=${user.user.uid}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -205,8 +211,10 @@ export default function Profile(user) {
 
         const data = await response.json();
 
-        if (response.ok) {
+        console.log("STUDENT INFO IS: ", data);
 
+        if (response.ok) {
+          console.log("here", data.data.WorkExperience);
           let student = data.data;
           console.log("STUDENT", student)
           const interests = student.Interest ? student.Interest.map(interest => ({
@@ -330,7 +338,7 @@ export default function Profile(user) {
     const filteredProfile = getAvailableFields(updatedProfile);
 
     try {
-      const response = await fetch('http://localhost:4000/account/student/update', {
+      const response = await fetch(`${API_URL}/account/student/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -353,7 +361,7 @@ export default function Profile(user) {
     }
   };
 
-  const [touchedFields, setTouchedFields] = useState({ firstName: false, lastName: false });
+  // const [touchedFields, setTouchedFields] = useState({ firstName: false, lastName: false });
   const handleBlur = (e) => {
     const { name } = e.target;
     setTouchedFields((prevTouched) => ({

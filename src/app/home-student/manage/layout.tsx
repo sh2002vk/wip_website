@@ -3,20 +3,21 @@ import React, { useState, useEffect } from 'react';
 import Bookmarks from '@/app/ui-student/manage/bookmarks';
 import JobDetails from '@/app/ui-student/manage/jobDetails';
 import SideBar from "@/app/ui/home/sidebar";
-import {onAuthStateChanged} from "firebase/auth";
+import {onAuthStateChanged, User} from "firebase/auth";
 import {auth} from "@/firebase";
 import { useRouter } from 'next/navigation';
 
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
 };
 
-const ManageLayout = ({ children, title }: LayoutProps) => {
+type AuthUser = User | null;
+
+const ManageLayout = ({ children }: LayoutProps) => {
   
   const [selectedJob, setSelectedJob] = useState(null);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<AuthUser>(null);
   const [quota, setQuota] = useState(0);
   const router = useRouter();
 
@@ -33,7 +34,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
     return () => unsubscribe();
   }, []);
 
-  const handleSelectJob = (job) => {
+  const handleSelectJob = (job: any) => {
     setSelectedJob(job);
   };
 
@@ -42,7 +43,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
   };
 
   const handleJobDelete = () => {
-    setJobs(jobs.filter(job => job.id !== selectedJob.id));
+    // setJobs(jobs.filter(job => job.id !== selectedJob.id));
     setSelectedJob(null);
   };
 

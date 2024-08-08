@@ -6,7 +6,7 @@ import ManageLayout from './layout'
 
 export default function ManagePage() {
   return (
-    <ManageLayout title="MANAGE">
+    <ManageLayout>
       <p>MANAGE INFO</p>
     </ManageLayout>
   );

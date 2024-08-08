@@ -8,13 +8,14 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from '../../../firebase'; // Ensure the correct import path
 
 import { useRouter } from 'next/navigation';
+const API_URL = process.env.API_URL
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const ManageLayout = ({ children, title }: LayoutProps) => {
+const ManageLayout = ({ children }: LayoutProps) => {
 
   const initialDrafts = [
     {
@@ -104,7 +105,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
       setLoading(true);
       try {
         if (user) {
-          const response = await fetch(`http://localhost:4000/profile/recruiter/getFullProfile?recruiterID=${user.uid}`);
+          const response = await fetch(`${API_URL}/profile/recruiter/getFullProfile?recruiterID=${user.uid}`);
           const recruiter = await response.json();
           setCompanyID(recruiter.data.CompanyID);
         }
@@ -121,7 +122,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
   const fetchJobPostings = async () => {
     try {
       const recruiterID = user.uid;
-      const response = await fetch(`http://localhost:4000/action/recruiter/getJobPostings?recruiterID=${recruiterID}`, {
+      const response = await fetch(`${API_URL}/action/recruiter/getJobPostings?recruiterID=${recruiterID}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -152,7 +153,7 @@ const ManageLayout = ({ children, title }: LayoutProps) => {
 
   const fetchCompany = async (companyID) => { // We can delete this later, and instead pass the companyID in later given the recruiterID. Right now, there will be no Company ID if there are no jobs
     try {
-      const response = await fetch(`http://localhost:4000/profile/company/getFullProfile?companyID=${companyID}`, {
+      const response = await fetch(`${API_URL}/profile/company/getFullProfile?companyID=${companyID}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

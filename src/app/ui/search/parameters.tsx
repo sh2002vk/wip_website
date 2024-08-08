@@ -12,9 +12,10 @@ import { styled } from "@mui/material/styles";
 
 type ParametersProps = {
   onSearch: (filters: {
-    duration: number;
-    preference: string;
-    level: number;
+    duration: number[];
+    preference: string[];
+    season: string[];
+    level: number[];
     startDate: Dayjs | null;
     endDate: Dayjs | null;
     keyword: string;
@@ -50,34 +51,31 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
   const [location, setLocation] = useState("");
 
   const [activeToggle, setActiveToggle] = useState("Global");
-  const [preferences, setPreferences] = useState([]);
-  const [availabilities, setAvailabilities] = useState([]);
-  const [workingTypes, setWorkingTypes] = useState([]);
-  const [workingSessions, setWorkingSessions] = useState([]);
-  const [degreeLevels, setDegreeLevels] = useState([]);
+  const [preferences, setPreferences] = useState<string[]>([]);
+  const [availabilities, setAvailabilities] = useState<number[]>([]);
+  const [workingTypes, setWorkingTypes] = useState<string[]>([]);
+  const [workingSessions, setWorkingSessions] = useState<string[]>([]);
+  const [degreeLevels, setDegreeLevels] = useState<number[]>([]);
+  const [selectedPrograms, setSelectedPrograms] = useState<string[]>([]);
+
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
 
   const [showMorePrograms, setShowMorePrograms] = useState(false);
-  const [selectedPrograms, setSelectedPrograms] = useState([]);
 
   const handleShowResults = () => {
     const currentFilters = {
-      availabilities,
-      workingTypes,
-      preferences,
-      degreeLevels,
+      duration: availabilities, // Assuming the first item is the duration
+      preference: workingTypes, // Assuming the first item is the preference
+      level: degreeLevels, // Assuming the first item is the level
+      season: workingSessions,
       startDate,
       endDate,
       keyword,
       location,
-      minSalary,
-      maxSalary,
-      selectedPrograms,
-      workingSessions,
     };
     onSearch(currentFilters);
-  };
+  };  
 
   const handleMinSalaryChange = (event) => {
     setMinSalary(event.target.value);
@@ -101,6 +99,8 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
     setDegreeLevels([]);
     setStartDate(dayjs());
     setEndDate(dayjs());
+    setWorkingSessions([]);
+    setWorkingTypes([]);
     setKeyword("");
     setLocation("");
     setMaxSalary("");
@@ -215,7 +215,7 @@ export default function Parameters({ onSearch, user }: ParametersProps) {
 
 {/* -------------------------Working Type Availability------------------------------- */}
 
-<div className="bg-gray-200 rounded-xs mb-2">
+          <div className="bg-gray-200 rounded-xs mb-2">
             <TripleToggle
               leftToggle="Local"
               rightToggle="Hybrid"

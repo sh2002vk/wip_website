@@ -7,6 +7,8 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import { useRouter } from 'next/navigation';
 import { auth } from '../../firebase'; // Ensure the correct import path
 
+const API_URL = process.env.API_URL
+
 export default function Home() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -36,14 +38,14 @@ export default function Home() {
 
   const determineAccountType = async (uid) => {
     try {
-      const response = await fetch(`http://localhost:4000/profile/recruiter/getFullProfile?recruiterID=${uid}`);
+      const response = await fetch(`${API_URL}/profile/recruiter/getFullProfile?recruiterID=${uid}`);
       const account = await response.json();
       if (!response.ok) {
         return 'student'; // Return role directly
       }
       return 'recruiter'; // Return role directly
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       throw new Error('Failed to determine account type');
     }
   };
@@ -64,7 +66,7 @@ export default function Home() {
         uid = user.uid;
       }
       const accountType = await determineAccountType(uid);
-      console.log("Login success");
+      // console.log("Login success");
       if (accountType === 'student') {
         router.push('/home-student'); // Redirect to student home
       } else {

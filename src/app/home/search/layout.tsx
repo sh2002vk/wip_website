@@ -10,13 +10,19 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from '../../../firebase'; // Ensure the correct import path
 
 import { useRouter } from 'next/navigation';
+const API_URL = process.env.API_URL
 
 type LayoutProps = {
   children: React.ReactNode;
-  title?: string;
+  // title?: string;
 };
 
-const SearchLayout = ({ children, title }: LayoutProps) => {
+type WorkingSession = "Fall 24" | "Winter 25" | "Summer 25";
+type Availability = "4 Months" | "8 Months" | "1+ Year";
+type DegreeLevel = "3/4 Year" | "Masters" | "PHD";
+type WorkType = "Local" | "Hybrid" | "Remote";
+
+const SearchLayout = ({ children }: LayoutProps) => {
   const [user, setUser] = useState(null);
   const [students, setStudents] = useState([]);
   const [showStudents, setShowStudents] = useState(false);
@@ -42,7 +48,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
 
   const fetchBookmarkedStudents = async (recruiterID) => {
     try {
-      const response = await fetch(`http://localhost:4000/action/recruiter/getBookmarkedStudents?recruiterID=${recruiterID}`, {
+      const response = await fetch(`${API_URL}/action/recruiter/getBookmarkedStudents?recruiterID=${recruiterID}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -61,46 +67,54 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
   };
 
   const handleSearch = async (filters) => {
-    const availabilityMapping = {
+
+    const availabilityMapping: Record<Availability, string> = {
       "4 Months": "4",
       "8 Months": "8",
       "1+ Year": "12"
     };
 
-    const levelMapping = {
+    const levelMapping: Record<DegreeLevel, number> = {
       "3/4 Year": 4,
       "Masters": 5,
       "PHD": 6
     };
 
-    const worktypeMapping = {
+    const worktypeMapping: Record<WorkType, string> = {
       "Local": "INPERSON",
       "Hybrid": "HYBRID",
       "Remote": "REMOTE"
     }
 
-    const sessionMapping = {
+    const sessionMapping: Record<WorkingSession, string> = {
       "Fall 24": "F24",
       "Winter 25": "W25",
       "Summer 25": "S25"
     }
 
-    let whereClause = {};
+    let whereClause: {
+      season?: string[];
+      preference?: string[];
+      duration?: string[];
+      level?: number[];
+      location?: string;
+      program?: string[];
+    } = {};
 
-    if (filters.workingSessions) {
-      whereClause.season = filters.workingSessions.map((session) => sessionMapping[session]);
+    if (filters.season) {
+      whereClause.season = filters.season.map((session: WorkingSession) => sessionMapping[session]);
     }
 
-    if (filters.workingTypes) {
-      whereClause.preference = filters.workingTypes.map((type) => worktypeMapping[type]);
+    if (filters.preference) {
+      whereClause.preference = filters.preference.map((type: WorkType) => worktypeMapping[type]);
     }
 
-    if (filters.availabilities) {
-      whereClause.duration = filters.availabilities.map((availability) => availabilityMapping[availability]);
+    if (filters.duration) {
+      whereClause.duration = filters.duration.map((availability: Availability) => availabilityMapping[availability]);
     }
 
-    if (filters.degreeLevels) {
-      whereClause.level = filters.degreeLevels.map((level) => levelMapping[level]);
+    if (filters.level) {
+      whereClause.level = filters.level.map((level: DegreeLevel) => levelMapping[level]);
     }
 
     if (filters.location) {
@@ -112,7 +126,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/action/recruiter/getStudents', {
+      const response = await fetch(`${API_URL}/action/recruiter/getStudents`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -153,7 +167,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
 
     try {
       if (isBookmarked) {
-        await fetch('http://localhost:4000/action/recruiter/unbookmarkStudent', {
+        await fetch(`${API_URL}/action/recruiter/unbookmarkStudent`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -162,7 +176,7 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
         });
         setBookmarkedStudents((prev) => prev.filter((s) => s.StudentID !== student.StudentID));
       } else {
-        await fetch('http://localhost:4000/action/recruiter/bookmarkStudent', {
+        await fetch(`${API_URL}/action/recruiter/bookmarkStudent`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -228,6 +242,8 @@ const SearchLayout = ({ children, title }: LayoutProps) => {
               onClose={handleCloseDetail}
               onBookmark={() => handleBookmarkClick(selectedStudent)}
               isBookmarked={isBookmarked(selectedStudent)}
+              isApplication={false} // Default to false
+              refreshData={() => {}} // Default to no-op function
             />
           )}
         </>

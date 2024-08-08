@@ -3,8 +3,8 @@ import WhyWipLayout from './layout'
 
 export default function Why() {
   return (
-    <WhyWipLayout title="MESSAGE">
-      <p>Messages</p>
+    <WhyWipLayout>
+      {/* <p>Messages</p> */}
     </WhyWipLayout>
   );
 }
