@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development next dev",
-    "prod": "NODE_ENV=production next start",
+    "prod": "cross-env NODE_ENV=production next start",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
