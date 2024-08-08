@@ -59,12 +59,12 @@ const Drafts = ({user}) => {
       }
       for (const application of filteredData) {
         const item = {};
-        item.role = application.jobModel.Role;
-        item.dateClosed = application.jobModel.DateClosed;
-        const requiredDocLength = application.jobModel.RequiredDocuments ? Object.keys(application.jobModel.RequiredDocuments).length : 0;
+        item.role = application.Job.Role;
+        item.dateClosed = application.Job.DateClosed;
+        const requiredDocLength = application.Job.RequiredDocuments ? Object.keys(application.Job.RequiredDocuments).length : 0;
         const submittedDocLength = application.SubmittedDocuments ? Object.keys(application.SubmittedDocuments).length : 0;
         item.percentage = requiredDocLength > 0 ? (submittedDocLength / requiredDocLength) * 100 : 0;
-        const jobID = application.jobModel.JobID;
+        const jobID = application.Job.JobID;
         const competition = await fetchJobCompetition(jobID);
         item.competition = competition.competition;
         rows.push(item);

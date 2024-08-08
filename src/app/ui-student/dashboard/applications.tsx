@@ -64,13 +64,13 @@ const applications = ({user}) => {
       }
       for (const application of filteredData) {
         const item = {};
-        item.role = application.jobModel.Role;
-        item.dateClosed = application.jobModel.DateClosed;
+        item.role = application.Job.Role;
+        item.dateClosed = application.Job.DateClosed;
         item.percentage = getPercentage(application.Status);
-        const jobID = application.jobModel.JobID;
+        const jobID = application.Job.JobID;
         const competition = await fetchJobCompetition(jobID);
         item.competition = competition.competition;
-        item.jobStatus = application.jobModel.Status;
+        item.jobStatus = application.Job.Status;
         item.appStatus = application.Status;
         rows.push(item);
       }
