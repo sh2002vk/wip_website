@@ -101,7 +101,7 @@ const YourDetails = () => {
   return (
     <YourDetailsLayout>
       <p className="text-xl font-light mb-8">
-        First thing first, let us learn a bit about you [test]
+        First thing first, let us learn a bit about you
       </p>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex justify-between">
