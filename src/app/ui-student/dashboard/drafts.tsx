@@ -75,7 +75,7 @@ const Drafts = ({ user }) => {
           competition: 0, // Default value, to be updated
         };
         const requiredDocLength = application.Job.RequiredDocuments
-          ? Object.keys(application.Jo.RequiredDocuments).length
+          ? Object.keys(application.Job.RequiredDocuments).length
           : 0;
         const submittedDocLength = application.SubmittedDocuments
           ? Object.keys(application.SubmittedDocuments).length

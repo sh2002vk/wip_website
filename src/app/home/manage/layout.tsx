@@ -67,6 +67,7 @@ const ManageLayout = ({ children }: LayoutProps) => {
   const [error, setError] = useState(null);
   const [companyName, setCompanyName] = useState('');
   const [companyID, setCompanyID] = useState('');
+  const [refreshBookmark, setRefreshBookmark] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -119,9 +120,19 @@ const ManageLayout = ({ children }: LayoutProps) => {
     fetchRecruiterProfile();
   }, [user]);
 
-  const fetchJobPostings = async () => {
+  const updateJobLists = (data) => {
+    const newDrafts = data.data.filter((job) => job.Status === "DRAFT");
+    const newCompleted = data.data.filter((job) => job.Status === "COMPLETED");
+    if (JSON.stringify(newDrafts) !== JSON.stringify(drafts)) {
+      setDrafts(newDrafts);
+    }
+    if (JSON.stringify(newCompleted) !== JSON.stringify(completed)) {
+      setCompleted(newCompleted);
+    }
+  };
+
+  const fetchJobPostings = async (recruiterID) => {
     try {
-      const recruiterID = user.uid;
       const response = await fetch(`${API_URL}/action/recruiter/getJobPostings?recruiterID=${recruiterID}`, {
         method: 'GET',
         headers: {
@@ -131,15 +142,10 @@ const ManageLayout = ({ children }: LayoutProps) => {
       const data = await response.json();
 
       if (response.ok) {
-        const drafts = data.data.filter((job) => job.Status === "DRAFT");
-        const completed = data.data.filter((job) => job.Status === "COMPLETED");
-        setDrafts(drafts);
-        setCompleted(completed);
-
+        updateJobLists(data);
         if (data.data.length > 0 && data.data[0].CompanyID !== companyID) {
           setCompanyID(data.data[0].CompanyID);
         }
-
         setLoading(false);
       } else {
         setError(data.message);
@@ -167,8 +173,10 @@ const ManageLayout = ({ children }: LayoutProps) => {
   };
 
   useEffect(() => {
-    fetchJobPostings();
-  }, []);
+    if (user) {
+      fetchJobPostings(user.uid);
+    }
+  }, [user, drafts, completed]);
 
   useEffect(() => {
     if (companyID) {

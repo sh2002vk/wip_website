@@ -166,11 +166,9 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
       } else {
         const data = await response.json();
         console.log("successfully deleted:", data)
+        onGetJobPostings();
         onClose(); // Close the job details view after deletion
       }
-      const data = await response.json();
-      // console.log("successfully deleted:", data)
-      onClose();
     } catch (error) {
       console.log("ERROR:", error);
     }
@@ -238,6 +236,7 @@ const JobDetails = ({ companyName, job, onClose, onJobUpdate, onGetJobPostings})
           }
         })
       })
+      onGetJobPostings();
 
     } catch (error) {
       console.log(error)

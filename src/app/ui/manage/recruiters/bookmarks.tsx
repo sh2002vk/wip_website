@@ -12,10 +12,6 @@ const API_URL = process.env.API_URL
 
 export default function Bookmarks({ user, companyName, companyID, onSelectJob, onGetJobPostings, drafts, completed }) {
 
-  useEffect(() => {
-    onGetJobPostings();
-  }, );
-
   const fetchNewPosting = async() => {
     try {
       const response = await fetch(`${API_URL}/action/recruiter/createJobPosting`, {
