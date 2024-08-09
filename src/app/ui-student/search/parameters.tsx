@@ -46,8 +46,8 @@ export default function Parameters({ onSearch }: ParametersProps) {
 
   const [interested, setInterested] = useState(false);
 
-  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
-  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
 
@@ -98,8 +98,8 @@ export default function Parameters({ onSearch }: ParametersProps) {
   const handleClearFilters = () => {
     setAvailabilities([]);
     setWorkingTypes([]);
-    setStartDate(dayjs());
-    setEndDate(dayjs());
+    setStartDate(null);
+    setEndDate(null);
     setKeyword("");
     setLocation("");
     setMaxSalary("");
@@ -270,6 +270,7 @@ export default function Parameters({ onSearch }: ParametersProps) {
               ))}
               {showMorePrograms &&
                 [
+                  "Technology",
                   "Finance",
                   "IT",
                   "Software Engineering",

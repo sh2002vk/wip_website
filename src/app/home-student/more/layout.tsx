@@ -3,39 +3,22 @@
 import React, { useState } from 'react';
 import Options from '@/app/ui-student/more/options';
 import Profile from '@/app/ui-student/more/profile';
-
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { auth } from '../../../firebase'; // Ensure the correct import path
-
-import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../context/authContext'; // Import useAuth hook
 
 type LayoutProps = {
   children: React.ReactNode;
   // title?: string;
 };
 
-type AuthUser = User | null;
-
 const MoreLayout = ({ children }: LayoutProps) => {
-
-  const [user, setUser] = useState<AuthUser>(null);
+  const {user, loading} = useAuth();
   const [view, setView] = useState('o'); 
 
-  const router = useRouter();
-
-
   React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-        router.push('./'); // Redirect to student home
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
+    if (!loading && user) {
+      console.log("Student Logged In");
+    }
+  }, [user, loading]);
 
   const renderView = (userObj: any) => {
     switch (view) {

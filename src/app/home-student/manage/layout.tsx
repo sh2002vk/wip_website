@@ -3,57 +3,31 @@ import React, { useState, useEffect } from 'react';
 import Bookmarks from '@/app/ui-student/manage/bookmarks';
 import JobDetails from '@/app/ui-student/manage/jobDetails';
 import SideBar from "@/app/ui/home/sidebar";
-import {onAuthStateChanged, User} from "firebase/auth";
-import {auth} from "@/firebase";
+import { useAuth } from '../../../context/authContext'; // Import useAuth hook
 import { useRouter } from 'next/navigation';
-
 
 type LayoutProps = {
   children: React.ReactNode;
 };
 
-type AuthUser = User | null;
-
 const ManageLayout = ({ children }: LayoutProps) => {
-  
+  const { user, loading: authLoading } = useAuth(); // Use loading state from useAuth
   const [selectedJob, setSelectedJob] = useState(null);
-  const [user, setUser] = useState<AuthUser>(null);
   const [quota, setQuota] = useState(0);
   const [hasApplications, setHasApplications] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true); // Loading state for data fetching
+  const [loadingApplications, setLoadingApplications] = useState(true); // Loading state for applications
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [loadingApplications, setLoadingApplications] = useState(true); // New loading state
-
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-        router.push('./'); // Redirect to student home
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleSearchNav = () => {
-    router.replace('/home-student/search');
-  };
-
-  const handleSelectJob = (job: any) => {
-    setSelectedJob(job);
-  };
-
-  const handleCloseJobDetails = () => {
-    setSelectedJob(null);
-  };
-
-  const handleJobDelete = () => {
-    // setJobs(jobs.filter(job => job.id !== selectedJob.id));
-    setSelectedJob(null);
-  };
+    if (!authLoading && user) {
+      setDataLoading(true); // Set loading state to true before fetching
+      fetchQuota(user);
+      calculateQuota();
+      setApplications();
+      setDataLoading(false); // Set loading state to false after fetching
+    }
+  }, [user, authLoading]);
 
   const fetchQuota = async (user) => {
     if (!user) return;
@@ -137,19 +111,27 @@ const ManageLayout = ({ children }: LayoutProps) => {
     }
   }
 
-  useEffect(() => {
-    setLoading(true);
-    fetchQuota(user);
-    calculateQuota();
-    setApplications();
-    setLoading(false);
-  }, [user])
+  const handleSearchNav = () => {
+    router.replace('/home-student/search');
+  };
 
-  if (loading) {
-    return (
-        <div>Loading...</div>
-    )
+  const handleSelectJob = (job: any) => {
+    setSelectedJob(job);
+  };
+
+  const handleCloseJobDetails = () => {
+    setSelectedJob(null);
+  };
+
+  const handleJobDelete = () => {
+    setSelectedJob(null);
+  };
+
+  // Render loading state if either auth or data is loading
+  if (authLoading || dataLoading) {
+    return <div>Loading...</div>;
   }
+
   return (
     <div className="flex h-screen">
       <div className="w-full md:w-64 flex-none h-screen overflow-auto">
