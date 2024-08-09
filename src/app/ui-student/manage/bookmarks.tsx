@@ -71,23 +71,6 @@ export default function Bookmarks({ user, sharedQuota, onSelectJob}) {
     }
   }
 
-  // const fetchQuota = async (user) => {
-  //   if (!user) return;
-  //
-  //   try {
-  //     const response = await fetch(`http://localhost:4000/account/student/getQuota?studentID=${user.uid}`);
-  //     if (!response.ok) {
-  //       console.log("Error in response");
-  //       return;
-  //     }
-  //     const quotaData = await response.json();
-  //     console.log("quota", quotaData.quota);
-  //     setQuota(quotaData.quota);
-  //   } catch (error) {
-  //     console.log("Error in fetching quota amount", error);
-  //   }
-  // }
-
   useEffect(() => {
     setLoading(true);
     fetchApplications(user);
@@ -115,15 +98,15 @@ export default function Bookmarks({ user, sharedQuota, onSelectJob}) {
         
         <div className="flex flex-col space-y-2 my-2 h-[75vh] overflow-y-auto no-scrollbar pt-7">
           {
-          applicationData.map((application) => (
-            <JobCard 
-              key={application.id}
-              company={application.CompanyName}
-              title={application.Role}
-              onClick={() => onSelectJob(application)}
-              // onRemove={() => handleRemoveBookmark(job.id)}
-            />
-          ))}
+            applicationData.map((application) => (
+                <JobCard
+                    key={application.id}
+                    company={application.CompanyName}
+                    title={application.Role}
+                    onClick={() => onSelectJob(application)}
+                    // onRemove={() => handleRemoveBookmark(job.id)}
+                />
+            ))}
         </div>
         
         <div className="mt-4 flex justify-center">
