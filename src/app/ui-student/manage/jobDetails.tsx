@@ -8,6 +8,8 @@ import { app } from '@/firebase';
 const API_URL = process.env.API_URL
 
 export default function JobDetails({ user, applicationData, calculateQuota, sharedQuota, onClose, onJobDelete }) {
+  //To the one who will work on deleting an application, this will also delete the interest relation between student and job
+
   const [job, setJob] = useState(null);
   const [application, setApplication] = useState(null);
   const [isEligible, setIsEligible] = useState(false); // New state for eligibility
@@ -230,6 +232,7 @@ export default function JobDetails({ user, applicationData, calculateQuota, shar
 
   const handleButtonClick = () => {
     if (application.Status === 'APPLIED') {
+      //To the one who will work on deleting an application, this will also delete the interest relation between student and job
       // onJobDelete(application); 
       withdrawApplication(application);
     } else if (application.Status === 'DRAFT' && isEligible) {

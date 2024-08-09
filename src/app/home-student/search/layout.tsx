@@ -8,6 +8,7 @@ import Bookmarks from '@/app/ui-student/search/bookmarks';
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { auth } from '../../../firebase';
 
+import { useRouter } from 'next/navigation';
 const API_URL = process.env.API_URL
 
 type AuthUser = User | null;
@@ -30,6 +31,10 @@ type WhereClause = {
   duration?: string[];
   location?: string;
   industry?: string[];
+  keyword?: string;
+  startDate?: Date;
+  interested?: Boolean;
+  studentID?: string;
 };
 
 type WorkingType = "In-Person" | "Hybrid" | "Remote";
@@ -43,6 +48,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [bookmarkedJobs, setBookmarkedJobs] = useState([]);
   const [isBookmarksExpanded, setIsBookmarksExpanded] = useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -52,6 +58,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
         handleSearch({});
       } else {
         setUser(null);
+        router.push('/login'); // Redirect to student home
       }
       // console.log("SEARCH", user);
     });
@@ -100,6 +107,10 @@ const SearchLayout = ({ children }: LayoutProps) => {
       duration?: string[];
       location?: string;
       industry?: string;
+      keyword?: string;
+      startDate?: Date;
+      interested?: Boolean;
+      studentID?: string;
     } = {};
 
     if (filters.preference) {
@@ -118,6 +129,23 @@ const SearchLayout = ({ children }: LayoutProps) => {
       whereClause.industry = filters.selectedPrograms;
     }
 
+    if (filters.keyword) {
+      whereClause.keyword = filters.keyword;
+    }
+
+    if (filters.startDate) {
+      whereClause.startDate = filters.startDate;
+    }
+
+    if (filters.interested === true || filters.interested === false) {
+      whereClause.interested = filters.interested;
+    }
+
+    if(user) {
+      if(user.uid) {
+        whereClause.studentID = user.uid;
+      }
+    }
     // console.log('where clause sent to backend: ', whereClause);
 
     try {

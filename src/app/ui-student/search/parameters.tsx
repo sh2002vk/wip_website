@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -17,6 +17,7 @@ type ParametersProps = {
     keyword: string;
     location: string;
     selectedPrograms: string[];
+    interested: Boolean;
   }) => void;
   // user: any;
 };
@@ -42,6 +43,9 @@ const StyledDatePicker = styled(DatePicker)({
 });
 
 export default function Parameters({ onSearch }: ParametersProps) {
+
+  const [interested, setInterested] = useState(false);
+
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
   const [keyword, setKeyword] = useState("");
@@ -56,6 +60,14 @@ export default function Parameters({ onSearch }: ParametersProps) {
   const [showMorePrograms, setShowMorePrograms] = useState(false);
   const [selectedPrograms, setSelectedPrograms] = useState([]);
 
+  useEffect(() => {
+    if(activeToggle === 'Global') {
+      setInterested(false);
+    } else if (activeToggle === 'Interested') {
+      setInterested(true);
+    }
+  }, [activeToggle]);
+
   // Sample location history data
   const locationHistory = ["Vancouver", "Toronto"];
 
@@ -68,6 +80,7 @@ export default function Parameters({ onSearch }: ParametersProps) {
       keyword,
       location,
       selectedPrograms,
+      interested,
     };
     // console.log('filter i got directly: ', currentFilters);
     onSearch(currentFilters);
@@ -92,6 +105,7 @@ export default function Parameters({ onSearch }: ParametersProps) {
     setMaxSalary("");
     setMinSalary("");
     setSelectedPrograms([]);
+    setInterested(false);
   };
 
   const handleProgramChange = (program) => {
@@ -100,6 +114,11 @@ export default function Parameters({ onSearch }: ParametersProps) {
     } else {
       setSelectedPrograms([...selectedPrograms, program]);
     }
+  };
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault(); // Prevent the default form submission
+    handleShowResults(); // Trigger your search logic
   };
 
   return (
@@ -116,7 +135,10 @@ export default function Parameters({ onSearch }: ParametersProps) {
           </div>
 
           {/* Keyword Search */}
-          <form className="flex justify-center mb-8">
+          <div className="flex justify-left text-xs font-bold mb-2">
+            <p>Job Title</p>
+          </div>
+          <form className="flex justify-center mb-8" onSubmit={handleFormSubmit}>
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg
@@ -150,7 +172,7 @@ export default function Parameters({ onSearch }: ParametersProps) {
           <div className="flex justify-left text-xs font-bold mb-2">
             <p>Location</p>
           </div>
-          <form className="flex justify-center mb-3">
+          <form className="flex justify-center mb-3" onSubmit={handleFormSubmit}>
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg

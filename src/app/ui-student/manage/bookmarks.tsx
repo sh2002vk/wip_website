@@ -103,6 +103,7 @@ export default function Bookmarks({ user, sharedQuota, onSelectJob}) {
     );
   }
 
+  //To the one who will work on deleting an application, this will also delete the interest relation between student and job
   return (
     <div className="flex flex-col h-screen w-full mx-auto bg-white pl-4 py-4 space-y-4 border-r border-black">
       <div className='container mx-auto pr-4'>

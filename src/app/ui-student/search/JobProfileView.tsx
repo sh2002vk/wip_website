@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as solidBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-icons';
 import dayjs from "dayjs";
+
 const API_URL = process.env.API_URL
 
 const JobProfileView = ({ user, job, onClose, onBookmark, isBookmarked }) => {
@@ -13,6 +14,27 @@ const JobProfileView = ({ user, job, onClose, onBookmark, isBookmarked }) => {
     useEffect(() => {
         setBookmarked(isBookmarked);
     }, [isBookmarked]);
+
+    useEffect(() => {
+        const checkIfApplied = async () => {
+            try {
+                const response = await fetch(`${API_URL}/action/student/checkIfApplied?studentID=${user.uid}&jobID=${job.JobID}`);
+                if (!response.ok) {
+                    console.log("Error checking application status");
+                    return;
+                }
+                const data = await response.json();
+
+                console.log(data);
+
+                setInterestShown(data.isApplied);
+            } catch (error) {
+                console.log("Error fetching application status:", error);
+            }
+        };
+
+        checkIfApplied();
+    }, [user.uid, job.JobID]);
 
     const handleBookmarkClick = () => {
         setBookmarked(!bookmarked);
@@ -132,13 +154,15 @@ const JobProfileView = ({ user, job, onClose, onBookmark, isBookmarked }) => {
                 </div>
                 <div>
                     <p className="text-base font-semibold mb-1">
-                        Duration: <span className="font-light">{job.Duration}</span>
+                        Duration: <span className="font-light">{job.Duration} {job.Duration ? "months" : "unspecified"}</span>
                     </p>
                     <p className="text-base font-semibold mb-1">
                         Work Mode: <span className="font-light">{job.Environment}</span>
                     </p>
                     <p className="text-base font-semibold mb-1">
-                        Pay: <span className="font-light">{job.Pay}</span>
+                        Pay: <span className="font-light">
+                            {job.Pay ? `${job.Pay.toLocaleString()} CAD` : "unspecified"}
+                        </span>
                     </p>
                     <p className="text-base font-semibold mb-4">
                         Citizenship Requirement: <span className="font-light">{job.citizenshipRequirement}</span>

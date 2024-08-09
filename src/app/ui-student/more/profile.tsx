@@ -144,7 +144,7 @@ export default function Profile(user) {
       formData.append('photo', file);
 
       try {
-        const response = await fetch('http://localhost:5000/upload-photo', {
+        const response = await fetch('http://localhost:4000/photo/upload', {
           method: 'POST',
           body: formData,
         });
@@ -266,7 +266,7 @@ export default function Profile(user) {
 
   const fetchSignedURL = async (filename: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/generate-signed-url?filename=${filename}`);
+      const response = await fetch(`http://localhost:4000/photo/generate-signed-url?filename=${filename}`);
       if (!response.ok) {
         throw new Error('Failed to fetch signed URL');
       }
