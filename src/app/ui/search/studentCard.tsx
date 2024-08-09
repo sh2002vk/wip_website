@@ -8,17 +8,21 @@ import { faBookmark as regularBookmark } from '@fortawesome/free-regular-svg-ico
 export default function StudentCard({ FirstName, LastName, School, AcademicMajor, Availability, Preference, WorkExperience, Skills, onClick, onBookmark, isBookmarked }) {
     const [bookmarked, setBookmarked] = useState(isBookmarked);
     const [WorkExperienceJson, setWorkExperienceJson] = useState([]);
+    // console.log("WORK EXPERIENCE IS 1: ", WorkExperience);
 
     useEffect(() => {
         try {
-          const parsedData = JSON.parse(WorkExperience);
+        //   console.log("type of data: ", typeof(WorkExperience));
+          const workString = JSON.stringify(WorkExperience);
+          const parsedData = JSON.parse(workString);
           if (Array.isArray(parsedData)) {
             setWorkExperienceJson(parsedData);
           } else {
             console.error('Parsed data is not an array');
           }
         } catch (error) {
-          console.error('Error parsing JSON:', error);
+            // console.log("WORK EXPERIENCE error IS: ", WorkExperience);
+            console.error('Error parsing JSON:', error);
         }
       }, []);
 
@@ -31,7 +35,6 @@ export default function StudentCard({ FirstName, LastName, School, AcademicMajor
         setBookmarked(!bookmarked);
         onBookmark();
     };
-
 
 
     return (
@@ -70,7 +73,7 @@ export default function StudentCard({ FirstName, LastName, School, AcademicMajor
                 <div className="py-1">
                     <h3 className="text-base font-semibold">Previous Experience</h3>
                     <ul className="text-sm text-gray-600">
-                        {WorkExperience.map((job, index) => (
+                        {WorkExperienceJson.map((job, index) => (
                             <li key={index}>{job.title} - {job.company}</li>
                         ))}
                     </ul>
