@@ -10,6 +10,7 @@ const API_URL = process.env.API_URL
 const JobProfileView = ({ user, job, onClose, onBookmark, isBookmarked }) => {
     const [bookmarked, setBookmarked] = useState(isBookmarked);
     const [interestShown, setInterestShown] = useState(false);
+    const [companyName, setCompanyName] = useState("");
 
     useEffect(() => {
         setBookmarked(isBookmarked);
@@ -35,6 +36,25 @@ const JobProfileView = ({ user, job, onClose, onBookmark, isBookmarked }) => {
 
         checkIfApplied();
     }, [user.uid, job.JobID]);
+
+    useEffect(() => {
+        const fetchCompanyProfile = async () => {
+            try {
+                const response = await fetch(`${API_URL}/profile/company/getFullProfile?companyID=${job.CompanyID}`);
+                if (!response.ok) {
+                    console.log("Error fetching company profile");
+                    return;
+                }
+                const data = await response.json();
+                setCompanyName(data.data.Name);  // Adjust the field according to your API response
+
+            } catch (error) {
+                console.log("Error fetching company profile:", error);
+            }
+        };
+
+        fetchCompanyProfile();
+    }, [job.CompanyID]);
 
     const handleBookmarkClick = () => {
         setBookmarked(!bookmarked);
@@ -153,6 +173,14 @@ const JobProfileView = ({ user, job, onClose, onBookmark, isBookmarked }) => {
                     </div>
                 </div>
                 <div>
+                    {companyName &&                     
+                    <p className="text-lg font-bold mb-1">
+                        {companyName}
+                    </p>   
+                    }
+                    <p className="text-base font-semibold mb-1">
+                        Location: <span className="font-light">{job.Location}</span>
+                    </p>                 
                     <p className="text-base font-semibold mb-1">
                         Duration: <span className="font-light">{job.Duration} {job.Duration ? "months" : "unspecified"}</span>
                     </p>

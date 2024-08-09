@@ -4,9 +4,7 @@ import BookmarkedStats from '@/app/ui-student/dashboard/bookmarkStats';
 import Applications from '@/app/ui-student/dashboard/applications';
 import Drafts from "@/app/ui-student/dashboard/drafts";
 import New from "@/app/ui-student/dashboard/whatsNew";
-import {onAuthStateChanged, User} from "firebase/auth";
-import {auth} from "@/firebase";
-import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../context/authContext'; // Import useAuth hook
 
 const API_URL = process.env.API_URL
 
@@ -15,39 +13,26 @@ type LayoutProps = {
   // title?: string;
 };
 
-type AuthUser = User | null;
-
 const DashboardLayout = ({ children }: LayoutProps) => {
-    const [user, setUser] = useState<AuthUser>(null);
-    const [loading, setLoading] = useState(true);
+    const {user, loading} = useAuth();
+    // const [loading, setLoading] = useState(true);
     const [firstName, setFirstName] = useState<string | null>(null);
-    const router = useRouter();
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user);
-                fetchUserProfile(user.uid); // Fetch user profile data
-            } else {
-                setUser(null);
-                setLoading(false);
-                router.push('./'); // Redirect to student home
-            }
-            setLoading(false); // Set loading to false after user state is updated
-        });
+      if (!loading && user) {
+        console.log("Student Logged In");
+        fetchUserProfile(user.uid); // Fetch user profile data
+      }
+    }, [user, loading]);
 
-        return () => unsubscribe();
-      }, []);
 
     const fetchUserProfile = async (uid: string) => {
       try {
         const response = await fetch(`${API_URL}/profile/student/getFullProfile?studentID=${uid}`);
         const student = await response.json();
         setFirstName(student.data.FirstName);
-        setLoading(false); // Set loading to false after fetching data
       } catch (error) {
         console.error("Error fetching user profile:", error);
-        setLoading(false); // Also set loading to false if there's an error
       }
     };
 

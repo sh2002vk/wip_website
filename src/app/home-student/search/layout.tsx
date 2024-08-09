@@ -4,14 +4,8 @@ import Parameters from '@/app/ui-student/search/parameters';
 import JobCard from '@/app/ui-student/search/JobCard';
 import JobProfileView from '@/app/ui-student/search/JobProfileView';
 import Bookmarks from '@/app/ui-student/search/bookmarks';
-
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { auth } from '../../../firebase';
-
-import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../context/authContext'; // Import useAuth hook
 const API_URL = process.env.API_URL
-
-type AuthUser = User | null;
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -41,30 +35,20 @@ type WorkingType = "In-Person" | "Hybrid" | "Remote";
 type Availability = "4 Months" | "8 Months" | "1+ Year";
 
 const SearchLayout = ({ children }: LayoutProps) => {
-  const [user, setUser] = useState<AuthUser>(null);
+  const {user, loading} = useAuth();
   const [jobs, setJobs] = useState([]);
   const [showJobs, setShowJobs] = useState(false);
   const [showJobDetail, setShowJobDetail] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
   const [bookmarkedJobs, setBookmarkedJobs] = useState([]);
   const [isBookmarksExpanded, setIsBookmarksExpanded] = useState(false);
-  const router = useRouter();
 
   React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        fetchBookmarkedJobs(user.uid);
-        handleSearch({});
-      } else {
-        setUser(null);
-        router.push('./'); // Redirect to student home
-      }
-      // console.log("SEARCH", user);
-    });
-
-    return () => unsubscribe();
-  }, []);
+    if (!loading && user) {
+      fetchBookmarkedJobs(user.uid);
+      handleSearch({});
+    }
+  }, [user, loading]);
 
   const fetchBookmarkedJobs = async (studentID: string) => {
     try {
@@ -219,6 +203,25 @@ const SearchLayout = ({ children }: LayoutProps) => {
     }
   };
 
+  const handleRemoveClick = async (job: any) => {  
+    try {
+      // Perform the DELETE request to unbookmark the job
+      await fetch(`${API_URL}/action/student/unbookmarkJob`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ JobID: job.JobID, StudentID: user.uid }),
+      });
+  
+      // Update the bookmarkedJobs state by filtering out the removed job
+      setBookmarkedJobs((prev) => prev.filter((j) => j.JobID !== job.JobID));
+    } catch (error) {
+      console.error('There was a problem with the remove bookmark operation:', error);
+    }
+  };
+  
+
   const handleCloseDetail = () => {
     setShowJobDetail(false);
     setSelectedJob(null);
@@ -279,6 +282,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
             isExpanded={isBookmarksExpanded}
             toggleExpand={toggleBookmarksTab}
             closeExpand={closeBookmarksTab}
+            onRemoveClick={handleRemoveClick}
           />
         </div>
       )}
