@@ -31,7 +31,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
             } else {
                 setUser(null);
                 setLoading(false);
-                router.push('/login'); // Redirect to student home
+                router.push('./'); // Redirect to student home
             }
             setLoading(false); // Set loading to false after user state is updated
         });

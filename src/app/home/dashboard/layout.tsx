@@ -32,7 +32,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
         } else {
           setUser(null);
           setLoading(false);
-          router.push('./login');
+          router.push('./');
         }
       });
   

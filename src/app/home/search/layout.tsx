@@ -39,7 +39,7 @@ const SearchLayout = ({ children }: LayoutProps) => {
         fetchBookmarkedStudents(user.uid);
       } else {
         setUser(null);
-        router.push('/login'); // Redirect to student home
+        router.push('./'); // Redirect to student home
       }
     });
 
