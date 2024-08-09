@@ -85,7 +85,7 @@ const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
                     className="w-full p-2 border border-gray-300 rounded resize-none"
                     value={editableContent}
                     onChange={handleContentChange}
-                    style={{ overflow: 'hidden' }}
+                    style={{ overflow: 'hidden', whiteSpace: 'pre-wrap' }}
                 />}
             {editable ? (
                 <>
@@ -116,7 +116,7 @@ const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
                 </>
             ) : (
                 <>
-                  <p>{editableContent}</p>
+                  <p style={{ whiteSpace: 'pre-wrap' }}>{editableContent}</p>
                   {sections && sections.map((section, sectionIndex) => (
                       <div key={sectionIndex}>
                         <ul className="list-disc pl-5 font-light">
