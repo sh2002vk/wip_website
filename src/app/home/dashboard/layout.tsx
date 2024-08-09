@@ -19,7 +19,7 @@ type LayoutProps = {
 };
 
 const DashboardLayout = ({ children }: LayoutProps) => {
-  const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [firstName, setFirstName] = useState<string | null>(null);
     const router = useRouter();
@@ -27,7 +27,9 @@ const DashboardLayout = ({ children }: LayoutProps) => {
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user) {
+          console.log("CURRENT USER IS: ", user.uid);
           setUser(user);
+          // console.log
           fetchUserProfile(user.uid); // Fetch user profile data
         } else {
           setUser(null);
@@ -41,8 +43,9 @@ const DashboardLayout = ({ children }: LayoutProps) => {
 
     const fetchUserProfile = async (uid: string) => {
       try {
-        const response = await fetch(`${API_URL}/profile/student/getFullProfile?studentID=${uid}`);
+        const response = await fetch(`${API_URL}/profile/recruiter/getFullProfile?recruiterID=${uid}`);
         const student = await response.json();
+        console.log("GOT RECRUITER", student);
         setFirstName(student.data.FirstName);
         setLoading(false); // Set loading to false after fetching data
       } catch (error) {
