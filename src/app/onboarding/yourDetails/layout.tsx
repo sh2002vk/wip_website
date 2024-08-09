@@ -3,6 +3,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
 
+const API_URL = process.env.API_URL
+
 type LayoutProps = {
   children: React.ReactNode;
   // title?: string;
@@ -60,22 +62,46 @@ const YourDetails = () => {
   };
 
   const handleDetailChange = () => {
+    console.log("HANDLE DETAIL CHANGE");
     setUserDetails({
       ...userDetails, // Preserve existing userDetails properties
       ...formData,    // Update with new formData values
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     handleDetailChange(); // Update context with form data
-    router.push('/onboarding/verification');
+    // ADD API CALL
+    console.log("SENDING VERIFICATION EMAIL");
+    try {
+      console.log(`calling ${API_URL}/action/verification/sendCode`);
+      const response = await fetch(`${API_URL}/action/verification/sendCode`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(data.message);
+        router.push('/onboarding/verification');
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Error sending verification code:", error);
+      alert("There was an error sending the verification code. Please check your email or try again later.");
+    }
   };
 
   return (
     <YourDetailsLayout>
       <p className="text-xl font-light mb-8">
-        First thing first, let us learn a bit about you
+        First thing first, let us learn a bit about you [test]
       </p>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex justify-between">
@@ -146,15 +172,19 @@ const YourDetails = () => {
             />
           </div>
           <div className="w-1/2 pl-2">
-            <label className="block text-left mb-1" htmlFor="year">Year<span className="text-red-500">*</span></label>
+            <label className="block text-left mb-1" htmlFor="year">
+                Year (Between 1-4)<span className="text-red-500">*</span>
+            </label>
             <input
-                type="text"
+                type="number"
                 id="year"
                 name="year"
                 value={formData.year}
                 onChange={handleChange}
                 placeholder="Enter your standing"
                 className="w-full p-3 pl-5 border-none rounded-3xl"
+                min="1"
+                max="4"
                 required
             />
           </div>
