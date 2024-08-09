@@ -105,7 +105,7 @@ const Applications = ({user}) => {
 
   useEffect(() => {
     fetchApplicationInsights();
-  }, [user, fetchApplicationInsights])
+  }, [user])
 
   const statusMapping = {
     "APPLIED": "Applied",
