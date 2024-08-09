@@ -14,9 +14,12 @@ type LayoutProps = {
 
 const createStudent = async (userDetails) => {
   try {
+    console.log("CREATING STUDENT IN FIREBASE");
     const userCredential = await createUserWithEmailAndPassword(auth, userDetails.email, userDetails.password);
     const user = userCredential.user;
     const uid = user.uid;
+    console.log("created student with uid: ", uid);
+    console.log("CREATING STUDENT IN OUR DB");
     const response = await fetch(`${API_URL}/account/student/create`, {
       method: 'POST', // Specify the request method
       headers: {
@@ -35,10 +38,10 @@ const createStudent = async (userDetails) => {
       })
     });
     if (!response.ok) {
-      console.log("Error creating student");
+      console.log("Error creating student in our DB");
     }
     const result = await response.json();
-    // console.log(result);
+    console.log("created student in our db:", result);
   } catch (error) {
     console.log(error);
   }
@@ -121,6 +124,18 @@ const Password = () => {
     }
   };
 
+  const isSubmitEnabled = () => {
+    const { length, uppercase, number, symbol } = passwordRequirements;
+    return (
+      userDetails.verificationStatus &&
+      length &&
+      uppercase &&
+      number &&
+      symbol &&
+      passwordsMatch
+    );
+  };
+
   return (
     <PasswordLayout>
       <p className="text-lg font-light mb-8">
@@ -180,7 +195,18 @@ const Password = () => {
           </div>
         </div>
         <div className="text-center mt-6">
-          <button type="submit" className="bg-[#ff7002] text-white rounded-full px-6 py-3">Submit</button>
+          <button
+            type="submit"
+            className={`bg-[#ff7002] text-white rounded-full px-6 py-3 ${isSubmitEnabled() ? "" : "opacity-50 cursor-not-allowed"}`}
+            disabled={!isSubmitEnabled()}
+          >
+            Submit
+          </button> 
+          {!userDetails.verificationStatus && (
+            <p className="text-sm text-red-500 mt-2">
+              Cannot submit because email unverified
+            </p>
+          )}
         </div>
       </form>
     </PasswordLayout>

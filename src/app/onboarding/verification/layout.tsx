@@ -3,6 +3,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import {OnboardingContext} from "@/app/onboarding/OnboardingContext";
 
+const API_URL = process.env.API_URL
+
 type LayoutProps = {
   children: React.ReactNode;
   // title?: string;
@@ -25,10 +27,11 @@ const VerificationLayout = ({ children }: LayoutProps) => {
 const Verification = () => {
   const [code, setCode] = useState(new Array(6).fill(""));
   const router = useRouter();
+  const [error, setError] = useState("");
   const { userDetails, setUserDetails } = useContext(OnboardingContext);
 
   const handleChange = (element, index) => {
-    if (isNaN(element.value)) return false;
+    // if (isNaN(element.value)) return false;
 
     setCode([...code.map((d, idx) => (idx === index ? element.value : d))]);
 
@@ -38,16 +41,44 @@ const Verification = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle verification code submission logic here
-    setUserDetails({
-      ...userDetails,
-      verificationCode: code.join(""),
-    })
-    // console.log(code.join(""));
-    router.push('/onboarding/password');
+    setError(""); // Reset error message
+    console.log("CHECKING CODE: ", code.join(""));
+    console.log("VERIFYING WITH EMAIL: ", userDetails.email);
+
+    // Verify code via API call
+    try {
+      const response = await fetch(`${API_URL}/action/verification/verifyCode`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: userDetails.email, code: code.join("") }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Code is valid
+        console.log("CODE IS VALID");
+        setUserDetails({
+          ...userDetails,
+          verificationCode: code.join(""),
+          verificationStatus: true,
+        });
+        router.push('/onboarding/password');
+      } else {
+        // Invalid code
+        setError(data.message);
+      }
+    } catch (error) {
+      console.error("Error verifying code:", error);
+      setError("There was an error verifying your code. Please try again.");
+    }
   };
+
+
 
   return (
     <VerificationLayout>
@@ -71,6 +102,7 @@ const Verification = () => {
             );
           })}
         </div>
+        {error && <p className="text-red-500 mt-2">{error}</p>}
         <div className="text-left mt-2">
           <p className="text-sm">
             Didn’t receive a code?{" "}

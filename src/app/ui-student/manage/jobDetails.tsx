@@ -26,7 +26,7 @@ export default function JobDetails({ user, applicationData, calculateQuota, shar
     onlineAssessment: false
   });
 
-  console.log('application data is: ', applicationData);
+  // console.log('application data is: ', applicationData);
 
   const fetchJob = async (jobID) => {
     if (!jobID) return;
@@ -228,7 +228,7 @@ export default function JobDetails({ user, applicationData, calculateQuota, shar
     }
 };
 
-  console.log('application from application data is: ', application);
+  // console.log('application from application data is: ', application);
 
   const handleButtonClick = () => {
     if (application.Status === 'APPLIED') {
@@ -249,7 +249,7 @@ export default function JobDetails({ user, applicationData, calculateQuota, shar
 
   const withdrawApplication = async (application) => {
     try {
-      console.log("Withdrawing application:", application);
+      // console.log("Withdrawing application:", application);
   
       const updatedData = {
         Status: 'DRAFT'
@@ -286,7 +286,7 @@ export default function JobDetails({ user, applicationData, calculateQuota, shar
 
   const submitApplication = async (application) => {
     try {
-      console.log("Submitting application:", application);
+      // console.log("Submitting application:", application);
   
       const updatedData = {
         Status: 'APPLIED'
@@ -308,7 +308,7 @@ export default function JobDetails({ user, applicationData, calculateQuota, shar
       }
   
       const updateResult = await response.json();
-      console.log('Application submitted successfully:', updateResult);
+      // console.log('Application submitted successfully:', updateResult);
   
       // Update the local application state
       setApplication((prev) => ({

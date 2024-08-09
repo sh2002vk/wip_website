@@ -6,12 +6,14 @@ interface OnboardingContextType {
         email: string;
         password: string;
         verificationCode: string;
+        verificationStatus: boolean;
         [key: string]: any; // You can add more fields as needed
     };
     setUserDetails: React.Dispatch<React.SetStateAction<{
         email: string;
         password: string;
         verificationCode: string;
+        verificationStatus: boolean;
         [key: string]: any;
     }>>;
 }
@@ -21,6 +23,7 @@ export const OnboardingContext = createContext<OnboardingContextType>({
         email: '',
         password: '',
         verificationCode: '',
+        verificationStatus: false,
     },
     setUserDetails: () => {},
 });
@@ -31,6 +34,7 @@ export const OnboardingProvider: FC<{ children: ReactNode }> = ({ children }) =>
         email: '',
         password: '',
         verificationCode: '',
+        verificationStatus: false,
     });
 
     return (

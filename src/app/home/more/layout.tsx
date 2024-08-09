@@ -25,7 +25,7 @@ const MoreLayout = ({ children }: LayoutProps) => {
         setUser(user);
       } else {
         setUser(null);
-        router.push('/login'); // Redirect to student home
+        router.push('./'); // Redirect to student home
       }
     });
 
